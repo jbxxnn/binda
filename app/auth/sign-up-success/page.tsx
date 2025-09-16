@@ -14,15 +14,33 @@ export default function Page() {
           <Card>
             <CardHeader>
               <CardTitle className="text-2xl">
-                Thank you for signing up!
+                Check your email! 📧
               </CardTitle>
-              <CardDescription>Check your email to confirm</CardDescription>
+              <CardDescription>We've sent you a confirmation link</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">
-                You&apos;ve successfully signed up. Please check your email to
-                confirm your account before signing in.
-              </p>
+              <div className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  You&apos;ve successfully created your account! Please check your email and click the 
+                  confirmation link to complete your registration.
+                </p>
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <h4 className="font-medium text-green-800 mb-2">What happens next?</h4>
+                  <ul className="text-sm text-green-700 space-y-1">
+                    <li>• Check your email inbox (and spam folder)</li>
+                    <li>• Click the confirmation link in the email</li>
+                    <li>• Complete your business setup</li>
+                    <li>• Start managing your customers and transactions</li>
+                  </ul>
+                </div>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h4 className="font-medium text-blue-800 mb-2">Didn't receive the email?</h4>
+                  <p className="text-sm text-blue-700">
+                    Check your spam folder or try signing up again. The confirmation link will 
+                    take you directly to the business setup process.
+                  </p>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>

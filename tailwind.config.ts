@@ -44,6 +44,17 @@ export default {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
+        // Brand colors
+        brand: {
+          lightning: "hsl(var(--brand-lightning))",
+          tropical: "hsl(var(--brand-tropical))",
+          hunter: "hsl(var(--brand-hunter))",
+          underworld: "hsl(var(--brand-underworld))",
+          mint: "hsl(var(--brand-mint))",
+          quack: "hsl(var(--brand-quack))",
+          grape: "hsl(var(--brand-grape))",
+          snowman: "#fcfbfc",
+        },
         chart: {
           "1": "hsl(var(--chart-1))",
           "2": "hsl(var(--chart-2))",

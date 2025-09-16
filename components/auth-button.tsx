@@ -14,6 +14,9 @@ export async function AuthButton() {
   return user ? (
     <div className="flex items-center gap-4">
       Hey, {user.email}!
+      <Button asChild size="sm" variant={"default"}>
+        <Link href="https://app.binda.app/dashboard">Go to Dashboard</Link>
+      </Button>
       <LogoutButton />
     </div>
   ) : (

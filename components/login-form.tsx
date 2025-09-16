@@ -3,17 +3,10 @@
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export function LoginForm({
@@ -24,7 +17,7 @@ export function LoginForm({
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  // const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,8 +31,8 @@ export function LoginForm({
         password,
       });
       if (error) throw error;
-      // Update this route to redirect to an authenticated route. The user already has an active session.
-      router.push("/protected");
+      // Redirect to app subdomain dashboard
+      window.location.href = "https://app.binda.app/dashboard";
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
     } finally {
@@ -49,16 +42,14 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
-          <CardDescription>
-            Enter your email below to login to your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
           <form onSubmit={handleLogin}>
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-6 space-y-2">
+              <div className="flex flex-col items-center text-center">
+                <h1 className="text-2xl font-bold text-brand-hunter">Welcome back</h1>
+                <p className="text-muted-foreground text-xs">
+                  Enter your email below to login to your account
+                </p>
+              </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -68,6 +59,7 @@ export function LoginForm({
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className="bg-brand-snowman border-brand-hunter rounded-sm focus-visible:ring-brand-hunter focus-visible:ring-1 focus-visible:ring-offset-0 placeholder:text-brand-hunter placeholder:text-sm h-[3rem]"
                 />
               </div>
               <div className="grid gap-2">
@@ -85,26 +77,26 @@ export function LoginForm({
                   type="password"
                   required
                   value={password}
+                  placeholder="********"
                   onChange={(e) => setPassword(e.target.value)}
+                  className="bg-brand-snowman border-brand-hunter rounded-sm focus-visible:ring-brand-hunter focus-visible:ring-1 focus-visible:ring-offset-0 placeholder:text-brand-hunter placeholder:text-sm h-[3rem]"
                 />
               </div>
-              {error && <p className="text-sm text-red-500">{error}</p>}
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              {error && <p className="text-sm text-red-500 text-center">{error}</p>}
+              <Button type="submit" className="w-full bg-brand-hunter rounded-sm text-sm h-[3rem]" disabled={isLoading}>
                 {isLoading ? "Logging in..." : "Login"}
               </Button>
             </div>
-            <div className="mt-4 text-center text-sm">
+            <div className="mt-4 text-center text-sm text-muted-foreground">
               Don&apos;t have an account?{" "}
               <Link
                 href="/auth/sign-up"
-                className="underline underline-offset-4"
+                className="underline underline-offset-4 text-brand-hunter"
               >
                 Sign up
               </Link>
             </div>
           </form>
-        </CardContent>
-      </Card>
-    </div>
+          </div>
   );
 }

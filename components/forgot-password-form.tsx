@@ -47,7 +47,7 @@ export function ForgotPasswordForm({
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       {success ? (
-        <Card>
+        <Card className="overflow-hidden p-0 bg-brand-snowman rounded-md border-1 border-brand-hunter shadow-none">
           <CardHeader>
             <CardTitle className="text-2xl">Check Your Email</CardTitle>
             <CardDescription>Password reset instructions sent</CardDescription>
@@ -60,7 +60,7 @@ export function ForgotPasswordForm({
           </CardContent>
         </Card>
       ) : (
-        <Card>
+        <Card className="overflow-hidden p-0 bg-brand-snowman rounded-md border-1 border-brand-hunter shadow-none">
           <CardHeader>
             <CardTitle className="text-2xl">Reset Your Password</CardTitle>
             <CardDescription>
@@ -69,7 +69,7 @@ export function ForgotPasswordForm({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleForgotPassword}>
+            <form onSubmit={handleForgotPassword} className="p-6 md:p-8">
               <div className="flex flex-col gap-6">
                 <div className="grid gap-2">
                   <Label htmlFor="email">Email</Label>
@@ -80,18 +80,19 @@ export function ForgotPasswordForm({
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                  />
+                    className="bg-brand-snowman border-brand-hunter rounded-sm focus-visible:ring-brand-hunter focus-visible:ring-1 focus-visible:ring-offset-0 placeholder:text-brand-hunter placeholder:text-sm h-10 "
+                    />
                 </div>
-                {error && <p className="text-sm text-red-500">{error}</p>}
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                {error && <p className="text-sm text-red-500 text-center">{error}</p>}
+                <Button type="submit" className="w-full bg-brand-hunter rounded-sm" disabled={isLoading}>
                   {isLoading ? "Sending..." : "Send reset email"}
                 </Button>
               </div>
-              <div className="mt-4 text-center text-sm">
+              <div className="mt-4 text-center text-sm text-muted-foreground">
                 Already have an account?{" "}
                 <Link
                   href="/auth/login"
-                  className="underline underline-offset-4"
+                  className="underline underline-offset-4 text-brand-hunter"
                 >
                   Login
                 </Link>
