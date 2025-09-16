@@ -16,7 +16,7 @@ export default function Page() {
               <CardTitle className="text-2xl">
                 Check your email! 📧
               </CardTitle>
-              <CardDescription>We've sent you a confirmation link</CardDescription>
+              <CardDescription>We&apos;ve sent you a confirmation link</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -34,7 +34,7 @@ export default function Page() {
                   </ul>
                 </div>
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <h4 className="font-medium text-blue-800 mb-2">Didn't receive the email?</h4>
+                  <h4 className="font-medium text-blue-800 mb-2">Didn&apos;t receive the email?</h4>
                   <p className="text-sm text-blue-700">
                     Check your spam folder or try signing up again. The confirmation link will 
                     take you directly to the business setup process.
