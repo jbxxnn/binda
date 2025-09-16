@@ -32,7 +32,7 @@ export function LoginForm({
       });
       if (error) throw error;
       // Redirect to app subdomain dashboard
-      window.location.href = "https://app.binda.app/dashboard";
+      window.location.href = "https://app.binda.vercel.app/dashboard";
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
     } finally {
