@@ -44,7 +44,7 @@ export default function OnboardingPage() {
         .eq('owner_id', user.id);
       
       if (businesses && businesses.length > 0) {
-        router.push("/app/dashboard");
+        router.push("/dashboard");
         return;
       }
     };
@@ -155,7 +155,7 @@ export default function OnboardingPage() {
       console.log('Business created successfully:', result.business);
 
       // Redirect to dashboard
-      router.push("/app/dashboard");
+      router.push("/dashboard");
     } catch (error) {
       console.error('Business creation error:', error);
       setError(error instanceof Error ? error.message : "Failed to create business");

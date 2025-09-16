@@ -18,7 +18,7 @@ export default async function DashboardPage() {
     .eq('owner_id', user.id);
 
   if (!businesses || businesses.length === 0) {
-    redirect("/app/onboarding");
+    redirect("/onboarding");
   }
 
   const business = businesses[0];
