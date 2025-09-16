@@ -2,27 +2,6 @@ import { updateSession } from "@/lib/supabase/middleware";
 import { type NextRequest, NextResponse } from "next/server";
 
 export async function middleware(request: NextRequest) {
-  const hostname = request.headers.get('host') || '';
-  const isAppSubdomain = hostname.startsWith('app.');
-  
-  // Handle app subdomain routing
-  if (isAppSubdomain) {
-    const url = request.nextUrl.clone();
-    const pathname = url.pathname;
-    
-    // If accessing root of app subdomain, redirect to dashboard
-    if (pathname === '/') {
-      url.pathname = '/dashboard';
-      return NextResponse.redirect(url);
-    }
-    
-    // Rewrite app subdomain requests to /app/* routes
-    if (!pathname.startsWith('/app/')) {
-      url.pathname = `/app${pathname}`;
-      return NextResponse.rewrite(url);
-    }
-  }
-  
   // Continue with Supabase session handling
   return await updateSession(request);
 }

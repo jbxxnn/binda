@@ -1,14 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/(.*)",
-      "destination": "/app$1",
-      "has": [
-        {
-          "type": "host",
-          "value": "app.binda.vercel.app"
-        }
-      ]
+      "source": "/app/(.*)",
+      "destination": "/app/$1"
     }
   ]
 }
