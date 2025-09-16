@@ -2,26 +2,11 @@
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/app/$1",
+      "destination": "/app$1",
       "has": [
         {
           "type": "host",
-          "value": "app.binda.app"
-        }
-      ]
-    }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
+          "value": "app.binda.vercel.app"
         }
       ]
     }

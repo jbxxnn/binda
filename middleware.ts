@@ -7,13 +7,12 @@ export async function middleware(request: NextRequest) {
   
   // Handle app subdomain routing
   if (isAppSubdomain) {
-    // For app subdomain, rewrite to /app/* routes
     const url = request.nextUrl.clone();
     const pathname = url.pathname;
     
     // If accessing root of app subdomain, redirect to dashboard
     if (pathname === '/') {
-      url.pathname = '/app/dashboard';
+      url.pathname = '/dashboard';
       return NextResponse.redirect(url);
     }
     
