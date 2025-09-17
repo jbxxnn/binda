@@ -67,7 +67,7 @@ export function CustomerDrawer({ customer, isOpen, onClose, onDelete }: Customer
               stiffness: 200,
               duration: 0.3
             }}
-            className="fixed right-0 top-0 h-full w-96 z-50 bg-white dark:bg-gray-900 shadow-2xl"
+            className="fixed right-0 top-0 h-full w-full sm:w-96 z-50 bg-white dark:bg-gray-900 shadow-2xl flex flex-col"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
@@ -137,7 +137,7 @@ export function CustomerDrawer({ customer, isOpen, onClose, onDelete }: Customer
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto p-6">
+            <div className="flex-1 overflow-y-auto p-6 min-h-0">
               <div className="space-y-6">
                 {/* Contact Information */}
                 <div>

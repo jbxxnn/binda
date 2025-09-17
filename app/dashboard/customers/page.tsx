@@ -365,7 +365,7 @@ export default function CustomersPage() {
           <DataTableColumnHeader column={column} title="Type" />
         ),
         cell: ({ row }) => {
-          const type = row.getValue<string>("type");
+          const type = row.getValue<string>("customer_type");
           const Icon = type === "business" ? Building2 : User;
           return (
             <Badge variant="outline" className="capitalize">
@@ -483,6 +483,9 @@ export default function CustomersPage() {
       columnPinning: { right: ["actions"] },
     },
     getRowId: (row) => row.id,
+    manualFiltering: false,
+    manualSorting: false,
+    manualPagination: false,
   });
 
   if (isLoading) {
