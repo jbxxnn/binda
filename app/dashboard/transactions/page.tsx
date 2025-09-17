@@ -71,6 +71,7 @@ export default function TransactionsPage() {
     description: ""
   });
   const [customers, setCustomers] = useState<{id: string, name: string}[]>([]);
+  const [categories, setCategories] = useState<{id: string, name: string, type: string}[]>([]);
   const [formData, setFormData] = useState({
     type: "income",
     category: "",
@@ -80,26 +81,6 @@ export default function TransactionsPage() {
     transaction_date: new Date().toISOString().split('T')[0]
   });
 
-  // Business-friendly categories
-  const incomeCategories = [
-    "Sales Revenue",
-    "Service Revenue", 
-    "Product Sales",
-    "Consulting",
-    "Other Income"
-  ];
-
-  const expenseCategories = [
-    "Rent & Utilities",
-    "Supplies & Inventory",
-    "Staff & Payroll",
-    "Marketing & Advertising",
-    "Equipment & Tools",
-    "Insurance",
-    "Professional Services",
-    "Other Expenses"
-  ];
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -107,16 +88,24 @@ export default function TransactionsPage() {
         
         // Get current user and business
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
+        if (!user) {
+          console.log('No user found');
+          return;
+        }
+        console.log('Current user:', user.id);
 
         const { data: businesses } = await supabase
           .from('businesses')
           .select('*')
           .eq('owner_id', user.id);
 
-        if (!businesses || businesses.length === 0) return;
+        if (!businesses || businesses.length === 0) {
+          console.log('No businesses found for user');
+          return;
+        }
 
         const business = businesses[0];
+        console.log('Current business:', business.id, business.name);
 
         // Get transactions for this business
         const { data: transactionsData, error } = await supabase
@@ -143,10 +132,29 @@ export default function TransactionsPage() {
           .order('name');
 
         setCustomers(customersData || []);
+
+        // Get categories for this business
+        console.log('Searching for categories with business_id:', business.id);
+        const { data: categoriesData, error: categoriesError } = await supabase
+          .from('categories')
+          .select('id, name, type, business_id')
+          .eq('business_id', business.id)
+          .eq('is_active', true)
+          .order('name');
+
+        if (categoriesError) {
+          console.error('Error fetching categories:', categoriesError);
+        } else {
+          console.log('Categories fetched:', categoriesData);
+          console.log('Total categories found:', categoriesData?.length || 0);
+        }
+
+        setCategories(categoriesData || []);
       } catch (error) {
         console.error('Error fetching data:', error);
         setTransactions([]);
         setCustomers([]);
+        setCategories([]);
       } finally {
         setIsLoading(false);
       }
@@ -507,7 +515,7 @@ export default function TransactionsPage() {
                         <Button
                           type="button"
                           variant={formData.type === 'income' ? 'default' : 'outline'}
-                          onClick={() => setFormData(prev => ({ ...prev, type: 'income' }))}
+                          onClick={() => setFormData(prev => ({ ...prev, type: 'income', category: '' }))}
                           className="flex-1"
                         >
                           <TrendingUp className="w-4 h-4 mr-2" />
@@ -516,7 +524,7 @@ export default function TransactionsPage() {
                         <Button
                           type="button"
                           variant={formData.type === 'expense' ? 'default' : 'outline'}
-                          onClick={() => setFormData(prev => ({ ...prev, type: 'expense' }))}
+                          onClick={() => setFormData(prev => ({ ...prev, type: 'expense', category: '' }))}
                           className="flex-1"
                         >
                           <TrendingDown className="w-4 h-4 mr-2" />
@@ -537,9 +545,23 @@ export default function TransactionsPage() {
                         required
                       >
                         <option value="">Select category</option>
-                        {(formData.type === 'income' ? incomeCategories : expenseCategories).map((category) => (
-                          <option key={category} value={category}>{category}</option>
-                        ))}
+                        {categories
+                          .filter(category => category.type === formData.type)
+                          .map((category) => (
+                            <option key={category.id} value={category.name}>
+                              {category.name}
+                            </option>
+                          ))}
+                        {categories.length === 0 && (
+                          <option value="" disabled>
+                            No categories found. Create some in the Categories section first.
+                          </option>
+                        )}
+                        {categories.length > 0 && categories.filter(category => category.type === formData.type).length === 0 && (
+                          <option value="" disabled>
+                            No {formData.type} categories found. Create some in the Categories section first.
+                          </option>
+                        )}
                       </select>
                     </div>
 

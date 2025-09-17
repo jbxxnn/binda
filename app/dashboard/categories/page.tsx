@@ -45,6 +45,8 @@ interface Category {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  is_default?: boolean;
+  is_default_active?: boolean;
 }
 
 type FormState = "idle" | "loading" | "success";
@@ -88,8 +90,8 @@ export default function CategoriesPage() {
 
         const business = businesses[0];
 
-        // Get categories for this business
-        const { data: categoriesData, error } = await supabase
+        // Get user's active categories from database
+        const { data: userCategoriesData, error } = await supabase
           .from('categories')
           .select('*')
           .eq('business_id', business.id)
@@ -98,21 +100,41 @@ export default function CategoriesPage() {
 
         if (error) {
           console.error('Error fetching categories:', error);
-          // If categories table doesn't exist, create default categories
-          if (error.code === 'PGRST116') {
-            await createDefaultCategories(business.id);
-            setCategories(getDefaultCategories());
-          } else {
-            setCategories([]);
-          }
+          setCategories([]);
         } else {
-          if (categoriesData && categoriesData.length === 0) {
-            // No categories found, create default ones
-            await createDefaultCategories(business.id);
-            setCategories(getDefaultCategories());
-          } else {
-            setCategories(categoriesData || []);
-          }
+          // Merge default categories with user's active categories
+          const userCategories = userCategoriesData || [];
+          const defaultCategories = getDefaultCategories();
+          
+          // Create a map of user's active categories for quick lookup
+          const userCategoryMap = new Map();
+          userCategories.forEach(cat => {
+            userCategoryMap.set(cat.name, cat);
+          });
+          
+          // Merge default categories with user's status
+          const mergedCategories = defaultCategories.map(defaultCat => {
+            const userCat = userCategoryMap.get(defaultCat.name);
+            return {
+              ...defaultCat,
+              id: userCat?.id || `default-${defaultCat.id}`,
+              business_id: business.id,
+              is_active: userCat ? userCat.is_active : defaultCat.is_default_active || false,
+              created_at: userCat?.created_at || '',
+              updated_at: userCat?.updated_at || '',
+              is_default: true
+            };
+          });
+          
+          // Add user's custom categories (not in default list)
+          const customCategories = userCategories.filter(userCat => 
+            !defaultCategories.some(defaultCat => defaultCat.name === userCat.name)
+          ).map(cat => ({
+            ...cat,
+            is_default: false
+          }));
+          
+          setCategories([...mergedCategories, ...customCategories]);
         }
       } catch (error) {
         console.error('Error fetching categories:', error);
@@ -126,43 +148,43 @@ export default function CategoriesPage() {
   }, []);
 
   const getDefaultCategories = (): Category[] => [
-    // Income Categories
-    { id: '1', business_id: '', name: 'Sales Revenue', type: 'income', description: 'Money from selling products or services', is_active: true, created_at: '', updated_at: '' },
-    { id: '2', business_id: '', name: 'Service Revenue', type: 'income', description: 'Money from providing services', is_active: true, created_at: '', updated_at: '' },
-    { id: '3', business_id: '', name: 'Product Sales', type: 'income', description: 'Money from selling physical products', is_active: true, created_at: '', updated_at: '' },
-    { id: '4', business_id: '', name: 'Consulting', type: 'income', description: 'Money from consulting services', is_active: true, created_at: '', updated_at: '' },
-    { id: '5', business_id: '', name: 'Other Income', type: 'income', description: 'Other sources of income', is_active: true, created_at: '', updated_at: '' },
+    // Income Categories - Essential ones enabled by default
+    { id: '1', business_id: '', name: 'Sales Revenue', type: 'income', description: 'Money from selling products or services', is_active: true, created_at: '', updated_at: '', is_default_active: true },
+    { id: '2', business_id: '', name: 'Service Revenue', type: 'income', description: 'Money from providing services', is_active: true, created_at: '', updated_at: '', is_default_active: true },
+    { id: '3', business_id: '', name: 'Product Sales', type: 'income', description: 'Money from selling physical products', is_active: false, created_at: '', updated_at: '', is_default_active: false },
+    { id: '4', business_id: '', name: 'Consulting', type: 'income', description: 'Money from consulting services', is_active: false, created_at: '', updated_at: '', is_default_active: false },
+    { id: '5', business_id: '', name: 'Other Income', type: 'income', description: 'Other sources of income', is_active: true, created_at: '', updated_at: '', is_default_active: true },
     
-    // Expense Categories
-    { id: '6', business_id: '', name: 'Rent & Utilities', type: 'expense', description: 'Office rent, electricity, water, internet', is_active: true, created_at: '', updated_at: '' },
-    { id: '7', business_id: '', name: 'Supplies & Inventory', type: 'expense', description: 'Office supplies, raw materials, inventory', is_active: true, created_at: '', updated_at: '' },
-    { id: '8', business_id: '', name: 'Staff & Payroll', type: 'expense', description: 'Employee salaries, benefits, contractors', is_active: true, created_at: '', updated_at: '' },
-    { id: '9', business_id: '', name: 'Marketing & Advertising', type: 'expense', description: 'Ads, social media, promotional materials', is_active: true, created_at: '', updated_at: '' },
-    { id: '10', business_id: '', name: 'Equipment & Tools', type: 'expense', description: 'Computers, machinery, tools, software', is_active: true, created_at: '', updated_at: '' },
-    { id: '11', business_id: '', name: 'Insurance', type: 'expense', description: 'Business insurance, liability coverage', is_active: true, created_at: '', updated_at: '' },
-    { id: '12', business_id: '', name: 'Professional Services', type: 'expense', description: 'Accountant, lawyer, consultant fees', is_active: true, created_at: '', updated_at: '' },
-    { id: '13', business_id: '', name: 'Other Expenses', type: 'expense', description: 'Miscellaneous business expenses', is_active: true, created_at: '', updated_at: '' },
+    // Expense Categories - Essential ones enabled by default
+    { id: '6', business_id: '', name: 'Rent & Utilities', type: 'expense', description: 'Office rent, electricity, water, internet', is_active: true, created_at: '', updated_at: '', is_default_active: true },
+    { id: '7', business_id: '', name: 'Supplies & Inventory', type: 'expense', description: 'Office supplies, raw materials, inventory', is_active: true, created_at: '', updated_at: '', is_default_active: true },
+    { id: '8', business_id: '', name: 'Staff & Payroll', type: 'expense', description: 'Employee salaries, benefits, contractors', is_active: false, created_at: '', updated_at: '', is_default_active: false },
+    { id: '9', business_id: '', name: 'Marketing & Advertising', type: 'expense', description: 'Ads, social media, promotional materials', is_active: false, created_at: '', updated_at: '', is_default_active: false },
+    { id: '10', business_id: '', name: 'Equipment & Tools', type: 'expense', description: 'Computers, machinery, tools, software', is_active: false, created_at: '', updated_at: '', is_default_active: false },
+    { id: '11', business_id: '', name: 'Insurance', type: 'expense', description: 'Business insurance, liability coverage', is_active: false, created_at: '', updated_at: '', is_default_active: false },
+    { id: '12', business_id: '', name: 'Professional Services', type: 'expense', description: 'Accountant, lawyer, consultant fees', is_active: false, created_at: '', updated_at: '', is_default_active: false },
+    { id: '13', business_id: '', name: 'Other Expenses', type: 'expense', description: 'Miscellaneous business expenses', is_active: true, created_at: '', updated_at: '', is_default_active: true },
   ];
 
-  const createDefaultCategories = async (businessId: string) => {
-    try {
-      const supabase = createClient();
-      const defaultCategories = getDefaultCategories().map(cat => ({
-        ...cat,
-        business_id: businessId
-      }));
+  // const createDefaultCategories = async (businessId: string) => {
+  //   try {
+  //     const supabase = createClient();
+  //     const defaultCategories = getDefaultCategories().map(cat => ({
+  //       ...cat,
+  //       business_id: businessId
+  //     }));
 
-      const { error } = await supabase
-        .from('categories')
-        .insert(defaultCategories);
+  //     const { error } = await supabase
+  //       .from('categories')
+  //       .insert(defaultCategories);
 
-      if (error) {
-        console.error('Error creating default categories:', error);
-      }
-    } catch (error) {
-      console.error('Error creating default categories:', error);
-    }
-  };
+  //     if (error) {
+  //       console.error('Error creating default categories:', error);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error creating default categories:', error);
+  //   }
+  // };
 
   const getCategoryIcon = (type: string) => {
     return type === 'income' ? TrendingUp : TrendingDown;
@@ -174,9 +196,78 @@ export default function CategoriesPage() {
       : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
   };
 
+  const handleCategoryToggle = async (category: Category) => {
+    try {
+      const supabase = createClient();
+      
+      // Get current user and business
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: businesses } = await supabase
+        .from('businesses')
+        .select('*')
+        .eq('owner_id', user.id);
+
+      if (!businesses || businesses.length === 0) return;
+
+      const business = businesses[0];
+
+      if (category.is_active) {
+        // Deactivate category - delete from database
+        const { error } = await supabase
+          .from('categories')
+          .delete()
+          .eq('id', category.id);
+
+        if (error) {
+          console.error('Error deactivating category:', error);
+          toast.error('Failed to deactivate category. Please try again.');
+          return;
+        }
+
+        // Update local state
+        setCategories(prev => prev.map(cat => 
+          cat.id === category.id ? { ...cat, is_active: false } : cat
+        ));
+
+        toast.success(`${category.name} has been deactivated.`);
+      } else {
+        // Activate category - insert into database
+        const { error } = await supabase
+          .from('categories')
+          .insert({
+            business_id: business.id,
+            name: category.name,
+            type: category.type,
+            description: category.description || null,
+            is_active: true,
+          })
+          .select()
+          .single();
+
+        if (error) {
+          console.error('Error activating category:', error);
+          toast.error('Failed to activate category. Please try again.');
+          return;
+        }
+
+        // Update local state with the new database ID
+        setCategories(prev => prev.map(cat => 
+          cat.id === category.id ? { ...cat, is_active: true } : cat
+        ));
+
+        toast.success(`${category.name} has been activated.`);
+      }
+    } catch (error) {
+      console.error('Error toggling category:', error);
+      toast.error('Failed to toggle category. Please try again.');
+    }
+  };
+
   const handleCategoryClick = (category: Category) => {
-    // Could open a drawer or edit modal here
-    console.log('Category clicked:', category);
+    // Toggle category on click
+    handleCategoryToggle(category);
   };
 
   const handleDeleteClick = useCallback((categoryId: string, categoryName: string) => {
@@ -243,7 +334,7 @@ export default function CategoriesPage() {
 
       const business = businesses[0];
 
-      // Create category
+      // Create custom category
       const { data: newCategory, error } = await supabase
         .from('categories')
         .insert({
@@ -251,7 +342,7 @@ export default function CategoriesPage() {
           name: formData.name,
           type: formData.type,
           description: formData.description || null,
-          is_active: formData.is_active,
+          is_active: true, // Custom categories are always active when created
         })
         .select()
         .single();
@@ -263,8 +354,9 @@ export default function CategoriesPage() {
         return;
       }
 
-      // Add new category to the list
-      setCategories(prev => [newCategory, ...prev]);
+      // Add new custom category to the list
+      const customCategory = { ...newCategory, is_default: false };
+      setCategories(prev => [customCategory, ...prev]);
       
       setFormState("success");
       toast.success(`${formData.name} has been added successfully.`);
@@ -336,9 +428,30 @@ export default function CategoriesPage() {
                   category.type === 'income' ? 'text-green-600' : 'text-red-600'
                 }`} />
               </div>
-              <div>
-                <div className="font-medium text-gray-900">{category.name}</div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <div className="font-medium text-gray-900">{category.name}</div>
+                  {category.is_default && (
+                    <Badge variant="outline" className="text-xs">
+                      Default
+                    </Badge>
+                  )}
+                  {category.is_default_active && (
+                    <Badge variant="secondary" className="text-xs bg-green-100 text-green-800">
+                      Auto-enabled
+                    </Badge>
+                  )}
+                </div>
                 <div className="text-sm text-gray-500">{category.description || 'No description'}</div>
+              </div>
+              <div className="flex items-center">
+                <div className={`w-12 h-6 rounded-full transition-colors ${
+                  category.is_active ? 'bg-teal-500' : 'bg-gray-300'
+                }`}>
+                  <div className={`w-5 h-5 bg-white rounded-full shadow transform transition-transform ${
+                    category.is_active ? 'translate-x-6' : 'translate-x-0.5'
+                  }`} />
+                </div>
               </div>
             </div>
           );
@@ -386,33 +499,15 @@ export default function CategoriesPage() {
         enableColumnFilter: true,
       },
       {
-        id: "status",
-        accessorKey: "is_active",
-        header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Status" />
-        ),
-        cell: ({ row }) => {
-          const isActive = row.getValue<boolean>("status");
-          return (
-            <Badge className={isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
-              {isActive ? 'Active' : 'Inactive'}
-            </Badge>
-          );
-        },
-        meta: {
-          label: "Status",
-          variant: "multiSelect",
-          options: [
-            { label: "Active", value: "true" },
-            { label: "Inactive", value: "false" },
-          ],
-        },
-        enableColumnFilter: true,
-      },
-      {
         id: "actions",
         cell: ({ row }) => {
           const category = row.original;
+          
+          // Only show actions for custom categories (not default ones)
+          if (category.is_default) {
+            return null;
+          }
+          
           return (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -480,6 +575,9 @@ export default function CategoriesPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <h1 className="text-2xl font-medium">Categories</h1>
+              <div className="text-sm text-gray-600">
+                Toggle default categories on/off or create your own
+              </div>
             </div>
             <div className="flex items-center space-x-4">
               <PopoverForm
@@ -492,6 +590,12 @@ export default function CategoriesPage() {
                 showSuccess={formState === "success"}
                 openChild={
                   <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                      <p className="text-sm text-blue-800">
+                        <strong>Create Custom Category:</strong> Add your own category that will be available only to your business.
+                      </p>
+                    </div>
+                    
                     <div className="space-y-2">
                       <label htmlFor="name" className="block text-sm font-medium text-muted-foreground">
                         Category Name *

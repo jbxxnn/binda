@@ -12,6 +12,7 @@ import {
   Home,
   Plus,
   Building2,
+  Receipt,
 } from "lucide-react"
 
 import { NavMain } from "@/components/dashboard/nav-main"
@@ -46,30 +47,20 @@ const data = {
       icon: Users,
      
     },
-    {
-      title: "Transactions",
-      url: "/dashboard/transactions",
-      icon: FileText,
-    },
+        {
+          title: "Transactions",
+          url: "/dashboard/transactions",
+          icon: FileText,
+        },
+        {
+          title: "Invoices",
+          url: "/dashboard/invoices",
+          icon: Receipt,
+        },
     {
       title: "Categories",
       url: "/dashboard/categories",
       icon: Building2,
-    },
-    {
-      title: "Invoices",
-      url: "/dashboard/invoices",
-      icon: FileText,
-      items: [
-        {
-          title: "All Invoices",
-          url: "/dashboard/invoices",
-        },
-        {
-          title: "Create Invoice",
-          url: "/dashboard/invoices/new",
-        },
-      ],
     },
     {
       title: "Analytics",
