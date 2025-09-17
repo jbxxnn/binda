@@ -35,7 +35,7 @@ export function PopoverForm({
         layoutId={`${title}-wrapper`}
         onClick={() => setOpen(true)}
         style={{ borderRadius: 8 }}
-        className="flex h-9 items-center bg-teal-600 hover:bg-teal-700 text-white rounded-sm px-3 text-sm font-medium outline-none"
+        className="flex h-9 items-center bg-brand-hunter hover:bg-brand-underworld text-white rounded-sm px-3 text-sm font-medium outline-none"
       >
         <motion.span layoutId={`${title}-title`}>{title}</motion.span>
       </motion.button>
@@ -52,7 +52,7 @@ export function PopoverForm({
             />
             <motion.div
               layoutId={`${title}-wrapper`}
-              className="absolute right-4 top-0 z-50 p-1 overflow-hidden bg-muted shadow-[0_0_0_1px_rgba(0,0,0,0.08),0px_1px_2px_rgba(0,0,0,0.04)] outline-none"
+              className="absolute right-[10px] md:right-4 top-0 z-50 p-1 overflow-hidden bg-muted shadow-[0_0_0_1px_rgba(0,0,0,0.08),0px_1px_2px_rgba(0,0,0,0.04)] outline-none"
               ref={ref}
               style={{ borderRadius: 10, width, height }}
             >
@@ -126,7 +126,7 @@ export function PopoverFormButton({
   return (
     <button
       type="submit"
-      className="ml-auto flex h-10 w-36 items-center justify-center overflow-hidden rounded-md bg-teal-600 hover:bg-teal-700 text-white"
+      className="ml-auto flex h-10 w-36 items-center justify-center overflow-hidden rounded-md bg-brand-hunter hover:bg-brand-underworld text-white"
     >
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.span

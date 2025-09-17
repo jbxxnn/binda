@@ -60,6 +60,7 @@ export function DataTablePagination<TData>({
             </SelectContent>
           </Select>
         </div>
+        <div className="space-x-2 flex items-center">
         <div className="flex items-center justify-center font-medium text-sm">
           Page {table.getState().pagination.pageIndex + 1} of{" "}
           {table.getPageCount()}
@@ -105,6 +106,7 @@ export function DataTablePagination<TData>({
           >
             <ChevronsRight />
           </Button>
+        </div>
         </div>
       </div>
     </div>

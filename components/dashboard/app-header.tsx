@@ -7,9 +7,8 @@ import {
   // Search, 
   Gift, 
   Bell, 
-  ChevronDown,
+  // ChevronDown,
   User,
-  // Menu
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -17,16 +16,31 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+import {
+  //  SidebarTrigger, 
+  useSidebar } from "@/components/ui/sidebar";
+import { AnimatedMenuIcon } from "@/components/icons/menu/animated-menu-icon";
 
 export function AppHeader() {
-  // const [searchTerm, setSearchTerm] = useState("");
+  const { toggleSidebar, state } = useSidebar();
+  const isMenuOpen = state === "collapsed";
+
+  const handleMenuClick = () => {
+    toggleSidebar();
+  };
 
   return (
     <header className="h-[4.1rem] border-b bg-brand-lightning border-brand-tropical px-6 flex items-center justify-between">
       {/* Left Side - Mobile Menu & Logo */}
       <div className="flex items-center space-x-4">
-        <SidebarTrigger className="md:hidden" />
+        <div className="md:hidden">
+          <AnimatedMenuIcon 
+            size={24}
+            isOpen={isMenuOpen}
+            onClick={handleMenuClick}
+            className="text-brand-hunter"
+          />
+        </div>
         <h1 className="text-xl font-bold text-brand-hunter">Binda</h1>
       </div>
 
@@ -67,7 +81,7 @@ export function AppHeader() {
                 <div className="text-sm font-medium">User Name</div>
                 <div className="text-xs text-gray-500">ID: 1234567</div>
               </div>
-              <ChevronDown className="h-4 w-4 text-gray-400" />
+              {/* <ChevronDown className="h-4 w-4 text-gray-400" /> */}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">

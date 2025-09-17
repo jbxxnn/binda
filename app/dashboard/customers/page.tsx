@@ -507,10 +507,10 @@ export default function CustomersPage() {
              
 
 <PopoverForm
-        title="Add New Customer"
+        title="Add Customer"
         open={isFormOpen}
         setOpen={setIsFormOpen}
-        width="400px"
+        width="371px"
         height="auto"
         showCloseButton={formState !== "success"}
         showSuccess={formState === "success"}
@@ -530,7 +530,7 @@ export default function CustomersPage() {
               />
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-4 grid-cols-2">
 
             <div className="space-y-2">
               <label htmlFor="email" className="block text-sm font-medium text-muted-foreground">
@@ -576,7 +576,7 @@ export default function CustomersPage() {
             </div>
 
             
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-4 grid-cols-2">
             <div className="space-y-2">
               <label htmlFor="city" className="block text-sm font-medium text-muted-foreground">
                 City
