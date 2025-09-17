@@ -40,7 +40,10 @@ export function DataTable<TData>({
                   <TableHead
                     key={header.id}
                     colSpan={header.colSpan}
-                    className="px-8 py-3"
+                    className={cn(
+                      "px-8 py-3",
+                      header.column.columnDef.meta?.className
+                    )}
                     style={{}}
                   >
                     {header.isPlaceholder
@@ -64,7 +67,10 @@ export function DataTable<TData>({
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
-                      className="px-8 py-3"
+                      className={cn(
+                        "px-8 py-3",
+                        cell.column.columnDef.meta?.className
+                      )}
                       style={{}}
                     >
                       {flexRender(

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, DM_Mono } from "next/font/google";
+import { DM_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Toaster } from "sonner";
@@ -15,17 +15,12 @@ export const metadata: Metadata = {
   description: "The fastest way to build apps with Next.js and Supabase",
 };
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  display: "swap",
-  subsets: ["latin"],
-});
-
 const dmMono = DM_Mono({
   variable: "--font-dm-mono",
   display: "swap",
   subsets: ["latin"],
   weight: ["300", "400", "500"],
+  fallback: ["monospace"],
 });
 
 export default function RootLayout({
@@ -34,8 +29,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${dmMono.variable} font-mono antialiased bg-brand-lightning`}>
+    <html lang="en" suppressHydrationWarning className={dmMono.variable}>
+      <body className={`${dmMono.variable} font-mono antialiased bg-brand-lightning`}>
         <NuqsAdapter>
           <ThemeProvider
             attribute="class"

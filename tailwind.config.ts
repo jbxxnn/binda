@@ -11,8 +11,8 @@ export default {
   theme: {
   	extend: {
   		fontFamily: {
-  			sans: ['var(--font-dm-mono)', 'monospace'],
-  			mono: ['var(--font-dm-mono)', 'monospace'],
+  			sans: ['var(--font-dm-mono)', 'DM Mono', 'monospace'],
+  			mono: ['var(--font-dm-mono)', 'DM Mono', 'monospace'],
   		},
   		colors: {
   			background: 'hsl(var(--background))',

@@ -465,6 +465,10 @@ export default function CustomersPage() {
           );
         },
         size: 32,
+        meta: {
+          sticky: "right",
+          className: "sticky right-0 bg-brand-snowman z-10 border-l border-gray-200 sm:static sm:border-l-0",
+        },
       },
     ],
     [handleDeleteClick]
@@ -490,9 +494,9 @@ export default function CustomersPage() {
   }
 
   return (
-    <div className="flex flex-1 h-full relative">
+    <div className="flex flex-1 h-full relative w-full max-w-full overflow-hidden">
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col w-full max-w-full min-w-0">
         {/* Page Header */}
         <div className="px-6 py-4 border-b bg-brand-lightning">
           <div className="flex items-center justify-between">
@@ -631,8 +635,8 @@ export default function CustomersPage() {
         </div>
 
         {/* Data Table */}
-        <div className="flex-1 overflow-auto p-6">
-          <div className="data-table-container">
+        <div className="flex-1 overflow-auto p-6 w-full max-w-full">
+          <div className="data-table-container w-full max-w-full min-w-0 overflow-x-auto">
             <DataTable table={table}>
               <DataTableToolbar table={table} />
             </DataTable>
