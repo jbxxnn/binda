@@ -2,6 +2,7 @@ import { flexRender, type Table as TanstackTable } from "@tanstack/react-table";
 import type * as React from "react";
 
 declare module "@tanstack/react-table" {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface ColumnMeta<TData, TValue> {
     className?: string;
   }
