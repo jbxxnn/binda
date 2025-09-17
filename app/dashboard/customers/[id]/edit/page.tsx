@@ -3,20 +3,34 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Save, X, Trash2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
+import { toast } from "sonner";
+import { ArrowLeft, Save, X, Trash2, User, Building2, Loader } from "lucide-react";
 import Link from "next/link";
 
 export default function EditCustomerPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [customer, setCustomer] = useState<any>(null);
+  const [customer, setCustomer] = useState<{
+    id: string;
+    name: string;
+    email?: string;
+    phone?: string;
+    customer_type?: string;
+    notes?: string;
+    created_at: string;
+    address?: string;
+    city?: string;
+    state?: string;
+    zip_code?: string;
+    country?: string;
+  } | null>(null);
+  const [deleteDialog, setDeleteDialog] = useState({
+    isOpen: false
+  });
   const router = useRouter();
   const params = useParams();
   const customerId = params.id as string;
@@ -122,21 +136,23 @@ export default function EditCustomerPage() {
         throw updateError;
       }
 
+      toast.success(`${formData.name} has been updated successfully.`);
       // Redirect to customers list
       router.push("/dashboard/customers");
     } catch (error) {
       console.error('Error updating customer:', error);
+      toast.error(error instanceof Error ? error.message : "Failed to update customer");
       setError(error instanceof Error ? error.message : "Failed to update customer");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this customer? This action cannot be undone.")) {
-      return;
-    }
+  const handleDeleteClick = () => {
+    setDeleteDialog({ isOpen: true });
+  };
 
+  const handleDeleteConfirm = async () => {
     setIsDeleting(true);
     setError(null);
 
@@ -152,197 +168,248 @@ export default function EditCustomerPage() {
         throw deleteError;
       }
 
+      toast.success(`${customer?.name || 'Customer'} has been deleted successfully.`);
       // Redirect to customers list
       router.push("/dashboard/customers");
     } catch (error) {
       console.error('Error deleting customer:', error);
+      toast.error(error instanceof Error ? error.message : "Failed to delete customer");
       setError(error instanceof Error ? error.message : "Failed to delete customer");
     } finally {
       setIsDeleting(false);
     }
   };
 
+  const handleDeleteCancel = () => {
+    setDeleteDialog({ isOpen: false });
+  };
+
   if (!customer) {
     return (
-      <div className="flex flex-1 flex-col gap-6 p-6">
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">Loading customer...</p>
-        </div>
+      <div className="flex flex-1 items-center justify-center h-full">
+        <Loader className="h-4 w-4 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-6 p-6">
-      {/* Header */}
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" asChild>
-          <Link href="/dashboard/customers">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Customers
-          </Link>
-        </Button>
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Edit Customer</h1>
-          <p className="text-muted-foreground">
-            Update {customer.name}&apos;s information
-          </p>
+    <div className="flex flex-1 h-full relative">
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col">
+        {/* Page Header */}
+        <div className="px-6 py-4 border-b bg-brand-lightning">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/dashboard/customers">
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back to Customers
+                </Link>
+              </Button>
+              <div>
+                <h1 className="text-2xl font-medium">Edit Customer</h1>
+                <p className="text-sm text-muted-foreground">
+                  Update {customer.name}&apos;s information
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Badge variant="outline" className="capitalize">
+                {customer.customer_type === "business" ? (
+                  <>
+                    <Building2 className="w-3 h-3 mr-1" />
+                    Business
+                  </>
+                ) : (
+                  <>
+                    <User className="w-3 h-3 mr-1" />
+                    Individual
+                  </>
+                )}
+              </Badge>
+            </div>
+          </div>
         </div>
-      </div>
 
-      {/* Form */}
-      <div className="max-w-2xl">
-        <Card>
-          <CardHeader>
-            <CardTitle>Customer Information</CardTitle>
-            <CardDescription>
-              Update the customer&apos;s details below
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Form Content */}
+        <div className="flex-1 overflow-hidden p-6">
+          <div className="max-w-4xl mx-auto">
+            <form onSubmit={handleSubmit} className="space-y-8">
               {/* Basic Information */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium">Basic Information</h3>
-                <div className="grid gap-4 md:grid-cols-2">
+              <div className="bg-white dark:bg-gray-900 rounded-sm border border-brand-snowman p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Basic Information</h3>
+                <div className="grid gap-6 md:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Full Name *</Label>
-                    <Input
+                    <label htmlFor="name" className="block text-sm font-medium text-muted-foreground">
+                      Full Name *
+                    </label>
+                    <input
                       id="name"
+                      type="text"
                       value={formData.name}
                       onChange={(e) => handleInputChange("name", e.target.value)}
                       placeholder="John Doe"
+                      className="w-full px-3 py-2 border border-brand-tropical rounded-sm shadow-sm focus:outline-none focus:ring-brand-tropical focus:border-brand-tropical"
                       required
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="customer_type">Customer Type</Label>
-                    <Select
+                    <label htmlFor="customer_type" className="block text-sm font-medium text-muted-foreground">
+                      Customer Type
+                    </label>
+                    <select
+                      id="customer_type"
                       value={formData.customer_type}
-                      onValueChange={(value) => handleInputChange("customer_type", value)}
+                      onChange={(e) => handleInputChange("customer_type", e.target.value)}
+                      className="w-full px-3 py-2 border border-brand-tropical rounded-sm shadow-sm focus:outline-none focus:ring-brand-tropical focus:border-brand-tropical"
                     >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="individual">Individual</SelectItem>
-                        <SelectItem value="business">Business</SelectItem>
-                      </SelectContent>
-                    </Select>
+                      <option value="individual">Individual</option>
+                      <option value="business">Business</option>
+                    </select>
                   </div>
                 </div>
               </div>
 
               {/* Contact Information */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium">Contact Information</h3>
-                <div className="grid gap-4 md:grid-cols-2">
+              <div className="bg-white dark:bg-gray-900 rounded-sm border border-brand-snowman p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Contact Information</h3>
+                <div className="grid gap-6 md:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
+                    <label htmlFor="email" className="block text-sm font-medium text-muted-foreground">
+                      Email
+                    </label>
+                    <input
                       id="email"
                       type="email"
                       value={formData.email}
                       onChange={(e) => handleInputChange("email", e.target.value)}
                       placeholder="john@example.com"
+                      className="w-full px-3 py-2 border border-brand-tropical rounded-sm shadow-sm focus:outline-none focus:ring-brand-tropical focus:border-brand-tropical"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="phone">Phone</Label>
-                    <Input
+                    <label htmlFor="phone" className="block text-sm font-medium text-muted-foreground">
+                      Phone
+                    </label>
+                    <input
                       id="phone"
                       type="tel"
                       value={formData.phone}
                       onChange={(e) => handleInputChange("phone", e.target.value)}
                       placeholder="+1 (555) 123-4567"
+                      className="w-full px-3 py-2 border border-brand-tropical rounded-sm shadow-sm focus:outline-none focus:ring-brand-tropical focus:border-brand-tropical"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Address Information */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium">Address Information</h3>
-                <div className="space-y-4">
+              <div className="bg-white dark:bg-gray-900 rounded-sm border border-brand-snowman p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Address Information</h3>
+                <div className="space-y-6">
                   <div className="space-y-2">
-                    <Label htmlFor="address">Street Address</Label>
-                    <Input
+                    <label htmlFor="address" className="block text-sm font-medium text-muted-foreground">
+                      Street Address
+                    </label>
+                    <input
                       id="address"
+                      type="text"
                       value={formData.address}
                       onChange={(e) => handleInputChange("address", e.target.value)}
                       placeholder="123 Main Street"
+                      className="w-full px-3 py-2 border border-brand-tropical rounded-sm shadow-sm focus:outline-none focus:ring-brand-tropical focus:border-brand-tropical"
                     />
                   </div>
-                  <div className="grid gap-4 md:grid-cols-3">
+                  <div className="grid gap-6 md:grid-cols-3">
                     <div className="space-y-2">
-                      <Label htmlFor="city">City</Label>
-                      <Input
+                      <label htmlFor="city" className="block text-sm font-medium text-muted-foreground">
+                        City
+                      </label>
+                      <input
                         id="city"
+                        type="text"
                         value={formData.city}
                         onChange={(e) => handleInputChange("city", e.target.value)}
                         placeholder="New York"
+                        className="w-full px-3 py-2 border border-brand-tropical rounded-sm shadow-sm focus:outline-none focus:ring-brand-tropical focus:border-brand-tropical"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="state">State</Label>
-                      <Input
+                      <label htmlFor="state" className="block text-sm font-medium text-muted-foreground">
+                        State
+                      </label>
+                      <input
                         id="state"
+                        type="text"
                         value={formData.state}
                         onChange={(e) => handleInputChange("state", e.target.value)}
                         placeholder="NY"
+                        className="w-full px-3 py-2 border border-brand-tropical rounded-sm shadow-sm focus:outline-none focus:ring-brand-tropical focus:border-brand-tropical"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="zip_code">ZIP Code</Label>
-                      <Input
+                      <label htmlFor="zip_code" className="block text-sm font-medium text-muted-foreground">
+                        ZIP Code
+                      </label>
+                      <input
                         id="zip_code"
+                        type="text"
                         value={formData.zip_code}
                         onChange={(e) => handleInputChange("zip_code", e.target.value)}
                         placeholder="10001"
+                        className="w-full px-3 py-2 border border-brand-tropical rounded-sm shadow-sm focus:outline-none focus:ring-brand-tropical focus:border-brand-tropical"
                       />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="country">Country</Label>
-                    <Input
+                    <label htmlFor="country" className="block text-sm font-medium text-muted-foreground">
+                      Country
+                    </label>
+                    <input
                       id="country"
+                      type="text"
                       value={formData.country}
                       onChange={(e) => handleInputChange("country", e.target.value)}
                       placeholder="United States"
+                      className="w-full px-3 py-2 border border-brand-tropical rounded-sm shadow-sm focus:outline-none focus:ring-brand-tropical focus:border-brand-tropical"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Additional Information */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium">Additional Information</h3>
+              <div className="bg-white dark:bg-gray-900 rounded-sm border border-brand-snowman p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Additional Information</h3>
                 <div className="space-y-2">
-                  <Label htmlFor="notes">Notes</Label>
-                  <Textarea
+                  <label htmlFor="notes" className="block text-sm font-medium text-muted-foreground">
+                    Notes
+                  </label>
+                  <textarea
                     id="notes"
                     value={formData.notes}
                     onChange={(e) => handleInputChange("notes", e.target.value)}
                     placeholder="Any additional notes about this customer..."
-                    rows={3}
+                    rows={4}
+                    className="w-full px-3 py-2 border border-brand-tropical rounded-sm shadow-sm focus:outline-none focus:ring-brand-tropical focus:border-brand-tropical"
                   />
                 </div>
               </div>
 
               {/* Error Message */}
               {error && (
-                <div className="p-4 border border-destructive/20 bg-destructive/10 rounded-md">
-                  <p className="text-sm text-destructive">{error}</p>
+                <div className="p-4 border border-red-200 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                  <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
                 </div>
               )}
 
               {/* Form Actions */}
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between pt-6">
                 <Button 
                   type="button" 
                   variant="destructive" 
-                  onClick={handleDelete}
+                  onClick={handleDeleteClick}
                   disabled={isDeleting}
+                  className="bg-red-600 hover:bg-red-700 text-white rounded-sm"
                 >
                   <Trash2 className="h-4 w-4 mr-2" />
                   {isDeleting ? "Deleting..." : "Delete Customer"}
@@ -355,16 +422,32 @@ export default function EditCustomerPage() {
                       Cancel
                     </Link>
                   </Button>
-                  <Button type="submit" disabled={isLoading}>
+                  <Button 
+                    type="submit" 
+                    disabled={isLoading}
+                    className="bg-teal-600 hover:bg-teal-700 text-white rounded-sm"
+                  >
                     <Save className="h-4 w-4 mr-2" />
                     {isLoading ? "Saving..." : "Save Changes"}
                   </Button>
                 </div>
               </div>
             </form>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmationDialog
+        isOpen={deleteDialog.isOpen}
+        onClose={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+        title="Delete Customer"
+        description={`Are you sure you want to delete ${customer?.name}? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="destructive"
+      />
     </div>
   );
 }

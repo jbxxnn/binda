@@ -30,7 +30,7 @@
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
     /* Brand colors - Light theme */
-    --brand-lightning: 90 15% 90%; /* #e6eae2 */
+    --brand-lightning: 60 8% 95%; /* #f2f3f0 */
     --brand-tropical: 90 20% 80%; /* #c6d0ba */
     --brand-hunter: 170 25% 25%; /* #324f4b */
     --brand-underworld: 150 10% 12%; /* #1d2421 */
@@ -64,7 +64,7 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
     /* Brand colors - Dark theme (adjusted for better contrast) */
-    --brand-lightning: 90 10% 15%; /* Darker version of Lightning Bolt */
+    --brand-lightning: 60 5% 20%; /* Darker version of #f2f3f0 */
     --brand-tropical: 90 15% 25%; /* Darker version of Tropical Fog */
     --brand-hunter: 170 20% 35%; /* Lighter version of Hunter for dark theme */
     --brand-underworld: 150 8% 8%; /* Even darker version of Underworld */

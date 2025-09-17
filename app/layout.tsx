@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Geist, DM_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -20,6 +21,13 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
+const dmMono = DM_Mono({
+  variable: "--font-dm-mono",
+  display: "swap",
+  subsets: ["latin"],
+  weight: ["300", "400", "500"],
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -27,7 +35,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.className} antialiased`}>
+      <body className={`${geistSans.variable} ${dmMono.variable} font-mono antialiased bg-brand-lightning`}>
         <NuqsAdapter>
           <ThemeProvider
             attribute="class"
@@ -36,6 +44,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             {children}
+            <Toaster position="bottom-right" richColors />
           </ThemeProvider>
         </NuqsAdapter>
       </body>

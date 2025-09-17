@@ -38,22 +38,12 @@ const data = {
       title: "Dashboard",
       url: "/dashboard",
       icon: Home,
-      isActive: true,
     },
     {
       title: "Customers",
       url: "/dashboard/customers",
       icon: Users,
-      items: [
-        {
-          title: "All Customers",
-          url: "/dashboard/customers",
-        },
-        {
-          title: "Add Customer",
-          url: "/dashboard/customers/new",
-        },
-      ],
+     
     },
     {
       title: "Transactions",

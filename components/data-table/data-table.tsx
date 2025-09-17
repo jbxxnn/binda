@@ -31,7 +31,7 @@ export function DataTable<TData>({
       {...props}
     >
       {children}
-      <div className="overflow-hidden rounded-md border">
+      <div className="overflow-hidden rounded-md border bg-brand-snowman">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -40,6 +40,7 @@ export function DataTable<TData>({
                   <TableHead
                     key={header.id}
                     colSpan={header.colSpan}
+                    className="px-8 py-3"
                     style={{}}
                   >
                     {header.isPlaceholder
@@ -63,6 +64,7 @@ export function DataTable<TData>({
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
+                      className="px-8 py-3"
                       style={{}}
                     >
                       {flexRender(
@@ -77,7 +79,7 @@ export function DataTable<TData>({
               <TableRow>
                 <TableCell
                   colSpan={table.getAllColumns().length}
-                  className="h-24 text-center"
+                  className="px-4 py-8 text-center"
                 >
                   No results.
                 </TableCell>
