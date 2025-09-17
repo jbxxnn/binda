@@ -123,7 +123,11 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar variant="floating" className="bg-brand-lightning border border-brand-tropical p-0 rounded-lg" {...props}>
+    <Sidebar 
+      variant="floating" 
+      className="bg-brand-lightning border border-brand-tropical p-0 rounded-lg" 
+      {...props}
+    >
       <SidebarHeader className="bg-brand-lightning w-full border-b border-brand-tropical rounded-tl-lg rounded-tr-lg">
         <SidebarMenu>
           <SidebarMenuItem>

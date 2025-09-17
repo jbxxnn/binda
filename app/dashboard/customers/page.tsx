@@ -631,7 +631,7 @@ export default function CustomersPage() {
         </div>
 
         {/* Data Table */}
-        <div className="flex-1 overflow-hidden p-6">
+        <div className="flex-1 overflow-auto p-6">
           <div className="data-table-container">
             <DataTable table={table}>
               <DataTableToolbar table={table} />
