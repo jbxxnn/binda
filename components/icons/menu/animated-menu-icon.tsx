@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Lottie, { LottieRef } from "lottie-react";
+import Lottie, { LottieRefCurrentProps } from "lottie-react";
 import menuAnimation from "./menuV4.json";
 
 interface AnimatedMenuIconProps {
@@ -17,7 +17,7 @@ export function AnimatedMenuIcon({
   isOpen = false,
   onClick 
 }: AnimatedMenuIconProps) {
-  const lottieRef = useRef<LottieRef>(null);
+  const lottieRef = useRef<LottieRefCurrentProps>(null);
 
   useEffect(() => {
     if (lottieRef.current) {
