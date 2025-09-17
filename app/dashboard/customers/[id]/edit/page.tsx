@@ -193,9 +193,9 @@ export default function EditCustomerPage() {
   }
 
   return (
-    <div className="flex flex-1 h-full relative">
+    <div className="flex flex-1 h-full relative w-full max-w-full overflow-hidden">
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col w-full max-w-full min-w-0">
         {/* Page Header */}
         <div className="px-6 py-4 border-b bg-brand-lightning">
           <div className="flex items-center justify-between">
@@ -203,18 +203,14 @@ export default function EditCustomerPage() {
               <Button variant="ghost" size="sm" asChild>
                 <Link href="/dashboard/customers">
                   <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back to Customers
                 </Link>
               </Button>
-              <div>
-                <h1 className="text-2xl font-medium">Edit Customer</h1>
+              <div className="flex items-center space-x-4">
+                {/* <h1 className="text-2xl font-medium">Edit Customer</h1> */}
                 <p className="text-sm text-muted-foreground">
                   Update {customer.name}&apos;s information
                 </p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Badge variant="outline" className="capitalize">
+                <Badge variant="outline" className="capitalize">
                 {customer.customer_type === "business" ? (
                   <>
                     <Building2 className="w-3 h-3 mr-1" />
@@ -227,18 +223,19 @@ export default function EditCustomerPage() {
                   </>
                 )}
               </Badge>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Form Content */}
-        <div className="flex-1 overflow-hidden p-6">
-          <div className="max-w-4xl mx-auto">
-            <form onSubmit={handleSubmit} className="space-y-8">
+        <div className="flex-1 overflow-auto p-6 w-full max-w-full">
+          <div className="max-w-4xl mx-auto w-full max-w-full min-w-0">
+            <form onSubmit={handleSubmit} className="space-y-8 w-full max-w-full">
               {/* Basic Information */}
               <div className="bg-white dark:bg-gray-900 rounded-sm border border-brand-snowman p-6">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Basic Information</h3>
-                <div className="grid gap-6 md:grid-cols-2">
+                <div className="grid gap-6 md:grid-cols-2 w-full">
                   <div className="space-y-2">
                     <label htmlFor="name" className="block text-sm font-medium text-muted-foreground">
                       Full Name *
@@ -273,7 +270,7 @@ export default function EditCustomerPage() {
               {/* Contact Information */}
               <div className="bg-white dark:bg-gray-900 rounded-sm border border-brand-snowman p-6">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Contact Information</h3>
-                <div className="grid gap-6 md:grid-cols-2">
+                <div className="grid gap-6 md:grid-cols-2 w-full">
                   <div className="space-y-2">
                     <label htmlFor="email" className="block text-sm font-medium text-muted-foreground">
                       Email
@@ -320,7 +317,7 @@ export default function EditCustomerPage() {
                       className="w-full px-3 py-2 border border-brand-tropical rounded-sm shadow-sm focus:outline-none focus:ring-brand-tropical focus:border-brand-tropical"
                     />
                   </div>
-                  <div className="grid gap-6 md:grid-cols-3">
+                  <div className="grid gap-6 md:grid-cols-3 w-full">
                     <div className="space-y-2">
                       <label htmlFor="city" className="block text-sm font-medium text-muted-foreground">
                         City
@@ -403,20 +400,20 @@ export default function EditCustomerPage() {
               )}
 
               {/* Form Actions */}
-              <div className="flex items-center justify-between pt-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pt-6 gap-4">
                 <Button 
                   type="button" 
                   variant="destructive" 
                   onClick={handleDeleteClick}
                   disabled={isDeleting}
-                  className="bg-red-600 hover:bg-red-700 text-white rounded-sm"
+                  className="bg-red-600 hover:bg-red-700 text-white rounded-sm w-full sm:w-auto"
                 >
                   <Trash2 className="h-4 w-4 mr-2" />
                   {isDeleting ? "Deleting..." : "Delete Customer"}
                 </Button>
                 
-                <div className="flex items-center space-x-4">
-                  <Button type="button" variant="outline" asChild>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
+                  <Button type="button" variant="outline" asChild className="w-full sm:w-auto">
                     <Link href="/dashboard/customers">
                       <X className="h-4 w-4 mr-2" />
                       Cancel
@@ -425,7 +422,7 @@ export default function EditCustomerPage() {
                   <Button 
                     type="submit" 
                     disabled={isLoading}
-                    className="bg-teal-600 hover:bg-teal-700 text-white rounded-sm"
+                    className="bg-teal-600 hover:bg-teal-700 text-white rounded-sm w-full sm:w-auto"
                   >
                     <Save className="h-4 w-4 mr-2" />
                     {isLoading ? "Saving..." : "Save Changes"}
