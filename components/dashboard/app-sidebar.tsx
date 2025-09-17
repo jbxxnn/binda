@@ -11,6 +11,7 @@ import {
   MessageSquare,
   Home,
   Plus,
+  Building2,
 } from "lucide-react"
 
 import { NavMain } from "@/components/dashboard/nav-main"
@@ -48,17 +49,12 @@ const data = {
     {
       title: "Transactions",
       url: "/dashboard/transactions",
-      icon: DollarSign,
-      items: [
-        {
-          title: "All Transactions",
-          url: "/dashboard/transactions",
-        },
-        {
-          title: "New Transaction",
-          url: "/dashboard/transactions/new",
-        },
-      ],
+      icon: FileText,
+    },
+    {
+      title: "Categories",
+      url: "/dashboard/categories",
+      icon: Building2,
     },
     {
       title: "Invoices",

@@ -365,7 +365,7 @@ export default function CustomersPage() {
           <DataTableColumnHeader column={column} title="Type" />
         ),
         cell: ({ row }) => {
-          const type = row.getValue<string>("customer_type");
+          const type = row.getValue<string>("type");
           const Icon = type === "business" ? Building2 : User;
           return (
             <Badge variant="outline" className="capitalize">
