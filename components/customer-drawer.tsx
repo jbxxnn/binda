@@ -1,7 +1,9 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Edit, MoreVertical, Phone, Mail, MapPin, Calendar, User, Building2, Trash2 } from "lucide-react";
+import { X, Edit, 
+  // MoreVertical, 
+  Phone, Mail, MapPin, Calendar, User, Building2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
@@ -67,10 +69,10 @@ export function CustomerDrawer({ customer, isOpen, onClose, onDelete }: Customer
               stiffness: 200,
               duration: 0.3
             }}
-            className="fixed right-0 top-0 h-full w-full sm:w-96 z-50 bg-white dark:bg-gray-900 shadow-2xl flex flex-col"
+            className="fixed right-0 top-0 h-full w-[90%] sm:w-96 z-50 bg-white dark:bg-gray-900 shadow-2xl flex flex-col"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+            {/* <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
               <button
                 onClick={onClose}
                 className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
@@ -84,10 +86,10 @@ export function CustomerDrawer({ customer, isOpen, onClose, onDelete }: Customer
               >
                 <MoreVertical className="h-5 w-5" />
               </button>
-            </div>
+            </div> */}
 
             {/* Profile Section */}
-            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+            <div className="relative p-6 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-center space-x-4">
                 <div className="relative">
                   <div className="w-16 h-16 bg-teal-100 dark:bg-teal-900 rounded-full flex items-center justify-center">
@@ -110,6 +112,13 @@ export function CustomerDrawer({ customer, isOpen, onClose, onDelete }: Customer
                     >
                       <Edit className="h-4 w-4 text-gray-500" />
                     </button>
+                    <button
+                onClick={onClose}
+                className="absolute -left-6 top-1/2 -translate-y-1/2 w-8 h-8 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center z-10"
+                aria-label="Close drawer"
+              >
+                <X className="h-4 w-4 text-gray-600 dark:text-gray-300" />
+              </button>
                   </div>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
                     {customer.customer_type === "business" ? "Business Customer" : "Individual Customer"}
