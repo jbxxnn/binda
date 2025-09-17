@@ -1,62 +1,206 @@
-import { redirect } from "next/navigation";
+
 import { createClient } from "@/lib/supabase/server";
-import { InfoIcon } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { 
+  Users, 
+  DollarSign, 
+  FileText, 
+  TrendingUp, 
+  Plus,
+  Eye
+} from "lucide-react";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
-
-  // Get current user
+  
+  // Get current user and business
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    redirect("/auth/login");
-  }
-
-  // Check if user has a business
   const { data: businesses } = await supabase
     .from('businesses')
     .select('*')
-    .eq('owner_id', user.id);
+    .eq('owner_id', user!.id);
 
-  if (!businesses || businesses.length === 0) {
-    redirect("/onboarding");
-  }
+  const business = businesses![0];
 
-  const business = businesses[0];
+  // Get some basic stats
+  const { data: customers } = await supabase
+    .from('customers')
+    .select('id')
+    .eq('business_id', business.id);
+
+  const { data: transactions } = await supabase
+    .from('transactions')
+    .select('amount')
+    .eq('business_id', business.id);
+
+  const totalRevenue = transactions?.reduce((sum, t) => sum + (t.amount || 0), 0) || 0;
+  const customerCount = customers?.length || 0;
 
   return (
-    <div className="flex-1 w-full flex flex-col gap-12 p-6">
-      <div className="w-full">
-        <div className="bg-accent text-sm p-3 px-5 rounded-md text-foreground flex gap-3 items-center">
-          <InfoIcon size="16" strokeWidth={2} />
-          Welcome to {business.name}! This is your business dashboard.
-        </div>
+    <div className="flex flex-1 flex-col gap-6 p-6 bg-brand-lightning">
+      {/* Welcome Section */}
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight">Welcome back!</h1>
+        <p className="text-muted-foreground">
+          Here&apos;s what&apos;s happening with {business.name} today.
+        </p>
       </div>
-      <div className="flex flex-col gap-2 items-start">
-        <h2 className="font-bold text-2xl mb-4">Business Information</h2>
-        <div className="space-y-2">
-          <p><strong>Business Name:</strong> {business.name}</p>
-          <p><strong>Business URL:</strong> binda.app/{business.slug}</p>
-          <p><strong>Plan:</strong> {business.subscription_plan}</p>
-          <p><strong>Status:</strong> {business.subscription_status}</p>
-        </div>
+
+      {/* Stats Cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">${totalRevenue.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">
+              +20.1% from last month
+            </p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Customers</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{customerCount}</div>
+            <p className="text-xs text-muted-foreground">
+              +5 new this month
+            </p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Transactions</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{transactions?.length || 0}</div>
+            <p className="text-xs text-muted-foreground">
+              +12% from last month
+            </p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Active Invoices</CardTitle>
+            <FileText className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">0</div>
+            <p className="text-xs text-muted-foreground">
+              No pending invoices
+            </p>
+          </CardContent>
+        </Card>
       </div>
-      <div>
-        <h2 className="font-bold text-2xl mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 border rounded-lg">
-            <h3 className="font-semibold">Customers</h3>
-            <p className="text-sm text-muted-foreground">Manage your customers</p>
-          </div>
-          <div className="p-4 border rounded-lg">
-            <h3 className="font-semibold">Transactions</h3>
-            <p className="text-sm text-muted-foreground">Record sales and services</p>
-          </div>
-          <div className="p-4 border rounded-lg">
-            <h3 className="font-semibold">Invoices</h3>
-            <p className="text-sm text-muted-foreground">Create and send invoices</p>
-          </div>
-        </div>
+
+      {/* Quick Actions */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Customers
+            </CardTitle>
+            <CardDescription>
+              Manage your customer database
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <Button className="w-full" variant="outline">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Customer
+            </Button>
+            <Button className="w-full" variant="ghost">
+              <Eye className="h-4 w-4 mr-2" />
+              View All
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <DollarSign className="h-5 w-5" />
+              Transactions
+            </CardTitle>
+            <CardDescription>
+              Record sales and payments
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <Button className="w-full" variant="outline">
+              <Plus className="h-4 w-4 mr-2" />
+              New Transaction
+            </Button>
+            <Button className="w-full" variant="ghost">
+              <Eye className="h-4 w-4 mr-2" />
+              View All
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5" />
+              Invoices
+            </CardTitle>
+            <CardDescription>
+              Create and send invoices
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <Button className="w-full" variant="outline">
+              <Plus className="h-4 w-4 mr-2" />
+              Create Invoice
+            </Button>
+            <Button className="w-full" variant="ghost">
+              <Eye className="h-4 w-4 mr-2" />
+              View All
+            </Button>
+          </CardContent>
+        </Card>
       </div>
+
+      {/* Business Info */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Business Information</CardTitle>
+          <CardDescription>
+            Your business details and subscription status
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <h4 className="font-medium">Business Name</h4>
+              <p className="text-sm text-muted-foreground">{business.name}</p>
+            </div>
+            <div>
+              <h4 className="font-medium">Business URL</h4>
+              <p className="text-sm text-muted-foreground">binda.app/{business.slug}</p>
+            </div>
+            <div>
+              <h4 className="font-medium">Plan</h4>
+              <Badge variant="secondary">{business.subscription_plan}</Badge>
+            </div>
+            <div>
+              <h4 className="font-medium">Status</h4>
+              <Badge variant="outline">{business.subscription_status}</Badge>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

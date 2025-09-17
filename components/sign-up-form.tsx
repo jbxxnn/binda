@@ -40,7 +40,7 @@ export function SignUpForm({
         email,
         password,
         options: {
-          emailRedirectTo: `https://binda.vercel.app/onboarding`,
+          emailRedirectTo: `${window.location.origin}/onboarding`,
         },
       });
 

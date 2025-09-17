@@ -36,7 +36,7 @@
     --brand-underworld: 150 10% 12%; /* #1d2421 */
     --brand-mint: 80 50% 70%; /* #cce88c */
     --brand-quack: 50 100% 80%; /* #ffeb8c */
-    --brand-grape: 300 85% 85%; /* #fdd7fb */
+    --brand-grape: 300 85% 85%; /* #fdd7fb */ --sidebar-background: 0 0% 98%; --sidebar-foreground: 240 5.3% 26.1%; --sidebar-primary: 240 5.9% 10%; --sidebar-primary-foreground: 0 0% 98%; --sidebar-accent: 240 4.8% 95.9%; --sidebar-accent-foreground: 240 5.9% 10%; --sidebar-border: 220 13% 91%; --sidebar-ring: 217.2 91.2% 59.8%;
   }
   .dark {
     --background: 0 0% 3.9%;
@@ -70,7 +70,7 @@
     --brand-underworld: 150 8% 8%; /* Even darker version of Underworld */
     --brand-mint: 80 40% 60%; /* Slightly muted version of Sweet Mint Pesto */
     --brand-quack: 50 80% 50%; /* Muted version of Quack Quack for dark theme */
-    --brand-grape: 300 70% 60%; /* Muted version of Grape Taffy for dark theme */
+    --brand-grape: 300 70% 60%; /* Muted version of Grape Taffy for dark theme */ --sidebar-background: 240 5.9% 10%; --sidebar-foreground: 240 4.8% 95.9%; --sidebar-primary: 224.3 76.3% 48%; --sidebar-primary-foreground: 0 0% 100%; --sidebar-accent: 240 3.7% 15.9%; --sidebar-accent-foreground: 240 4.8% 95.9%; --sidebar-border: 240 3.7% 15.9%; --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
 
@@ -80,5 +80,9 @@
   }
   body {
     @apply bg-background text-foreground;
+    overscroll-behavior: none;
+  }
+  html {
+    overscroll-behavior: none;
   }
 }

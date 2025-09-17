@@ -15,7 +15,7 @@ export async function AuthButton() {
     <div className="flex items-center gap-4">
       Hey, {user.email}!
       <Button asChild size="sm" variant={"default"}>
-        <Link href="https://binda.vercel.app/dashboard">Go to Dashboard</Link>
+        <Link href="/dashboard">Go to Dashboard</Link>
       </Button>
       <LogoutButton />
     </div>
