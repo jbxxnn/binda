@@ -1,6 +1,12 @@
 import { flexRender, type Table as TanstackTable } from "@tanstack/react-table";
 import type * as React from "react";
 
+declare module "@tanstack/react-table" {
+  interface ColumnMeta<TData, TValue> {
+    className?: string;
+  }
+}
+
 import { DataTablePagination } from "@/components/data-table/data-table-pagination";
 import {
   Table,
