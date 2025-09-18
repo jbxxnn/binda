@@ -27,9 +27,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  // SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { AnimatedSidebarTrigger } from "@/components/dashboard/animated-sidebar-trigger"
-import { useSidebar } from "@/components/ui/sidebar"
 
 const data = {
   user: {
@@ -111,9 +110,6 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { state } = useSidebar();
-  const isCollapsed = state === "collapsed";
-
   return (
     <Sidebar 
       variant="floating" 
@@ -121,7 +117,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       className="bg-brand-underworld border border-brand-underworld p-0" 
       {...props}
     >
-      <SidebarHeader className="bg-brand-underworld w-full border-b border-brand-underworld relative">
+      <SidebarHeader className="bg-brand-underworld w-full border-b border-brand-underworld">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
@@ -137,13 +133,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <div className={`rounded-full bg-brand-tropical hidden md:flex absolute z-10 transition-all duration-300 ease-in-out ${
-              isCollapsed 
-                ? '-right-[50%] top-[80%] -translate-y-[-140%]' 
-                : '-right-[9%] top-[80%] -translate-y-[-85%]'
-            }`}>
-              <AnimatedSidebarTrigger size={28} />
-            </div>
+            {/* <SidebarTrigger className="hidden md:flex" /> */}
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>

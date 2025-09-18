@@ -50,7 +50,7 @@ export function NavMain({
                 <SidebarMenuButton 
                   asChild 
                   tooltip={item.title}
-                  className={isActive ? "bg-brand-mint text-brand-hunter hover:bg-brand-mint h-10 mt-4" : "mt-4 text-brand-tropical hover:text-brand-hunter hover:bg-brand-mint h-10"}
+                  className={isActive ? "bg-brand-mint text-brand-hunter hover:bg-brand-mint h-10" : " text-brand-tropical hover:text-brand-hunter hover:bg-brand-mint h-10"}
                 >
                   <a href={item.url}>
                     <item.icon />
@@ -73,7 +73,7 @@ export function NavMain({
                             <SidebarMenuSubItem key={subItem.title}>
                               <SidebarMenuSubButton 
                                 asChild
-                                className={isSubActive ? "bg-brand-mint text-brand-hunter hover:bg-brand-mint h-10 mt-4" : "mt-4 text-brand-tropical hover:text-brand-hunter hover:bg-brand-mint h-10"}
+                                className={isSubActive ? "bg-brand-mint text-brand-hunter hover:bg-brand-mint h-10" : "text-brand-tropical hover:text-brand-hunter hover:bg-brand-mint h-10"}
                               >
                                 <a href={subItem.url}>
                                   <span>{subItem.title}</span>

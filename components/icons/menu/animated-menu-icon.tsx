@@ -1,49 +1,47 @@
-"use client";
+"use client"
 
-import { useEffect, useRef } from "react";
-import Lottie, { LottieRefCurrentProps } from "lottie-react";
-import menuAnimation from "./menuV4.json";
+import * as React from "react"
+import { cn } from "@/lib/utils"
 
 interface AnimatedMenuIconProps {
-  className?: string;
-  size?: number;
-  isOpen?: boolean;
-  onClick?: () => void;
+  size?: number
+  isOpen?: boolean
+  onClick?: () => void
+  className?: string
 }
 
 export function AnimatedMenuIcon({ 
-  className = "", 
-  size = 24, 
+  size = 24,
   isOpen = false,
-  onClick 
+  onClick,
+  className
 }: AnimatedMenuIconProps) {
-  const lottieRef = useRef<LottieRefCurrentProps>(null);
-
-  useEffect(() => {
-    if (lottieRef.current) {
-      if (isOpen) {
-        // Play animation forward (to X state)
-        lottieRef.current.playSegments([0, 21], true);
-      } else {
-        // Play animation backward (to hamburger state)
-        lottieRef.current.playSegments([21, 0], true);
-      }
-    }
-  }, [isOpen]);
-
   return (
-    <div 
-      className={`cursor-pointer ${className}`}
+    <button
       onClick={onClick}
-      style={{ width: size, height: size }}
+      className={cn(
+        "cursor-pointer transition-transform duration-300 ease-in-out",
+        isOpen ? "rotate-180" : "rotate-0",
+        className
+      )}
+      aria-label="Toggle menu"
     >
-      <Lottie
-        lottieRef={lottieRef}
-        animationData={menuAnimation}
-        loop={false}
-        autoplay={false}
-        style={{ width: "100%", height: "100%" }}
-      />
-    </div>
-  );
+      <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        width={size} 
+        height={size} 
+        viewBox="0 0 24 24" 
+        fill="none" 
+        stroke="currentColor" 
+        strokeWidth="2" 
+        strokeLinecap="round" 
+        strokeLinejoin="round" 
+        className="lucide lucide-align-right"
+      >
+        <path d="M21 12H9" />
+        <path d="M21 18H7" />
+        <path d="M21 6H3" />
+      </svg>
+    </button>
+  )
 }

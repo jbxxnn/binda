@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  SidebarTrigger, 
   useSidebar } from "@/components/ui/sidebar";
 import { AnimatedMenuIcon } from "@/components/icons/menu/animated-menu-icon";
 
@@ -31,16 +32,19 @@ export function AppHeader() {
   return (
     <header className="h-[4.1rem] border-b bg-brand-underworld border-brand-underworld px-6 flex items-center justify-between">
       {/* Left Side - Mobile Menu & Logo */}
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center">
         <div className="md:hidden">
           <AnimatedMenuIcon 
             size={24}
             isOpen={isMenuOpen}
             onClick={handleMenuClick}
-            className="text-brand-hunter"
+            className="text-brand-lightning"
           />
         </div>
-        <h1 className="text-xl font-bold text-brand-hunter">Binda</h1>
+        <div className="hidden md:flex">
+          <SidebarTrigger />
+        </div>
+        {/* <h1 className="text-xl font-bold text-brand-hunter">Binda</h1> */}
       </div>
 
       {/* Center - Search Bar (hidden on mobile) */}

@@ -39,9 +39,9 @@ export default async function DashboardLayout({
     >
       <AppSidebar />
       <SidebarInset className="!m-0 bg-brand-underworld">
-        <div className="flex flex-1 flex-col h-screen bg-brand-underworld">
+        <div className="flex flex-1 flex-col h-screen bg-brand-underworld pl-0 md:pl-2">
           <AppHeader />
-          <div className="flex-1 overflow-auto bg-brand-lightning rounded-tl-xl">
+          <div className="flex-1 overflow-auto bg-brand-lightning rounded-tl-none md:rounded-tl-xl">
             {children}
           </div>
         </div>

@@ -38,7 +38,7 @@ export function DataTable<TData>({
       {...props}
     >
       {children}
-      <div className="overflow-hidden rounded-md border bg-brand-snowman">
+      <div className="overflow-hidden rounded-md border border-brand-tropical bg-brand-snowman">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -48,7 +48,7 @@ export function DataTable<TData>({
                     key={header.id}
                     colSpan={header.colSpan}
                     className={cn(
-                      "px-8 py-3",
+                      "px-8 py-3 text-brand-hunter font-bold border-r border-b border-brand-tropical",
                       header.column.columnDef.meta?.className
                     )}
                     style={{}}
@@ -66,28 +66,33 @@ export function DataTable<TData>({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className={cn(
-                        "px-8 py-3",
-                        cell.column.columnDef.meta?.className
-                      )}
-                      style={{}}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
+              table.getRowModel().rows.map((row, rowIndex) => {
+                const isLastRow = rowIndex === table.getRowModel().rows.length - 1;
+                return (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                    className={isLastRow ? "last:border-b-0" : ""}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className={cn(
+                          "first:w-[10px] last:w-[10px] last:px-[10px] px-8 py-3 bg-brand-lightning border-r border-brand-tropical",
+                          !isLastRow && "border-b",
+                          cell.column.columnDef.meta?.className
+                        )}
+                        style={{}}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                );
+              })
             ) : (
               <TableRow>
                 <TableCell
