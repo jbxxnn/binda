@@ -38,6 +38,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import type { ColumnDef } from "@tanstack/react-table";
+import { pdf } from '@react-pdf/renderer';
+import { InvoicePDF } from '@/components/invoice-pdf';
 
 interface Invoice {
   id: string;
@@ -217,6 +219,42 @@ export default function InvoicesPage() {
       invoiceId: "",
       invoiceNumber: ""
     });
+  }, []);
+
+  const handleGeneratePDF = useCallback(async (invoice: Invoice) => {
+    try {
+      toast.info('Generating PDF...');
+      
+      // Fetch invoice items
+      const supabase = createClient();
+      const { data: itemsData } = await supabase
+        .from('invoice_items')
+        .select('*')
+        .eq('invoice_id', invoice.id)
+        .order('created_at');
+
+      // Generate PDF blob
+      const blob = await pdf(<InvoicePDF invoice={invoice} items={itemsData || []} />).toBlob();
+      
+      // Create download link
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `invoice-${invoice.invoice_number}.pdf`;
+      
+      // Trigger download
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up
+      URL.revokeObjectURL(url);
+      
+      toast.success('PDF downloaded successfully!');
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      toast.error('Failed to generate PDF. Please try again.');
+    }
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -517,7 +555,7 @@ export default function InvoicesPage() {
                     Edit
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleGeneratePDF(invoice)}>
                   <Download className="h-4 w-4 mr-2" />
                   Download PDF
                 </DropdownMenuItem>

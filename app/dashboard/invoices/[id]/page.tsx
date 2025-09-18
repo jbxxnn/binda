@@ -22,6 +22,8 @@ import {
   Loader
 } from "lucide-react";
 import Link from "next/link";
+import { pdf } from '@react-pdf/renderer';
+import { InvoicePDF } from '@/components/invoice-pdf';
 
 interface Invoice {
   id: string;
@@ -331,9 +333,37 @@ export default function InvoiceDetailPage() {
     }
   };
 
-  const handleGeneratePDF = () => {
-    // TODO: Implement PDF generation
-    toast.info('PDF generation coming soon!');
+  const handleGeneratePDF = async () => {
+    if (!invoice) {
+      toast.error('Invoice data not available');
+      return;
+    }
+
+    try {
+      toast.info('Generating PDF...');
+      
+      // Generate PDF blob
+      const blob = await pdf(<InvoicePDF invoice={invoice} items={invoiceItems} />).toBlob();
+      
+      // Create download link
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `invoice-${invoice.invoice_number}.pdf`;
+      
+      // Trigger download
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up
+      URL.revokeObjectURL(url);
+      
+      toast.success('PDF downloaded successfully!');
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      toast.error('Failed to generate PDF. Please try again.');
+    }
   };
 
   const handleSendInvoice = () => {
