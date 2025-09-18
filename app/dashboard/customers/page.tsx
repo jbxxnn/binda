@@ -639,7 +639,7 @@ export default function CustomersPage() {
 
         {/* Data Table */}
         <div className="flex-1 overflow-auto p-6 w-full max-w-full">
-          <div className="data-table-container w-full max-w-full min-w-0 overflow-x-auto">
+          <div className="data-table-container w-full max-w-7xl min-w-0 overflow-x-auto">
             <DataTable table={table}>
               <DataTableToolbar table={table} />
             </DataTable>

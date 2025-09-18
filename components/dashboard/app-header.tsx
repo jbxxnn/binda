@@ -17,7 +17,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  //  SidebarTrigger, 
   useSidebar } from "@/components/ui/sidebar";
 import { AnimatedMenuIcon } from "@/components/icons/menu/animated-menu-icon";
 
@@ -30,7 +29,7 @@ export function AppHeader() {
   };
 
   return (
-    <header className="h-[4.1rem] border-b bg-brand-lightning border-brand-tropical px-6 flex items-center justify-between">
+    <header className="h-[4.1rem] border-b bg-brand-underworld border-brand-underworld px-6 flex items-center justify-between">
       {/* Left Side - Mobile Menu & Logo */}
       <div className="flex items-center space-x-4">
         <div className="md:hidden">
@@ -78,7 +77,7 @@ export function AppHeader() {
                 <User className="h-4 w-4 text-teal-700" />
               </div>
               <div className="hidden md:block text-left">
-                <div className="text-sm font-medium">User Name</div>
+                <div className="text-sm font-medium text-brand-lightning">User Name</div>
                 <div className="text-xs text-gray-500">ID: 1234567</div>
               </div>
               {/* <ChevronDown className="h-4 w-4 text-gray-400" /> */}

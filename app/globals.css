@@ -36,7 +36,7 @@
     --brand-underworld: 150 10% 12%; /* #1d2421 */
     --brand-mint: 80 50% 70%; /* #cce88c */
     --brand-quack: 50 100% 80%; /* #ffeb8c */
-    --brand-grape: 300 85% 85%; /* #fdd7fb */ --sidebar-background: 0 0% 98%; --sidebar-foreground: 240 5.3% 26.1%; --sidebar-primary: 240 5.9% 10%; --sidebar-primary-foreground: 0 0% 98%; --sidebar-accent: 240 4.8% 95.9%; --sidebar-accent-foreground: 240 5.9% 10%; --sidebar-border: 220 13% 91%; --sidebar-ring: 217.2 91.2% 59.8%;
+    --brand-grape: 300 85% 85%; /* #fdd7fb */ --sidebar-background: 150 10% 12%;; --sidebar-foreground: 240 5.3% 26.1%; --sidebar-primary: 240 5.9% 10%; --sidebar-primary-foreground: 0 0% 98%; --sidebar-accent: 240 4.8% 95.9%; --sidebar-accent-foreground: 240 5.9% 10%; --sidebar-border: 150 10% 12%;; --sidebar-ring: 217.2 91.2% 59.8%;
   }
   .dark {
     --background: 0 0% 3.9%;

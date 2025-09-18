@@ -28,6 +28,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { AnimatedSidebarTrigger } from "@/components/dashboard/animated-sidebar-trigger"
+import { useSidebar } from "@/components/ui/sidebar"
 
 const data = {
   user: {
@@ -109,13 +111,17 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { state } = useSidebar();
+  const isCollapsed = state === "collapsed";
+
   return (
     <Sidebar 
       variant="floating" 
-      className="bg-brand-lightning border border-brand-tropical p-0 rounded-lg" 
+      collapsible="icon"
+      className="bg-brand-underworld border border-brand-underworld p-0" 
       {...props}
     >
-      <SidebarHeader className="bg-brand-lightning w-full border-b border-brand-tropical rounded-tl-lg rounded-tr-lg">
+      <SidebarHeader className="bg-brand-underworld w-full border-b border-brand-underworld relative">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
@@ -130,14 +136,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
+          <SidebarMenuItem>
+            <div className={`rounded-full bg-brand-tropical hidden md:flex absolute z-10 transition-all duration-300 ease-in-out ${
+              isCollapsed 
+                ? '-right-[50%] top-[80%] -translate-y-[-140%]' 
+                : '-right-[9%] top-[80%] -translate-y-[-85%]'
+            }`}>
+              <AnimatedSidebarTrigger size={28} />
+            </div>
+          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent className="px-2 bg-brand-lightning border-b border-brand-tropical w-full">
+      <SidebarContent className="px-2 bg-brand-underworld border-b border-brand-underworld w-full">
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
-      <SidebarFooter className="bg-brand-lightning border-t border-brand-tropical w-full rounded-bl-lg rounded-br-lg">
+      <SidebarFooter className="bg-brand-underworld border-t border-brand-underworld w-full">
         <NavUser user={data.user} />
       </SidebarFooter>
     </Sidebar>

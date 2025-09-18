@@ -30,7 +30,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className={dmMono.variable}>
-      <body className={`${dmMono.variable} font-mono antialiased bg-brand-lightning`}>
+      <body className={`${dmMono.variable} font-mono antialiased bg-brand-underworld`}>
         <NuqsAdapter>
           <ThemeProvider
             attribute="class"

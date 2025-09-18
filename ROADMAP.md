@@ -1,310 +1,344 @@
-# Binda Development Roadmap
+# 🚀 Business Management Platform - Product Roadmap
 
-## 📋 Project Overview
+## 📋 **Current MVP Status** ✅
 
-**Binda** is a **SaaS platform** designed for small businesses to stay organized. Multiple businesses can register on the platform, and each business gets their own isolated workspace to manage **customer records, transactions, and simple invoices** — all in one place, without the stress of scattered notes, WhatsApp chats, and sales books.
+### **Core Features (Implemented)**
+- [x] **User Authentication & Onboarding**
+  - Supabase Auth integration
+  - Business profile setup
+  - User management
 
-### 🏢 **Multi-Tenant Architecture**
-- **Business Registration**: Each business creates an account and gets their own workspace
-- **Data Isolation**: Complete separation between different businesses' data
-- **User Management**: Each business can have multiple users (owner, employees)
-- **Billing & Subscriptions**: SaaS pricing model for business accounts
+- [x] **Customer Management**
+  - Customer database with contact info
+  - Customer types (Individual/Business)
+  - Address management
+  - Customer search & filtering
 
----
+- [x] **Transaction Management**
+  - Income/Expense tracking
+  - Category-based organization
+  - Customer association
+  - Date-based filtering
 
-## 🎯 Current Project State
-
-### ✅ **What's Already Built:**
-- **Next.js 15 + Supabase Foundation** - Complete authentication system
-- **UI Components** - Modern UI with TailwindCSS and Radix UI components  
-- **Authentication Flow** - Login, signup, password reset, protected routes
-- **Theme Support** - Dark/light mode switching
-- **Basic Project Structure** - Well-organized component architecture
-
-### 🚧 **What We Need to Build:**
-The project is currently a **Next.js + Supabase starter template** that needs to be transformed into **Binda** - a **multi-tenant SaaS platform** for small business management.
-
----
-
-## 🗺️ Development Roadmap
-
-### **Phase 1: Foundation & Database (Week 1)**
-
-#### 1.1 Database Schema Design
-- [ ] Create `businesses` table
-  - `id` (UUID, primary key)
-  - `name` (text, required)
-  - `slug` (text, unique, for subdomain/URL)
-  - `owner_id` (UUID, foreign key to auth.users)
-  - `subscription_plan` (enum: 'free', 'basic', 'premium')
-  - `subscription_status` (enum: 'active', 'cancelled', 'past_due')
-  - `settings` (jsonb, business-specific settings)
-  - `created_at` (timestamp)
-  - `updated_at` (timestamp)
-
-- [ ] Create `business_users` table (many-to-many)
-  - `id` (UUID, primary key)
-  - `business_id` (UUID, foreign key to businesses)
-  - `user_id` (UUID, foreign key to auth.users)
-  - `role` (enum: 'owner', 'admin', 'employee')
-  - `permissions` (jsonb, role-based permissions)
-  - `created_at` (timestamp)
-
-- [ ] Create `customers` table
-  - `id` (UUID, primary key)
-  - `business_id` (UUID, foreign key to businesses)
-  - `name` (text, required)
-  - `phone` (text, unique within business)
-  - `email` (text, optional)
-  - `notes` (text, optional)
-  - `created_at` (timestamp)
-  - `updated_at` (timestamp)
-
-- [ ] Create `transactions` table
-  - `id` (UUID, primary key)
-  - `business_id` (UUID, foreign key to businesses)
-  - `customer_id` (UUID, foreign key to customers)
-  - `amount` (decimal, required)
-  - `type` (enum: 'sale', 'service', 'refund')
-  - `description` (text, required)
-  - `date` (date, required)
-  - `status` (enum: 'pending', 'completed', 'cancelled')
-  - `created_at` (timestamp)
-
-- [ ] Create `invoices` table
-  - `id` (UUID, primary key)
-  - `business_id` (UUID, foreign key to businesses)
-  - `transaction_id` (UUID, foreign key to transactions)
-  - `invoice_number` (text, unique within business)
-  - `pdf_path` (text, optional)
-  - `sent_via` (enum: 'email', 'whatsapp', 'print')
-  - `sent_at` (timestamp, optional)
-  - `created_at` (timestamp)
-
-- [ ] Set up Row Level Security (RLS) policies
-  - Users can only access data from businesses they belong to
-  - Business owners have full access to their business data
-  - Employees have limited access based on their role
-  - Complete data isolation between different businesses
-
-#### 1.2 Business Registration & Onboarding
-- [ ] **Business Registration Flow**
-  - Business signup form (business name, owner details)
-  - Business slug generation and validation
-  - Initial business setup wizard
-  - Email verification for business owners
-
-- [ ] **Business Dashboard**
-  - Business-specific dashboard layout
-  - Business settings and profile management
-  - Team member management (invite employees)
-  - Subscription and billing overview
-
-- [ ] **Multi-Tenant Navigation**
-  - Business switcher (if user belongs to multiple businesses)
-  - Business-specific navigation menu
-  - User role-based menu items
-  - Business branding in header
-
-#### 1.3 UI Redesign
-- [ ] Replace generic "Next.js Supabase Starter" branding with Binda branding
-- [ ] Create business-focused dashboard layout
-- [ ] Design customer and transaction management interfaces
-- [ ] Update navigation to reflect business features
-- [ ] Create Binda logo and brand colors
-
----
-
-### **Phase 2: Core Features (Week 2-3)**
-
-#### 2.1 Customer Management System
-- [ ] **Customer List View**
-  - Display all customers in a table/card layout
-  - Search and filter functionality
-  - Sort by name, date added, last transaction
-
-- [ ] **Add/Edit Customer**
-  - Form for adding new customers
-  - Edit existing customer information
-  - Phone number validation
-  - Duplicate phone number prevention
-
-- [ ] **Customer Detail View**
-  - Customer information display
-  - Transaction history
-  - Quick actions (call, message, add transaction)
-
-#### 2.2 Transaction Logging
-- [ ] **Transaction List View**
-  - Display all transactions
-  - Filter by date range, customer, type
-  - Search functionality
-
-- [ ] **Add Transaction**
-  - Form for recording sales/services
-  - Customer selection (with search)
-  - Amount and description input
-  - Date picker
-
-- [ ] **Transaction Detail View**
-  - Full transaction information
-  - Edit/delete capabilities
-  - Generate invoice option
-
-#### 2.3 Basic Invoice Generation
-- [ ] **Invoice Template**
-  - Professional invoice design
-  - Company information header
-  - Customer details
-  - Itemized transaction details
-  - Total amount calculation
-
-- [ ] **PDF Generation**
-  - Convert invoice to PDF
-  - Download functionality
-  - Print-friendly formatting
-
-- [ ] **Invoice Management**
+- [x] **Invoice System**
+  - Professional PDF invoice generation
   - Invoice numbering system
-  - Invoice history
-  - Resend capabilities
+  - Customer integration
+  - Item-based invoicing
+  - DM Mono font styling
+
+- [x] **Chart of Accounts**
+  - Automated account creation
+  - Account hierarchy support
+  - Account type management
+  - Parent-child relationships
+
+- [x] **Category Management**
+  - Income/Expense categories
+  - Active/inactive status
+  - Business-specific categories
+
+- [x] **Data Tables & UI**
+  - Advanced filtering
+  - Sorting capabilities
+  - Pagination
+  - Responsive design
 
 ---
 
-### **Phase 3: Enhanced Features (Week 4)**
+## 🎯 **Phase 1: MVP Enhancements** (Next 2-4 weeks)
 
-#### 3.1 Search & Analytics
-- [ ] **Global Search**
-  - Search across customers and transactions
-  - Quick results with context
-  - Recent searches
+### **Invoice System Improvements**
+- [ ] **Invoice Status Management**
+  - Draft, Sent, Paid, Overdue statuses
+  - Status-based filtering and views
+  - Visual status indicators
 
-- [ ] **Analytics Dashboard**
-  - Total sales overview
-  - Monthly/weekly trends
-  - Top customers
-  - Transaction type breakdown
+- [ ] **Invoice Templates**
+  - Multiple professional templates
+  - Customizable branding
+  - Logo upload functionality
 
-- [ ] **Customer Insights**
-  - Purchase history timeline
-  - Total spent per customer
-  - Last interaction date
-  - Customer lifetime value
-
-#### 3.2 WhatsApp Integration
-- [ ] **WhatsApp Business API Setup**
-  - Environment configuration
-  - API key management
-  - Phone number verification
+- [ ] **Payment Tracking**
+  - Payment method recording
+  - Partial payment support
+  - Payment history
 
 - [ ] **Invoice Sharing**
-  - Send invoices via WhatsApp
-  - Customer phone number integration
-  - Delivery status tracking
+  - Email integration for sending invoices
+  - WhatsApp sharing (via API)
+  - Public invoice links
+
+### **Dashboard & Analytics**
+- [ ] **Business Overview Dashboard**
+  - Monthly revenue charts
+  - Recent transactions summary
+  - Outstanding invoices count
+  - Quick stats cards
+
+- [ ] **Basic Reports**
+  - Profit & Loss statement
+  - Cash flow summary
+  - Customer transaction history
+
+### **Data Export & Backup**
+- [ ] **Export Functionality**
+  - CSV export for transactions
+  - PDF reports export
+  - Customer data export
+
+- [ ] **Data Backup**
+  - Automated daily backups
+  - Manual backup triggers
+  - Data restoration options
+
+---
+
+## 🚀 **Phase 2: Growth Features** (1-2 months)
+
+### **AI-Powered Business Intelligence**
+- [ ] **Smart Insights Dashboard**
+  - Revenue trend analysis
+  - Customer behavior patterns
+  - Seasonal business insights
+  - Profit margin analysis
+
+- [ ] **Predictive Analytics**
+  - Revenue forecasting
+  - Customer churn prediction
+  - Optimal pricing suggestions
+  - Inventory level recommendations
+
+- [ ] **Automated Recommendations**
+  - "Your most profitable service is X"
+  - "Consider promoting service Y"
+  - "Customer Z hasn't visited in 6 weeks"
+
+### **Advanced Customer Management**
+- [ ] **Customer Lifetime Value (CLV)**
+  - Calculate and track CLV
+  - Customer segmentation
+  - VIP customer identification
+
+- [ ] **Service History & Preferences**
+  - Detailed service tracking
+  - Customer preference notes
+  - Appointment history
 
 - [ ] **Customer Communication**
-  - Quick message templates
-  - Bulk messaging (future)
-  - Communication history
+  - Automated follow-up emails
+  - Birthday/anniversary reminders
+  - Service completion notifications
+
+### **Mobile-First Features**
+- [ ] **Progressive Web App (PWA)**
+  - Offline functionality
+  - Mobile-optimized interface
+  - Push notifications
+
+- [ ] **Voice-to-Text Invoicing**
+  - "Create invoice for John, haircut, $25"
+  - Natural language processing
+  - Quick transaction entry
+
+- [ ] **Photo Receipt Capture**
+  - Receipt scanning with camera
+  - OCR text extraction
+  - Automatic expense categorization
 
 ---
 
-### **Phase 4: Polish & Deploy (Week 5)**
+## 🎨 **Phase 3: Advanced Features** (2-3 months)
 
-#### 4.1 Testing & Optimization
-- [ ] **User Testing**
-  - Test with small business owners
-  - Gather feedback and iterate
-  - Usability improvements
+### **Industry-Specific Customization**
+- [ ] **Business Type Templates**
+  - Barbershop/Salon templates
+  - Restaurant/Cafe templates
+  - Consulting/Service templates
+  - Retail/Store templates
 
-- [ ] **Performance Optimization**
-  - Database query optimization
-  - Image and asset optimization
-  - Loading time improvements
+- [ ] **Custom Field Support**
+  - Business-specific data fields
+  - Custom invoice fields
+  - Flexible form builders
 
-- [ ] **Mobile Responsiveness**
-  - Mobile-first design
-  - Touch-friendly interfaces
-  - Responsive layouts
+### **Advanced Financial Management**
+- [ ] **Multi-Currency Support**
+  - Currency selection
+  - Exchange rate integration
+  - Multi-currency reporting
 
-#### 4.2 Deployment & Documentation
-- [ ] **Production Deployment**
-  - Vercel deployment setup
-  - Environment variables configuration
-  - Domain setup
+- [ ] **Tax Management**
+  - Tax rate configuration
+  - Tax reporting
+  - Tax preparation helpers
+  - Automated tax calculations
 
-- [ ] **User Documentation**
-  - Getting started guide
-  - Feature documentation
-  - FAQ section
+- [ ] **Inventory Management**
+  - Product/service inventory
+  - Stock level tracking
+  - Low stock alerts
+  - Inventory valuation
 
-- [ ] **Setup Guides**
-  - Supabase setup instructions
-  - WhatsApp API configuration
-  - Environment setup
+### **Team & Multi-User Support**
+- [ ] **User Roles & Permissions**
+  - Admin, Manager, Staff roles
+  - Permission-based access
+  - Activity logging
 
----
-
-## 🎯 Immediate Next Steps
-
-1. **Start with Multi-Tenant Database Schema** - This is the foundation for the SaaS platform
-2. **Build Business Registration Flow** - Core to the SaaS model
-3. **Implement Business Isolation** - Ensure complete data separation between businesses
-4. **Build Customer Management** - This is the core feature small businesses need most
-
-## 📋 Current Development Status
-
-### ✅ **Recently Completed (Simplified Business System)**
-- **Customer Management** - Full CRUD operations with contact info and addresses
-- **Transaction Management** - Simple Money In/Money Out system with categories
-- **Categories Management** - Business-friendly income/expense categories
-- **Responsive Design** - Mobile and desktop optimized
-- **Modern UI** - Consistent design patterns throughout
-- **Database Schema** - Simplified tables for easy business management
-
-### 🚧 **Future Enhancements (To Be Handled Later)**
-- **Business Dashboard** - Main dashboard with key metrics (revenue, recent transactions, customer count)
-- **Simple Reports** - Profit & Loss statements, cash flow summaries, monthly breakdowns
-- **Advanced Analytics** - Customer insights, spending patterns, business trends
-- **Invoice Generation** - PDF invoice creation and management
-- **WhatsApp Integration** - Send invoices and communicate with customers
-- **Multi-Tenant Architecture** - Full SaaS platform with business isolation
-
-## 💡 Key Design Principles
-
-- **Multi-Tenant Security** - Complete data isolation between businesses
-- **Simplicity First** - Small business owners need simple, not complex
-- **Scalable Architecture** - Support multiple businesses efficiently
-- **Mobile-Friendly** - Many will use this on their phones
-- **Fast & Reliable** - No loading delays or crashes
-- **Professional Look** - Builds trust with customers
-
-## 🚀 Success Metrics
-
-- **Business Registrations** - Number of businesses signing up for the platform
-- **User Adoption** - Active users within each business
-- **Data Accuracy** - Reliable customer and transaction records per business
-- **Time Savings** - Reduced time spent on manual record keeping
-- **Professional Image** - Improved customer experience with proper invoices
-- **Revenue Growth** - Subscription revenue from business accounts
+- [ ] **Team Collaboration**
+  - Shared dashboards
+  - Team notifications
+  - Task assignment
 
 ---
 
-## 📝 Notes
+## 🔮 **Phase 4: Enterprise Features** (3-6 months)
 
-- **Multi-Tenant Architecture** - This is a SaaS platform, not a single-user tool
-- **Data Isolation** - Each business must have completely separate data
-- **Business Registration** - Core feature for SaaS model
-- **Role-Based Access** - Business owners vs employees have different permissions
-- **Subscription Management** - Plan for different pricing tiers
-- Focus on MVP features first (customers, transactions, invoices)
-- Keep the interface simple and intuitive
-- Ensure mobile responsiveness from the start
-- Plan for future features but don't over-engineer the initial version
-- Test with real small business owners throughout development
+### **Advanced Analytics & Reporting**
+- [ ] **Custom Report Builder**
+  - Drag-and-drop report creation
+  - Custom date ranges
+  - Advanced filtering options
+
+- [ ] **Business Intelligence Suite**
+  - Advanced data visualization
+  - KPI tracking
+  - Benchmark comparisons
+
+- [ ] **Financial Forecasting**
+  - 12-month revenue projections
+  - Scenario planning
+  - Budget vs. actual analysis
+
+### **Integration Ecosystem**
+- [ ] **Third-Party Integrations**
+  - Payment processors (Stripe, PayPal)
+  - Accounting software (QuickBooks, Xero)
+  - CRM systems
+  - Email marketing tools
+
+- [ ] **API & Webhooks**
+  - Public API for developers
+  - Webhook support
+  - Custom integrations
+
+### **Advanced Automation**
+- [ ] **Workflow Automation**
+  - Custom business rules
+  - Automated task triggers
+  - Conditional logic
+
+- [ ] **AI-Powered Automation**
+  - Smart expense categorization
+  - Automated invoice generation
+  - Intelligent data entry
 
 ---
 
-*Last updated: [Current Date]*
-*Next review: [Weekly]*
+## 🎯 **Phase 5: Platform Features** (6+ months)
 
+### **Multi-Business Management**
+- [ ] **Business Portfolio**
+  - Manage multiple businesses
+  - Consolidated reporting
+  - Cross-business analytics
+
+- [ ] **White-Label Solutions**
+  - Custom branding
+  - Reseller program
+  - White-label API
+
+### **Marketplace & Ecosystem**
+- [ ] **App Marketplace**
+  - Third-party app integrations
+  - Plugin system
+  - Custom extensions
+
+- [ ] **Community Features**
+  - User forums
+  - Knowledge base
+  - Best practices sharing
+
+---
+
+## 🎯 **Unique Selling Propositions (USPs)**
+
+### **Primary USP**
+**"The Only Business App That Grows With You"**
+- Start simple, scale intelligently
+- AI-powered growth insights
+- Industry-specific customization
+
+### **Secondary USPs**
+- **"Mobile-First Financial Management"** - Works anywhere, offline-first
+- **"AI-Powered Business Intelligence"** - Get actionable insights
+- **"One-Click Business Setup"** - Industry templates and automation
+
+---
+
+## 📊 **Success Metrics & KPIs**
+
+### **User Engagement**
+- Daily/Monthly Active Users
+- Feature adoption rates
+- User retention rates
+- Customer satisfaction scores
+
+### **Business Impact**
+- Time saved per user
+- Revenue increase for clients
+- Invoice processing time
+- Customer acquisition cost
+
+### **Technical Performance**
+- Page load times
+- API response times
+- System uptime
+- Error rates
+
+---
+
+## 📝 **Development Priorities**
+
+### **Immediate (Next 2 weeks)**
+1. Invoice status management
+2. Basic dashboard
+3. Payment tracking
+4. Export functionality
+
+### **Short-term (Next month)**
+1. AI insights dashboard
+2. Mobile PWA
+3. Customer communication
+4. Advanced reporting
+
+### **Medium-term (Next 3 months)**
+1. Industry templates
+2. Multi-currency support
+3. Team collaboration
+4. Advanced automation
+
+---
+
+## 🚀 **Go-to-Market Strategy**
+
+### **Target Markets**
+1. **Primary**: Small service businesses (barbers, salons, consultants)
+2. **Secondary**: Retail businesses with service components
+3. **Tertiary**: Freelancers and independent contractors
+
+### **Pricing Strategy**
+- **Freemium**: Basic features free, advanced features paid
+- **Tiered Plans**: Based on business size and feature needs
+- **Enterprise**: Custom pricing for large businesses
+
+### **Marketing Channels**
+- Content marketing (business tips, tutorials)
+- Social media presence
+- Partner integrations
+- Referral programs
+
+---
+
+*This roadmap is a living document and should be updated based on user feedback, market research, and technical constraints.*
