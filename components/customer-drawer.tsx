@@ -3,10 +3,13 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Edit, 
   // MoreVertical, 
-  Phone, Mail, MapPin, Calendar, User, Building2, Trash2 } from "lucide-react";
+  Phone, Mail, MapPin, Calendar, User, Building2, Trash2, 
+  FileText, DollarSign, CreditCard, TrendingUp, TrendingDown, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 interface Customer {
   id: string;
@@ -23,6 +26,17 @@ interface Customer {
   country?: string;
 }
 
+interface Activity {
+  id: string;
+  type: 'invoice' | 'payment' | 'transaction';
+  title: string;
+  description: string;
+  amount?: number;
+  date: string;
+  status?: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
 interface CustomerDrawerProps {
   customer: Customer | null;
   isOpen: boolean;
@@ -31,6 +45,17 @@ interface CustomerDrawerProps {
 }
 
 export function CustomerDrawer({ customer, isOpen, onClose, onDelete }: CustomerDrawerProps) {
+  const [activeTab, setActiveTab] = useState<'basic' | 'contacts' | 'activities' | 'tasks'>('basic');
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [isLoadingActivities, setIsLoadingActivities] = useState(false);
+
+  // Fetch activities when activities tab is selected
+  useEffect(() => {
+    if (activeTab === 'activities' && customer) {
+      fetchActivities();
+    }
+  }, [activeTab, customer]);
+
   if (!customer) return null;
 
   const getInitials = (name: string) => {
@@ -43,6 +68,113 @@ export function CustomerDrawer({ customer, isOpen, onClose, onDelete }: Customer
       day: 'numeric',
       year: 'numeric'
     });
+  };
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(amount);
+  };
+
+  const formatActivityDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  // Fetch customer activities
+  const fetchActivities = async () => {
+    if (!customer) return;
+    
+    setIsLoadingActivities(true);
+    try {
+      const supabase = createClient();
+      const activitiesList: Activity[] = [];
+
+      // Fetch invoices
+      const { data: invoices } = await supabase
+        .from('invoices')
+        .select('id, invoice_number, total_amount, status, created_at, invoice_date')
+        .eq('customer_id', customer.id)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (invoices) {
+        invoices.forEach(invoice => {
+          activitiesList.push({
+            id: `invoice-${invoice.id}`,
+            type: 'invoice',
+            title: `Invoice #${invoice.invoice_number}`,
+            description: `Invoice created for ${formatCurrency(invoice.total_amount)}`,
+            amount: invoice.total_amount,
+            date: invoice.created_at,
+            status: invoice.status,
+            icon: FileText
+          });
+        });
+      }
+
+      // Fetch payments
+      const { data: payments } = await supabase
+        .from('payments')
+        .select(`
+          id, amount, payment_date, created_at,
+          invoice:invoices!inner(invoice_number)
+        `)
+        .eq('invoice.customer_id', customer.id)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (payments) {
+        payments.forEach(payment => {
+          activitiesList.push({
+            id: `payment-${payment.id}`,
+            type: 'payment',
+            title: `Payment Received`,
+            description: `Payment of ${formatCurrency(payment.amount)} for Invoice #${payment.invoice?.[0]?.invoice_number || 'Unknown'}`,
+            amount: payment.amount,
+            date: payment.created_at,
+            icon: CreditCard
+          });
+        });
+      }
+
+      // Fetch transactions
+      const { data: transactions } = await supabase
+        .from('transactions')
+        .select('id, type, description, amount, transaction_date, created_at')
+        .eq('customer_id', customer.id)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (transactions) {
+        transactions.forEach(transaction => {
+          activitiesList.push({
+            id: `transaction-${transaction.id}`,
+            type: 'transaction',
+            title: transaction.type === 'income' ? 'Income Transaction' : 'Expense Transaction',
+            description: transaction.description,
+            amount: transaction.amount,
+            date: transaction.created_at,
+            icon: transaction.type === 'income' ? TrendingUp : TrendingDown
+          });
+        });
+      }
+
+      // Sort all activities by date (newest first)
+      activitiesList.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      
+      setActivities(activitiesList.slice(0, 20)); // Limit to 20 most recent activities
+    } catch (error) {
+      console.error('Error fetching customer activities:', error);
+    } finally {
+      setIsLoadingActivities(false);
+    }
   };
 
   return (
@@ -130,16 +262,44 @@ export function CustomerDrawer({ customer, isOpen, onClose, onDelete }: Customer
             {/* Tabs */}
             <div className="border-b border-gray-200 dark:border-gray-700">
               <div className="flex">
-                <button className="flex-1 px-6 py-3 text-sm font-medium text-gray-900 dark:text-white border-b-2 border-teal-500">
+                <button 
+                  onClick={() => setActiveTab('basic')}
+                  className={`flex-1 px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
+                    activeTab === 'basic' 
+                      ? 'text-gray-900 dark:text-white border-teal-500' 
+                      : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white border-transparent'
+                  }`}
+                >
                   Basic Information
                 </button>
-                <button className="flex-1 px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
+                <button 
+                  onClick={() => setActiveTab('contacts')}
+                  className={`flex-1 px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
+                    activeTab === 'contacts' 
+                      ? 'text-gray-900 dark:text-white border-teal-500' 
+                      : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white border-transparent'
+                  }`}
+                >
                   Contacts
                 </button>
-                <button className="flex-1 px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
+                <button 
+                  onClick={() => setActiveTab('activities')}
+                  className={`flex-1 px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
+                    activeTab === 'activities' 
+                      ? 'text-gray-900 dark:text-white border-teal-500' 
+                      : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white border-transparent'
+                  }`}
+                >
                   Activities
                 </button>
-                <button className="flex-1 px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
+                <button 
+                  onClick={() => setActiveTab('tasks')}
+                  className={`flex-1 px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
+                    activeTab === 'tasks' 
+                      ? 'text-gray-900 dark:text-white border-teal-500' 
+                      : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white border-transparent'
+                  }`}
+                >
                   Tasks
                 </button>
               </div>
@@ -147,90 +307,179 @@ export function CustomerDrawer({ customer, isOpen, onClose, onDelete }: Customer
 
             {/* Content */}
             <div className="flex-1 overflow-y-auto p-6 min-h-0">
-              <div className="space-y-6">
-                {/* Contact Information */}
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Contact Information</h3>
-                  <div className="space-y-3">
-                    {customer.email && (
-                      <div className="flex items-center space-x-3">
-                        <Mail className="h-4 w-4 text-gray-400" />
-                        <span className="text-sm text-gray-600 dark:text-gray-300">{customer.email}</span>
-                      </div>
-                    )}
-                    {customer.phone && (
-                      <div className="flex items-center space-x-3">
-                        <Phone className="h-4 w-4 text-gray-400" />
-                        <span className="text-sm text-gray-600 dark:text-gray-300">{customer.phone}</span>
-                      </div>
-                    )}
-                    {(customer.city || customer.state) && (
-                      <div className="flex items-center space-x-3">
-                        <MapPin className="h-4 w-4 text-gray-400" />
-                        <span className="text-sm text-gray-600 dark:text-gray-300">
-                          {customer.city && customer.state 
-                            ? `${customer.city}, ${customer.state}` 
-                            : customer.city || customer.state || 'Not specified'
-                          }
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Customer Type */}
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Customer Type</h3>
-                  <Badge variant="outline" className="capitalize">
-                    {customer.customer_type === "business" ? (
-                      <>
-                        <Building2 className="w-3 h-3 mr-1" />
-                        Business
-                      </>
-                    ) : (
-                      <>
-                        <User className="w-3 h-3 mr-1" />
-                        Individual
-                      </>
-                    )}
-                  </Badge>
-                </div>
-
-                {/* Created Date */}
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Member Since</h3>
-                  <div className="flex items-center space-x-3">
-                    <Calendar className="h-4 w-4 text-gray-400" />
-                    <span className="text-sm text-gray-600 dark:text-gray-300">
-                      {formatDate(customer.created_at)}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Notes */}
-                {customer.notes && (
+              {activeTab === 'basic' && (
+                <div className="space-y-6">
+                  {/* Contact Information */}
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Notes</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
-                      {customer.notes}
-                    </p>
-                  </div>
-                )}
-
-                {/* Address */}
-                {customer.address && (
-                  <div>
-                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Address</h3>
-                    <div className="text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
-                      <p>{customer.address}</p>
-                      {customer.city && customer.state && (
-                        <p>{customer.city}, {customer.state} {customer.zip_code}</p>
+                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Contact Information</h3>
+                    <div className="space-y-3">
+                      {customer.email && (
+                        <div className="flex items-center space-x-3">
+                          <Mail className="h-4 w-4 text-gray-400" />
+                          <span className="text-sm text-gray-600 dark:text-gray-300">{customer.email}</span>
+                        </div>
                       )}
-                      {customer.country && <p>{customer.country}</p>}
+                      {customer.phone && (
+                        <div className="flex items-center space-x-3">
+                          <Phone className="h-4 w-4 text-gray-400" />
+                          <span className="text-sm text-gray-600 dark:text-gray-300">{customer.phone}</span>
+                        </div>
+                      )}
+                      {(customer.city || customer.state) && (
+                        <div className="flex items-center space-x-3">
+                          <MapPin className="h-4 w-4 text-gray-400" />
+                          <span className="text-sm text-gray-600 dark:text-gray-300">
+                            {customer.city && customer.state 
+                              ? `${customer.city}, ${customer.state}` 
+                              : customer.city || customer.state || 'Not specified'
+                            }
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
-                )}
-              </div>
+
+                  {/* Customer Type */}
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Customer Type</h3>
+                    <Badge variant="outline" className="capitalize">
+                      {customer.customer_type === "business" ? (
+                        <>
+                          <Building2 className="w-3 h-3 mr-1" />
+                          Business
+                        </>
+                      ) : (
+                        <>
+                          <User className="w-3 h-3 mr-1" />
+                          Individual
+                        </>
+                      )}
+                    </Badge>
+                  </div>
+
+                  {/* Created Date */}
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Member Since</h3>
+                    <div className="flex items-center space-x-3">
+                      <Calendar className="h-4 w-4 text-gray-400" />
+                      <span className="text-sm text-gray-600 dark:text-gray-300">
+                        {formatDate(customer.created_at)}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Notes */}
+                  {customer.notes && (
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Notes</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
+                        {customer.notes}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Address */}
+                  {customer.address && (
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Address</h3>
+                      <div className="text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
+                        <p>{customer.address}</p>
+                        {customer.city && customer.state && (
+                          <p>{customer.city}, {customer.state} {customer.zip_code}</p>
+                        )}
+                        {customer.country && <p>{customer.country}</p>}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {activeTab === 'contacts' && (
+                <div className="space-y-6">
+                  <div className="text-center text-gray-500 dark:text-gray-400 py-8">
+                    <Phone className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p>Contact management features coming soon</p>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'activities' && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Activities</h3>
+                    <Badge variant="outline" className="text-xs">
+                      {activities.length} activities
+                    </Badge>
+                  </div>
+                  
+                  {isLoadingActivities ? (
+                    <div className="flex items-center justify-center py-8">
+                      <Clock className="h-6 w-6 animate-spin text-gray-400" />
+                      <span className="ml-2 text-sm text-gray-500">Loading activities...</span>
+                    </div>
+                  ) : activities.length === 0 ? (
+                    <div className="text-center text-gray-500 dark:text-gray-400 py-8">
+                      <DollarSign className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                      <p>No activities found for this customer</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {activities.map((activity) => {
+                        const IconComponent = activity.icon;
+                        return (
+                          <div key={activity.id} className="flex items-start space-x-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                            <div className="flex-shrink-0">
+                              <div className="w-8 h-8 bg-teal-100 dark:bg-teal-900 rounded-full flex items-center justify-center">
+                                <IconComponent className="h-4 w-4 text-teal-600 dark:text-teal-300" />
+                              </div>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between">
+                                <p className="text-sm font-medium text-gray-900 dark:text-white">
+                                  {activity.title}
+                                </p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                  {formatActivityDate(activity.date)}
+                                </p>
+                              </div>
+                              <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                                {activity.description}
+                              </p>
+                              {activity.amount && (
+                                <p className="text-sm font-semibold text-gray-900 dark:text-white mt-1">
+                                  {formatCurrency(activity.amount)}
+                                </p>
+                              )}
+                              {activity.status && (
+                                <Badge 
+                                  variant="outline" 
+                                  className={`mt-2 text-xs ${
+                                    activity.status === 'paid' ? 'bg-green-100 text-green-800' :
+                                    activity.status === 'sent' ? 'bg-blue-100 text-blue-800' :
+                                    activity.status === 'overdue' ? 'bg-red-100 text-red-800' :
+                                    'bg-gray-100 text-gray-800'
+                                  }`}
+                                >
+                                  {activity.status}
+                                </Badge>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {activeTab === 'tasks' && (
+                <div className="space-y-6">
+                  <div className="text-center text-gray-500 dark:text-gray-400 py-8">
+                    <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p>Task management features coming soon</p>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Footer Actions */}

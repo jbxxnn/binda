@@ -4,7 +4,9 @@ import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts"
+import { PieChart, Pie, Cell, ResponsiveContainer, 
+  // BarChart, Bar, XAxis, YAxis, CartesianGrid, 
+  Tooltip } from "recharts"
 import { 
   DollarSign, 
   CreditCard, 
@@ -100,7 +102,7 @@ export function PaymentAnalytics({ selectedDate, timePeriod }: PaymentAnalyticsP
       // Process payment methods data
       const paymentMethodMap = new Map<string, number>()
       payments?.forEach(payment => {
-        const method = payment.payment_method?.name || 'Unknown'
+        const method = payment.payment_method?.[0]?.name || 'Unknown'
         paymentMethodMap.set(method, (paymentMethodMap.get(method) || 0) + payment.amount)
       })
 
@@ -116,7 +118,7 @@ export function PaymentAnalytics({ selectedDate, timePeriod }: PaymentAnalyticsP
       
       // Calculate average payment time (simplified - days from invoice to payment)
       const paymentTimes = payments?.map(payment => {
-        const invoice = payment.invoice
+        const invoice = payment.invoice?.[0]
         if (!invoice?.due_date) return 0
         const invoiceDate = new Date(invoice.due_date)
         const paymentDate = new Date(payment.payment_date)
@@ -135,8 +137,8 @@ export function PaymentAnalytics({ selectedDate, timePeriod }: PaymentAnalyticsP
         id: payment.id,
         amount: payment.amount,
         payment_date: payment.payment_date,
-        payment_method: payment.payment_method?.name || 'Unknown',
-        invoice_number: payment.invoice?.invoice_number || 'N/A'
+        payment_method: payment.payment_method?.[0]?.name || 'Unknown',
+        invoice_number: payment.invoice?.[0]?.invoice_number || 'N/A'
       })) || []
 
       // Process overdue invoices
@@ -322,7 +324,7 @@ export function PaymentAnalytics({ selectedDate, timePeriod }: PaymentAnalyticsP
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="mt-4 space-y-2">
-                  {analytics.paymentMethods.map((method, index) => (
+                  {analytics.paymentMethods.map((method) => (
                     <div key={method.name} className="flex items-center justify-between">
                       <div className="flex items-center">
                         <div 
