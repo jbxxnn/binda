@@ -13,6 +13,7 @@ import {
   Plus,
   Building2,
   Receipt,
+  FileBarChart,
 } from "lucide-react"
 
 import { NavMain } from "@/components/dashboard/nav-main"
@@ -67,6 +68,11 @@ const data = {
       title: "Analytics",
       url: "/dashboard/analytics",
       icon: BarChart3,
+    },
+    {
+      title: "Reports",
+      url: "/dashboard/reports",
+      icon: FileBarChart,
     },
     {
       title: "Settings",
