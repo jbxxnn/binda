@@ -681,8 +681,8 @@ export default function DashboardPage() {
 
       <div className="bg-brand-lightning">
         <div className="p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4 flex-col md:flex-row">
+          <div className="flex items-center justify-between flex-col md:flex-row gap-4 md:gap-0">
+            <div className="flex items-center space-x-4">
              
               
               {/* <Button
