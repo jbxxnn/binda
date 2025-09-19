@@ -34,12 +34,12 @@ export default async function DashboardLayout({
   return (
     <SidebarProvider 
       style={{ "--sidebar-width": "18rem" } as React.CSSProperties}
-      defaultOpen={false}
-      className="bg-brand-underworld border border-brand-underworld"
+      defaultOpen={true}
+      className="bg-brand-underworld"
     >
       <AppSidebar />
       <SidebarInset className="!m-0 bg-brand-underworld">
-        <div className="flex flex-1 flex-col h-screen bg-brand-underworld pl-0 md:pl-2">
+        <div className="flex flex-1 flex-col h-screen bg-brand-underworld pl-0 md:pl-2 m-0">
           <AppHeader />
           <div className="flex-1 overflow-auto bg-brand-lightning rounded-tl-none md:rounded-tl-xl">
             {children}

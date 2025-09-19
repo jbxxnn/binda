@@ -34,6 +34,11 @@ import {
   DollarSign,
   User,
   Loader,
+  // TrendingUp,
+  // Clock,
+  CheckCircle,
+  AlertCircle,
+  X,
 //   Plus
 } from "lucide-react";
 import Link from "next/link";
@@ -81,6 +86,13 @@ export default function InvoicesPage() {
     invoiceNumber: ""
   });
   const [customers, setCustomers] = useState<{id: string, name: string}[]>([]);
+  const [statusSummary, setStatusSummary] = useState({
+    draft: 0,
+    sent: 0,
+    paid: 0,
+    overdue: 0,
+    cancelled: 0
+  });
   const [formData, setFormData] = useState({
     customer_id: "",
     invoice_date: new Date().toISOString().split('T')[0],
@@ -121,8 +133,10 @@ export default function InvoicesPage() {
         if (error) {
           console.error('Error fetching invoices:', error);
           setInvoices([]);
+          setStatusSummary({ draft: 0, sent: 0, paid: 0, overdue: 0, cancelled: 0 });
         } else {
           setInvoices(invoicesData || []);
+          setStatusSummary(calculateStatusSummary(invoicesData || []));
         }
 
         // Get customers for this business
@@ -158,6 +172,24 @@ export default function InvoicesPage() {
       day: 'numeric',
       year: 'numeric'
     });
+  };
+
+  const calculateStatusSummary = (invoices: Invoice[]) => {
+    const summary = {
+      draft: 0,
+      sent: 0,
+      paid: 0,
+      overdue: 0,
+      cancelled: 0
+    };
+    
+    invoices.forEach(invoice => {
+      if (summary.hasOwnProperty(invoice.status)) {
+        summary[invoice.status as keyof typeof summary]++;
+      }
+    });
+    
+    return summary;
   };
 
   const getStatusColor = (status: string) => {
@@ -550,7 +582,7 @@ export default function InvoicesPage() {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href={`/dashboard/invoices/${invoice.id}/edit`}>
+                  <Link href={`/dashboard/invoices/${invoice.id}?edit=true`}>
                     <Edit className="h-4 w-4 mr-2" />
                     Edit
                   </Link>
@@ -581,7 +613,7 @@ export default function InvoicesPage() {
         },
       },
     ],
-    [handleDeleteClick]
+    [handleDeleteClick, handleGeneratePDF]
   );
 
   const { table } = useDataTable({
@@ -733,6 +765,71 @@ export default function InvoicesPage() {
                   />
                 }
               />
+            </div>
+          </div>
+        </div>
+
+        {/* Status Summary Cards */}
+        <div className="px-6 py-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+            <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Draft</p>
+                  <p className="text-2xl font-bold text-gray-900">{statusSummary.draft}</p>
+                </div>
+                <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                  <FileText className="w-4 h-4 text-gray-600" />
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Sent</p>
+                  <p className="text-2xl font-bold text-gray-900">{statusSummary.sent}</p>
+                </div>
+                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                  <Send className="w-4 h-4 text-blue-600" />
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Paid</p>
+                  <p className="text-2xl font-bold text-gray-900">{statusSummary.paid}</p>
+                </div>
+                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                  <CheckCircle className="w-4 h-4 text-green-600" />
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Overdue</p>
+                  <p className="text-2xl font-bold text-gray-900">{statusSummary.overdue}</p>
+                </div>
+                <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                  <AlertCircle className="w-4 h-4 text-red-600" />
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Cancelled</p>
+                  <p className="text-2xl font-bold text-gray-900">{statusSummary.cancelled}</p>
+                </div>
+                <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                  <X className="w-4 h-4 text-gray-600" />
+                </div>
+              </div>
             </div>
           </div>
         </div>

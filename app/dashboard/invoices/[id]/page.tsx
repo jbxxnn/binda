@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -85,13 +85,23 @@ export default function InvoiceDetailPage() {
     due_date: "",
     tax_rate: 0,
     notes: "",
-    terms: ""
+    terms: "",
+    status: "draft" as 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled'
   });
   const [customers, setCustomers] = useState<{id: string, name: string}[]>([]);
   
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const invoiceId = params.id as string;
+
+  // Check if edit mode should be opened from query parameter
+  useEffect(() => {
+    const editParam = searchParams.get('edit');
+    if (editParam === 'true') {
+      setIsEditing(true);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchInvoice = async () => {
@@ -123,7 +133,8 @@ export default function InvoiceDetailPage() {
           due_date: invoiceData.due_date || "",
           tax_rate: invoiceData.tax_rate,
           notes: invoiceData.notes || "",
-          terms: invoiceData.terms || ""
+          terms: invoiceData.terms || "",
+          status: invoiceData.status
         });
 
         // Get invoice items
@@ -301,6 +312,7 @@ export default function InvoiceDetailPage() {
           tax_rate: editData.tax_rate,
           notes: editData.notes || null,
           terms: editData.terms || null,
+          status: editData.status,
         })
         .eq('id', invoiceId);
 
@@ -416,9 +428,45 @@ export default function InvoiceDetailPage() {
                     Created {formatDate(invoice.created_at)}
                   </p>
                 </div>
-                <Badge className={`capitalize ${getStatusColor(invoice.status)}`}>
-                  {invoice.status}
-                </Badge>
+                <div className="flex items-center space-x-2">
+                  <Badge className={`capitalize ${getStatusColor(invoice.status || 'draft')}`}>
+                    {invoice.status || 'draft'}
+                  </Badge>
+                  {!isEditing && (
+                    <select
+                      title="Update invoice status"
+                      value={invoice.status}
+                      onChange={async (e) => {
+                        const newStatus = e.target.value as 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled';
+                        try {
+                          const supabase = createClient();
+                          const { error } = await supabase
+                            .from('invoices')
+                            .update({ status: newStatus })
+                            .eq('id', invoiceId);
+                          
+                          if (error) {
+                            console.error('Error updating status:', error);
+                            toast.error('Failed to update status');
+                          } else {
+                            setInvoice(prev => prev ? { ...prev, status: newStatus } : null);
+                            toast.success('Status updated successfully');
+                          }
+                        } catch (error) {
+                          console.error('Error updating status:', error);
+                          toast.error('Failed to update status');
+                        }
+                      }}
+                      className="text-xs px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    >
+                      <option value="draft">Draft</option>
+                      <option value="sent">Sent</option>
+                      <option value="paid">Paid</option>
+                      <option value="overdue">Overdue</option>
+                      <option value="cancelled">Cancelled</option>
+                    </select>
+                  )}
+                </div>
               </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -575,6 +623,23 @@ export default function InvoiceDetailPage() {
                         max="100"
                         step="0.01"
                       />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Status
+                      </label>
+                      <select
+                        title="Invoice status"
+                        value={editData.status}
+                        onChange={(e) => setEditData(prev => ({ ...prev, status: e.target.value as 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled' }))}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="draft">Draft</option>
+                        <option value="sent">Sent</option>
+                        <option value="paid">Paid</option>
+                        <option value="overdue">Overdue</option>
+                        <option value="cancelled">Cancelled</option>
+                      </select>
                     </div>
                   </div>
                   <div className="space-y-4">
