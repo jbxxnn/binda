@@ -773,11 +773,16 @@ export default function DashboardPage() {
           </div>
            <div className="grid grid-cols-4 relative">
              {/* <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-mint to-transparent shadow-[0_0_8px_rgba(251,191,36,0.3)]"></div> */}
-             <div className="p-16 h-20 flex flex-col justify-center relative">
+             <div className="p-4 pl-8 h-20 flex flex-col justify-center relative">
                <div className="absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-brand-hunter to-transparent shadow-[0_0_8px_rgba(251,191,36,0.3)]"></div>
               <p className="text-sm font-medium text-green-800 mb-2">Sales Today</p>
               <div className="text-3xl font-medium text-green-900 flex items-center gap-2">
               {formatCurrency(data.todaySales.amount)}
+              </div>
+              <div className="flex items-center gap-2"> 
+              <p className="text-xs text-green-700">
+              {data.todaySales.count} transactions
+              </p>
               <Badge className={`border-green-200 bg-green-200 font-regular text-green-600 gap-2 hover:bg-green-200 hover:text-green-600 shadow-none ${
                 data.todaySales.changePercent >= 0 ? 'text-green-600' : 'text-red-600'
               }`}>
@@ -789,69 +794,72 @@ export default function DashboardPage() {
                 )}
               </Badge>
               </div>
-              <p className="text-xs text-green-700">
-              {data.todaySales.count} transactions
-              </p>
              </div>
-             <div className="p-16 h-20 flex flex-col justify-center relative">
+             <div className="p-4 pl-8 h-20 flex flex-col justify-center relative">
                <div className="absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-brand-hunter to-transparent shadow-[0_0_8px_rgba(251,191,36,0.3)]"></div>
                <p className="text-sm font-medium text-red-800 mb-2">Expenses Today</p>
               <div className="text-3xl font-medium text-red-900 flex items-center gap-2">
                 {formatCurrency(data.todayExpenses.amount)}
-                <Badge className={`border-red-200 bg-red-200 font-regular text-red-600 gap-2 hover:bg-red-200 hover:text-red-600 shadow-none ${
-                  data.todayExpenses.changePercent >= 0 ? 'text-red-600' : 'text-green-600'
-                }`}>
-                  {data.todayExpenses.changePercent >= 0 ? '+' : ''}{data.todayExpenses.changePercent.toFixed(0)}%
-                  {data.todayExpenses.changePercent >= 0 ? (
-                    <TrendingUp className="h-4 w-4" />
-                  ) : (
-                    <TrendingDown className="h-4 w-4" />
-                  )}
-                </Badge>
               </div>
+              <div className="flex items-center gap-2">
               <p className="text-xs text-red-700">
                 {data.todayExpenses.count} transactions
               </p>
+              <Badge className={`border-red-200 bg-red-200 font-regular text-red-600 gap-2 hover:bg-red-200 hover:text-red-600 shadow-none ${
+                data.todayExpenses.changePercent >= 0 ? 'text-red-600' : 'text-green-600'
+              }`}>
+                {data.todayExpenses.changePercent >= 0 ? '+' : ''}{data.todayExpenses.changePercent.toFixed(0)}%
+                {data.todayExpenses.changePercent >= 0 ? (
+                  <TrendingUp className="h-4 w-4" />
+                ) : (
+                  <TrendingDown className="h-4 w-4" />
+                )}
+              </Badge>
+              </div>
              </div>
-             <div className="p-16 h-20 flex flex-col justify-center relative">
+             <div className="p-4 pl-8 h-20 flex flex-col justify-center relative">
                 <div className="absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-brand-hunter to-transparent shadow-[0_0_8px_rgba(251,191,36,0.3)]"></div>
                <p className="text-sm font-medium text-blue-800 mb-2">New Customers</p>
               <div className="text-3xl font-medium text-blue-900 flex items-center gap-2">
                 {data.todayNewCustomers.count}
-                <Badge className={`border-blue-200 bg-blue-200 font-regular text-blue-600 gap-2 hover:bg-blue-200 hover:text-blue-600 shadow-none ${
-                  data.todayNewCustomers.changePercent >= 0 ? 'text-green-600' : 'text-red-600'
-                }`}>
-                  {data.todayNewCustomers.changePercent >= 0 ? '+' : ''}{data.todayNewCustomers.changePercent.toFixed(0)}%
-                  {data.todayNewCustomers.changePercent >= 0 ? (
-                    <TrendingUp className="h-4 w-4" />
-                  ) : (
-                    <TrendingDown className="h-4 w-4" />
-                  )}
-                </Badge>
               </div>
+              <div className="flex items-center gap-2">
               <p className="text-xs text-blue-700">
                 added today
               </p>
+              <Badge className={`border-blue-200 bg-blue-200 font-regular text-blue-600 gap-2 hover:bg-blue-200 hover:text-blue-600 shadow-none ${
+                data.todayNewCustomers.changePercent >= 0 ? 'text-green-600' : 'text-red-600'
+              }`}>
+                {data.todayNewCustomers.changePercent >= 0 ? '+' : ''}{data.todayNewCustomers.changePercent.toFixed(0)}%
+                {data.todayNewCustomers.changePercent >= 0 ? (
+                  <TrendingUp className="h-4 w-4" />
+                ) : (
+                  <TrendingDown className="h-4 w-4" />
+                )}
+              </Badge>
+              </div>
              </div>
-             <div className="p-16 h-20 flex flex-col justify-center relative">
+             <div className="p-4 pl-8 h-20 flex flex-col justify-center relative">
                {/* <div className="absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-amber-300 to-transparent shadow-[0_0_8px_rgba(251,191,36,0.3)]"></div> */}
                <p className="text-sm font-medium text-orange-800 mb-2">Outstanding</p>
               <div className="text-3xl font-medium text-orange-900 flex items-center gap-2">
                 {formatCurrency(data.outstandingInvoices.amount)}
-                <Badge className={`border-orange-200 bg-orange-200 font-regular text-orange-600 gap-2 hover:bg-orange-200 hover:text-orange-600 shadow-none ${
-                  data.outstandingInvoices.changePercent >= 0 ? 'text-red-600' : 'text-green-600'
-                }`}>
-                  {data.outstandingInvoices.changePercent >= 0 ? '+' : ''}{data.outstandingInvoices.changePercent.toFixed(0)}%
-                  {data.outstandingInvoices.changePercent >= 0 ? (
-                    <TrendingUp className="h-4 w-4" />
-                  ) : (
-                    <TrendingDown className="h-4 w-4" />
-                  )}
-                </Badge>
               </div>
+              <div className="flex items-center gap-2">
               <p className="text-xs text-orange-700">
                 unpaid invoices
               </p>
+              <Badge className={`border-orange-200 bg-orange-200 font-regular text-orange-600 gap-2 hover:bg-orange-200 hover:text-orange-600 shadow-none ${
+                data.outstandingInvoices.changePercent >= 0 ? 'text-red-600' : 'text-green-600'
+              }`}>
+                {data.outstandingInvoices.changePercent >= 0 ? '+' : ''}{data.outstandingInvoices.changePercent.toFixed(0)}%
+                {data.outstandingInvoices.changePercent >= 0 ? (
+                  <TrendingUp className="h-4 w-4" />
+                ) : (
+                  <TrendingDown className="h-4 w-4" />
+                )}
+              </Badge>
+              </div>
             </div>
           </div>
         </div>
@@ -922,23 +930,23 @@ export default function DashboardPage() {
           <p>How your customer base is growing</p>
         </div>
         <div className="space-y-4 mt-4">
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="text-center p-4 bg-blue-50 rounded-lg">
+          <div className="grid gap-4">
+            <div className="text-center p-2 bg-blue-50 rounded-sm flex items-center justify-start gap-4">
               <div className="text-2xl font-bold text-blue-900">{data.newCustomersThisWeek}</div>
               <div className="text-sm text-blue-700">New customers this week</div>
             </div>
-            <div className="text-center p-4 bg-green-50 rounded-lg">
+            <div className="text-center p-2 bg-green-50 rounded-sm flex items-center justify-start gap-4">
               <div className="text-2xl font-bold text-green-900">{data.repeatCustomersThisWeek}</div>
               <div className="text-sm text-green-700">Repeat customers this week</div>
             </div>
-            <div className="text-center p-4 bg-purple-50 rounded-lg">
+            <div className="text-center p-2 bg-purple-50 rounded-sm flex items-center justify-start gap-4">
               <div className="text-2xl font-bold text-purple-900">{data.topCustomers.length}</div>
               <div className="text-sm text-purple-700">Top customers tracked</div>
             </div>
           </div>
           
           {data.topCustomers.length > 0 && (
-            <div className="mt-4">
+            <div className="mt-6">
               <h4 className="text-sm font-medium text-gray-700 mb-2">Top Customers by Spend</h4>
               <div className="space-y-2">
                 {data.topCustomers.map((customer, index) => (

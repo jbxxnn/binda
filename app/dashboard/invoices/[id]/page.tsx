@@ -24,6 +24,7 @@ import {
 import Link from "next/link";
 import { pdf } from '@react-pdf/renderer';
 import { InvoicePDF } from '@/components/invoice-pdf';
+import { PaymentHistory } from '@/components/payment-history';
 
 interface Invoice {
   id: string;
@@ -831,6 +832,15 @@ export default function InvoiceDetailPage() {
                 )}
               </div>
             )}
+
+            {/* Payment History */}
+            <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 p-6">
+              <PaymentHistory 
+                invoiceId={invoice.id}
+                invoiceNumber={invoice.invoice_number}
+                totalAmount={invoice.total_amount}
+              />
+            </div>
           </div>
         </div>
       </div>
