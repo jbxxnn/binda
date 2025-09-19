@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { WeeklySalesChart } from "@/components/charts/weekly-sales-chart";
+// import { PaymentAnalytics } from "@/components/payment-analytics";
 
 interface DashboardData {
   // Today's Snapshot
@@ -82,6 +83,7 @@ export default function DashboardPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [timePeriod, setTimePeriod] = useState<'day' | 'week' | 'month' | 'year'>('day');
+  const [isMobile, setIsMobile] = useState(false);
   const calendarRef = useRef<HTMLDivElement>(null);
   const [business, setBusiness] = useState<{
     id: string;
@@ -316,6 +318,18 @@ export default function DashboardPage() {
     fetchDashboardData();
   }, [selectedDate, timePeriod]);
 
+  // Handle mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile(); // Check on mount
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   // Close calendar when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -454,34 +468,33 @@ export default function DashboardPage() {
     const options = [];
     const currentDate = selectedDate; // Use selectedDate as the center point
     
+    // Use responsive range based on screen size
+    const range = isMobile ? 2 : 5; // 2 past + 1 present + 2 future on mobile, 5 past + 1 present + 5 future on desktop
+    
     switch (timePeriod) {
       case 'day':
-        // 5 past + current + 5 future = 11 total
-        for (let i = -5; i <= 5; i++) {
+        for (let i = -range; i <= range; i++) {
           const date = new Date(currentDate);
           date.setDate(date.getDate() + i);
           options.push(date);
         }
         break;
       case 'week':
-        // 5 past weeks + current week + 5 future weeks = 11 total
-        for (let i = -5; i <= 5; i++) {
+        for (let i = -range; i <= range; i++) {
           const date = new Date(currentDate);
           date.setDate(date.getDate() + (i * 7));
           options.push(getPeriodStart(date, 'week'));
         }
         break;
       case 'month':
-        // 5 past months + current month + 5 future months = 11 total
-        for (let i = -5; i <= 5; i++) {
+        for (let i = -range; i <= range; i++) {
           const date = new Date(currentDate);
           date.setMonth(date.getMonth() + i);
           options.push(getPeriodStart(date, 'month'));
         }
         break;
       case 'year':
-        // 5 past years + current year + 5 future years = 11 total
-        for (let i = -5; i <= 5; i++) {
+        for (let i = -range; i <= range; i++) {
           const date = new Date(currentDate);
           date.setFullYear(date.getFullYear() + i);
           options.push(getPeriodStart(date, 'year'));
@@ -668,19 +681,9 @@ export default function DashboardPage() {
 
       <div className="bg-brand-lightning">
         <div className="p-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-col md:flex-row gap-4 md:gap-0">
             <div className="flex items-center space-x-4">
-              <div className="relative" ref={calendarRef}>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsCalendarOpen(!isCalendarOpen)}
-                  className="h-8 w-8 p-0"
-                >
-                  <Calendar className="h-4 w-4" />
-                </Button>
-                {isCalendarOpen && <MiniCalendar />}
-              </div>
+             
               
               {/* <Button
                 variant="outline"
@@ -734,6 +737,17 @@ export default function DashboardPage() {
             </div>
             
             <div className="flex items-center space-x-4">
+            <div className="relative" ref={calendarRef}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsCalendarOpen(!isCalendarOpen)}
+                  className="h-8 w-8 p-0"
+                >
+                  <Calendar className="h-4 w-4" />
+                </Button>
+                {isCalendarOpen && <MiniCalendar />}
+              </div>
               <div className="relative">
                 <select
                   title="Select time period for dashboard data"
@@ -767,14 +781,14 @@ export default function DashboardPage() {
 
       <div className="grid gap-4 bg-[#ccd6c24d] p-6 rounded-sm border border-brand-tropical">
         <div>
-          <div className="border-brand-tropical pb-12 px-8">
+          <div className="border-brand-tropical pb-12 px-0 md:px-8">
             <div className="text-2xl font-bold">Performance Metrics</div>
             <div className="text-sm text-muted-foreground">A snapshot of your business</div>
           </div>
-           <div className="grid grid-cols-4 relative">
+           <div className="grid md:grid-cols-4 relative gap-12 md:gap-0">
              {/* <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-mint to-transparent shadow-[0_0_8px_rgba(251,191,36,0.3)]"></div> */}
-             <div className="p-4 pl-8 h-20 flex flex-col justify-center relative">
-               <div className="absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-brand-hunter to-transparent shadow-[0_0_8px_rgba(251,191,36,0.3)]"></div>
+             <div className="p-4 md:pl-8 h-20 flex flex-col justify-center relative">
+               <div className="hidden md:block absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-brand-hunter to-transparent shadow-[0_0_8px_rgba(251,191,36,0.3)]"></div>
               <p className="text-sm font-medium text-green-800 mb-2">Sales Today</p>
               <div className="text-3xl font-medium text-green-900 flex items-center gap-2">
               {formatCurrency(data.todaySales.amount)}
@@ -795,8 +809,8 @@ export default function DashboardPage() {
               </Badge>
               </div>
              </div>
-             <div className="p-4 pl-8 h-20 flex flex-col justify-center relative">
-               <div className="absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-brand-hunter to-transparent shadow-[0_0_8px_rgba(251,191,36,0.3)]"></div>
+             <div className="p-4 md:pl-8 h-20 flex flex-col justify-center relative">
+               <div className="hidden md:block absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-brand-hunter to-transparent shadow-[0_0_8px_rgba(251,191,36,0.3)]"></div>
                <p className="text-sm font-medium text-red-800 mb-2">Expenses Today</p>
               <div className="text-3xl font-medium text-red-900 flex items-center gap-2">
                 {formatCurrency(data.todayExpenses.amount)}
@@ -817,8 +831,8 @@ export default function DashboardPage() {
               </Badge>
               </div>
              </div>
-             <div className="p-4 pl-8 h-20 flex flex-col justify-center relative">
-                <div className="absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-brand-hunter to-transparent shadow-[0_0_8px_rgba(251,191,36,0.3)]"></div>
+             <div className="p-4 md:pl-8 h-20 flex flex-col justify-center relative">
+                <div className="hidden md:block absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-brand-hunter to-transparent shadow-[0_0_8px_rgba(251,191,36,0.3)]"></div>
                <p className="text-sm font-medium text-blue-800 mb-2">New Customers</p>
               <div className="text-3xl font-medium text-blue-900 flex items-center gap-2">
                 {data.todayNewCustomers.count}
@@ -839,8 +853,8 @@ export default function DashboardPage() {
               </Badge>
               </div>
              </div>
-             <div className="p-4 pl-8 h-20 flex flex-col justify-center relative">
-               {/* <div className="absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-amber-300 to-transparent shadow-[0_0_8px_rgba(251,191,36,0.3)]"></div> */}
+             <div className="p-4 md:pl-8 h-20 flex flex-col justify-center relative">
+               {/* <div className="hidden md:block absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-amber-300 to-transparent shadow-[0_0_8px_rgba(251,191,36,0.3)]"></div> */}
                <p className="text-sm font-medium text-orange-800 mb-2">Outstanding</p>
               <div className="text-3xl font-medium text-orange-900 flex items-center gap-2">
                 {formatCurrency(data.outstandingInvoices.amount)}
@@ -871,7 +885,7 @@ export default function DashboardPage() {
         <WeeklySalesChart data={data.dailyData} />
       </div>
 
-      <div className="grid gap-6 grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-3">
 
         {/* Monthly Totals */}
         <div className="bg-brand-snowman p-6 min-h-[25rem] rounded-sm border border-brand-tropical flex justify-between flex-col">
@@ -1040,6 +1054,12 @@ export default function DashboardPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* PAYMENT ANALYTICS */}
+      {/* <div className="space-y-6">
+        <h2 className="text-2xl font-bold text-gray-900">Payment Analytics</h2>
+        <PaymentAnalytics selectedDate={selectedDate} timePeriod={timePeriod} />
+      </div> */}
     </div>
   );
 }
