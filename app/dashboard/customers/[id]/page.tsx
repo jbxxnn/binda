@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { usePreferences } from "@/lib/contexts/preferences-context";
@@ -89,14 +89,7 @@ export default function CustomerDetailPage() {
 
   const customerId = params.id as string;
 
-  useEffect(() => {
-    if (customerId) {
-      fetchCustomer();
-      fetchActivities();
-    }
-  }, [customerId]);
-
-  const fetchCustomer = async () => {
+  const fetchCustomer = useCallback(async () => {
     try {
       const supabase = createClient();
       
@@ -119,9 +112,9 @@ export default function CustomerDetailPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [customerId]);
 
-  const fetchActivities = async () => {
+  const fetchActivities = useCallback(async () => {
     if (!customerId) return;
     
     setIsLoadingActivities(true);
@@ -208,7 +201,14 @@ export default function CustomerDetailPage() {
     } finally {
       setIsLoadingActivities(false);
     }
-  };
+  }, [customerId, formatCurrency]);
+
+  useEffect(() => {
+    if (customerId) {
+      fetchCustomer();
+      fetchActivities();
+    }
+  }, [customerId, fetchCustomer, fetchActivities]);
 
   const handleDeleteClick = () => {
     if (customer) {
@@ -331,12 +331,27 @@ export default function CustomerDetailPage() {
                 <Download className="h-4 w-4 mr-2" />
                 Export
               </Button>
-              <Button variant="outline" size="sm" asChild>
-                <Link href={`/dashboard/customers/${customer.id}/edit`}>
-                  <Edit className="h-4 w-4 mr-2" />
-                  Edit
-                </Link>
-              </Button>
+               <Button variant="outline" size="sm" asChild>
+                 <Link href={`/dashboard/customers/${customer.id}/edit`}>
+                   <Edit className="h-4 w-4 mr-2" />
+                   Edit
+                 </Link>
+               </Button>
+               {customer.subscription_status === 'none' ? (
+                 <Button variant="outline" size="sm" asChild>
+                   <Link href={`/dashboard/customers/${customer.id}/edit#subscription`}>
+                     <CreditCard className="h-4 w-4 mr-2" />
+                     Add Subscription
+                   </Link>
+                 </Button>
+               ) : (
+                 <Button variant="outline" size="sm" asChild>
+                   <Link href={`/dashboard/customers/${customer.id}/edit#subscription`}>
+                     <CreditCard className="h-4 w-4 mr-2" />
+                     Manage Subscription
+                   </Link>
+                 </Button>
+               )}
               <Button variant="destructive" size="sm" onClick={handleDeleteClick}>
                 <Trash2 className="h-4 w-4 mr-2" />
                 Delete
