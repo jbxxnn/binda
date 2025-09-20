@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
   ArrowLeft, 
-  Download, 
   TrendingUp,
   TrendingDown,
   DollarSign,
@@ -15,6 +14,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
+import { ExportDropdown } from "@/components/export-dropdown";
+import { ExportData } from "@/lib/export-utils";
 
 interface CashFlowData {
   period: string;
@@ -43,11 +44,7 @@ export default function CashFlowPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedPeriod, setSelectedPeriod] = useState<'3months' | '6months' | '1year' | 'all'>('3months');
 
-  useEffect(() => {
-    fetchCashFlowReport();
-  }, [selectedPeriod]);
-
-  const fetchCashFlowReport = async () => {
+  const fetchCashFlowReport = useCallback(async () => {
     try {
       const supabase = createClient();
       
@@ -118,7 +115,11 @@ export default function CashFlowPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [selectedPeriod]);
+
+  useEffect(() => {
+    fetchCashFlowReport();
+  }, [fetchCashFlowReport]);
 
   const processMonthlyCashFlow = (transactions: { type: string; amount: number; transaction_date: string }[]) => {
     const monthlyMap = new Map<string, { cash_in: number; cash_out: number }>();
@@ -158,6 +159,49 @@ export default function CashFlowPage() {
       style: 'currency',
       currency: 'USD'
     }).format(amount);
+  };
+
+  const prepareExportData = (): ExportData => {
+    if (!report) {
+      return {
+        title: 'Cash Flow Statement',
+        period: 'No data available',
+        summary: [],
+        tables: [],
+        charts: []
+      };
+    }
+
+    return {
+      title: 'Cash Flow Statement',
+      period: `${report.period.start} to ${report.period.end}`,
+      summary: [
+        { label: 'Total Cash In', value: report.summary.totalCashIn },
+        { label: 'Total Cash Out', value: report.summary.totalCashOut },
+        { label: 'Net Cash Flow', value: report.summary.netCashFlow },
+        { label: 'Ending Balance', value: report.summary.endingBalance }
+      ],
+      tables: [
+        {
+          title: 'Monthly Cash Flow',
+          columns: [
+            { key: 'period', label: 'Period' },
+            { key: 'cash_in', label: 'Cash In' },
+            { key: 'cash_out', label: 'Cash Out' },
+            { key: 'net_cash_flow', label: 'Net Cash Flow' },
+            { key: 'running_balance', label: 'Running Balance' }
+          ],
+          data: report.monthlyData
+        }
+      ],
+      charts: [
+        {
+          title: 'Monthly Cash Flow Analysis',
+          columns: ['period', 'cash_in', 'cash_out', 'net_cash_flow', 'running_balance'],
+          data: report.monthlyData
+        }
+      ]
+    };
   };
 
   if (isLoading) {
@@ -202,10 +246,11 @@ export default function CashFlowPage() {
                   <option value="all">All Time</option>
                 </select>
               </div>
-              <Button variant="outline" size="sm">
-                <Download className="h-4 w-4 mr-2" />
-                Export PDF
-              </Button>
+              <ExportDropdown 
+                data={prepareExportData()} 
+                filename={`cash-flow-${selectedPeriod}`}
+                disabled={!report}
+              />
             </div>
           </div>
         </div>

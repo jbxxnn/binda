@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
   ArrowLeft, 
-  Download, 
+  // Download, 
   Calendar,
   AlertTriangle,
   Clock,
@@ -17,6 +17,8 @@ import {
   DollarSign
 } from "lucide-react";
 import Link from "next/link";
+import { ExportDropdown } from "@/components/export-dropdown";
+import { ExportData } from "@/lib/export-utils";
 
 interface InvoiceAgingData {
   invoice_id: string;
@@ -223,6 +225,72 @@ export default function InvoiceAgingPage() {
     }
   };
 
+  const prepareExportData = (): ExportData => {
+    if (!report) {
+      return {
+        title: 'Invoice Aging Report',
+        period: 'No data available',
+        summary: [],
+        tables: [],
+        charts: []
+      };
+    }
+
+    // Flatten all aging buckets into one list
+    const allInvoices = Object.entries(report.agingBuckets).flatMap(([bucket, invoices]) =>
+      invoices.map(invoice => ({
+        ...invoice,
+        aging_bucket: bucket
+      }))
+    );
+
+    return {
+      title: 'Invoice Aging Report',
+      period: `${report.period.start} to ${report.period.end}`,
+      summary: [
+        { label: 'Total Outstanding', value: report.summary.totalOutstanding },
+        { label: 'Total Overdue', value: report.summary.totalOverdue },
+        { label: 'Overdue Count', value: report.summary.overdueCount },
+        { label: 'Current Count', value: report.summary.currentCount },
+        { label: 'Average Days Overdue', value: report.summary.averageDaysOverdue }
+      ],
+      tables: [
+        {
+          title: 'Aging Summary',
+          columns: [
+            { key: 'bucket', label: 'Aging Bucket' },
+            { key: 'count', label: 'Count' },
+            { key: 'amount', label: 'Amount' }
+          ],
+          data: Object.entries(report.agingBuckets).map(([bucket, invoices]) => ({
+            bucket: bucket === 'current' ? 'Current (0 days)' :
+                   bucket === 'overdue30' ? '1-30 Days Overdue' :
+                   bucket === 'overdue60' ? '31-60 Days Overdue' :
+                   bucket === 'overdue90' ? '61-90 Days Overdue' :
+                   '90+ Days Overdue',
+            count: invoices.length,
+            amount: invoices.reduce((sum, inv) => sum + inv.outstanding_amount, 0)
+          }))
+        },
+        {
+          title: 'All Outstanding Invoices',
+          columns: [
+            { key: 'invoice_number', label: 'Invoice #' },
+            { key: 'customer_name', label: 'Customer' },
+            { key: 'total_amount', label: 'Total Amount' },
+            { key: 'paid_amount', label: 'Paid Amount' },
+            { key: 'outstanding_amount', label: 'Outstanding' },
+            { key: 'due_date', label: 'Due Date' },
+            { key: 'days_overdue', label: 'Days Overdue' },
+            { key: 'aging_bucket', label: 'Aging Bucket' }
+          ],
+          data: allInvoices
+        }
+      ],
+      charts: []
+    };
+  };
+
   if (isLoading) {
     return (
       <div className="flex flex-1 items-center justify-center h-full">
@@ -265,10 +333,11 @@ export default function InvoiceAgingPage() {
                   <option value="all">All Time</option>
                 </select>
               </div>
-              <Button variant="outline" size="sm">
-                <Download className="h-4 w-4 mr-2" />
-                Export PDF
-              </Button>
+              <ExportDropdown 
+                data={prepareExportData()} 
+                filename={`invoice-aging-${selectedPeriod}`}
+                disabled={!report}
+              />
             </div>
           </div>
         </div>

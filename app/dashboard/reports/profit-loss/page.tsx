@@ -1,14 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 // import { Badge } from "@/components/ui/badge";
 import { 
   ArrowLeft, 
-  Download, 
-//   Calendar,
+  //   Calendar,
   TrendingUp,
   TrendingDown,
   DollarSign,
@@ -17,15 +16,17 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
+import { ExportDropdown } from "@/components/export-dropdown";
+import { ExportData } from "@/lib/export-utils";
 
-interface PnLData {
+interface PnLData extends Record<string, unknown> {
   period: string;
   revenue: number;
   expenses: number;
   netProfit: number;
 }
 
-interface CategoryBreakdown {
+interface CategoryBreakdown extends Record<string, unknown> {
   category: string;
   amount: number;
   type: 'income' | 'expense';
@@ -54,11 +55,7 @@ export default function ProfitLossPage() {
   const [selectedPeriod, setSelectedPeriod] = useState<'3months' | '6months' | '1year' | 'all'>('3months');
   const [viewMode, setViewMode] = useState<'chart' | 'table'>('chart');
 
-  useEffect(() => {
-    fetchProfitLossReport();
-  }, [selectedPeriod]);
-
-  const fetchProfitLossReport = async () => {
+  const fetchProfitLossReport = useCallback(async () => {
     try {
       const supabase = createClient();
       
@@ -148,7 +145,11 @@ export default function ProfitLossPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [selectedPeriod]);
+
+  useEffect(() => {
+    fetchProfitLossReport();
+  }, [fetchProfitLossReport]);
 
   const processMonthlyData = (revenue: { amount: number; category: string; transaction_date: string }[], expenses: { amount: number; category: string; transaction_date: string }[]) => {
     const monthlyMap = new Map<string, { revenue: number; expenses: number }>();
@@ -200,6 +201,65 @@ export default function ProfitLossPage() {
 
   const formatPercentage = (value: number) => {
     return `${value.toFixed(1)}%`;
+  };
+
+  const prepareExportData = (): ExportData => {
+    if (!report) {
+      return {
+        title: 'Profit & Loss Statement',
+        period: 'No data available',
+        summary: [],
+        tables: [],
+        charts: []
+      };
+    }
+
+    return {
+      title: 'Profit & Loss Statement',
+      period: `${report.period.start} to ${report.period.end}`,
+      summary: [
+        { label: 'Total Revenue', value: report.summary.totalRevenue },
+        { label: 'Total Expenses', value: report.summary.totalExpenses },
+        { label: 'Net Profit', value: report.summary.netProfit },
+        { label: 'Gross Margin', value: report.summary.grossMargin / 100 },
+        { label: 'Net Margin', value: report.summary.netMargin / 100 }
+      ],
+      tables: [
+        {
+          title: 'Monthly Summary',
+          columns: [
+            { key: 'period', label: 'Period' },
+            { key: 'revenue', label: 'Revenue' },
+            { key: 'expenses', label: 'Expenses' },
+            { key: 'netProfit', label: 'Net Profit' }
+          ],
+          data: report.monthlyData
+        },
+        {
+          title: 'Revenue Breakdown',
+          columns: [
+            { key: 'category', label: 'Category' },
+            { key: 'amount', label: 'Amount' }
+          ],
+          data: report.revenueBreakdown
+        },
+        {
+          title: 'Expense Breakdown',
+          columns: [
+            { key: 'category', label: 'Category' },
+            { key: 'amount', label: 'Amount' }
+          ],
+          data: report.expenseBreakdown
+        }
+      ],
+      charts: [
+        {
+          title: 'Monthly Revenue vs Expenses',
+          columns: ['period', 'revenue', 'expenses', 'netProfit'],
+          data: report.monthlyData
+        }
+      ]
+    };
   };
 
   if (isLoading) {
@@ -260,10 +320,11 @@ export default function ProfitLossPage() {
                   Table
                 </Button>
               </div>
-              <Button variant="outline" size="sm">
-                <Download className="h-4 w-4 mr-2" />
-                Export PDF
-              </Button>
+              <ExportDropdown 
+                data={prepareExportData()} 
+                filename={`profit-loss-${selectedPeriod}`}
+                disabled={!report}
+              />
             </div>
           </div>
         </div>

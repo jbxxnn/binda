@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { 
   ArrowLeft, 
-  Download, 
+  // Download, 
   PieChart,
   TrendingUp,
 //   Users,
@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { PieChart as RechartsPieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
+import { ExportDropdown } from "@/components/export-dropdown";
+import { ExportData } from "@/lib/export-utils";
 
 interface SalesAnalyticsReport {
   summary: {
@@ -213,6 +215,70 @@ export default function SalesAnalyticsPage() {
     return `${value.toFixed(1)}%`;
   };
 
+  const prepareExportData = (): ExportData => {
+    if (!report) {
+      return {
+        title: 'Sales Analytics',
+        period: 'No data available',
+        summary: [],
+        tables: [],
+        charts: []
+      };
+    }
+
+    return {
+      title: 'Sales Analytics',
+      period: `${report.period.start} to ${report.period.end}`,
+      summary: [
+        { label: 'Total Revenue', value: report.summary.totalRevenue },
+        { label: 'Total Transactions', value: report.summary.totalTransactions },
+        { label: 'Average Transaction Value', value: report.summary.averageTransactionValue },
+        { label: 'Revenue Growth', value: report.summary.revenueGrowth / 100 }
+      ],
+      tables: [
+        {
+          title: 'Top Customers',
+          columns: [
+            { key: 'customer_name', label: 'Customer' },
+            { key: 'revenue', label: 'Revenue' },
+            { key: 'transaction_count', label: 'Transactions' }
+          ],
+          data: report.customerData
+        },
+        {
+          title: 'Revenue by Category',
+          columns: [
+            { key: 'category', label: 'Category' },
+            { key: 'revenue', label: 'Revenue' },
+            { key: 'percentage', label: 'Percentage' }
+          ],
+          data: report.categoryData
+        },
+        {
+          title: 'Monthly Revenue',
+          columns: [
+            { key: 'month', label: 'Month' },
+            { key: 'revenue', label: 'Revenue' },
+            { key: 'transactions', label: 'Transactions' }
+          ],
+          data: report.monthlyData
+        }
+      ],
+      charts: [
+        {
+          title: 'Revenue by Category',
+          columns: ['category', 'revenue', 'percentage'],
+          data: report.categoryData
+        },
+        {
+          title: 'Monthly Revenue Trend',
+          columns: ['month', 'revenue', 'transactions'],
+          data: report.monthlyData
+        }
+      ]
+    };
+  };
+
   const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#84cc16', '#f97316'];
 
   if (isLoading) {
@@ -257,10 +323,11 @@ export default function SalesAnalyticsPage() {
                   <option value="all">All Time</option>
                 </select>
               </div>
-              <Button variant="outline" size="sm">
-                <Download className="h-4 w-4 mr-2" />
-                Export PDF
-              </Button>
+              <ExportDropdown 
+                data={prepareExportData()} 
+                filename={`sales-analytics-${selectedPeriod}`}
+                disabled={!report}
+              />
             </div>
           </div>
         </div>

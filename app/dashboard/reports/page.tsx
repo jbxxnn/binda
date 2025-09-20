@@ -17,6 +17,7 @@ import {
   ArrowRight,
   Loader
 } from "lucide-react";
+import { reportExporter, ExportData } from "@/lib/export-utils";
 import Link from "next/link";
 
 interface ReportSummary {
@@ -109,6 +110,32 @@ export default function ReportsPage() {
     }).format(amount);
   };
 
+  const handleExportAll = async (format: 'pdf' | 'excel' | 'csv') => {
+    if (!reportSummary) return;
+
+    const reports: Array<{ data: ExportData; filename: string }> = [
+      {
+        data: {
+          title: 'Business Summary',
+          period: 'Current Period',
+          summary: [
+            { label: 'Total Revenue', value: reportSummary.totalRevenue },
+            { label: 'Total Expenses', value: reportSummary.totalExpenses },
+            { label: 'Net Profit', value: reportSummary.netProfit },
+            { label: 'Outstanding Invoices', value: reportSummary.outstandingInvoices },
+            { label: 'Overdue Invoices', value: reportSummary.overdueInvoices },
+            { label: 'Total Customers', value: reportSummary.totalCustomers }
+          ],
+          tables: [],
+          charts: []
+        },
+        filename: 'business-summary'
+      }
+    ];
+
+    reportExporter.exportAllReports(reports, format);
+  };
+
   const reports = [
     {
       title: "Profit & Loss Statement",
@@ -172,9 +199,23 @@ export default function ReportsPage() {
               <h1 className="text-2xl font-medium">Reports</h1>
             </div>
             <div className="flex items-center space-x-4">
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => handleExportAll('pdf')}
+                disabled={!reportSummary}
+              >
                 <Download className="h-4 w-4 mr-2" />
-                Export All
+                Export All PDF
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => handleExportAll('excel')}
+                disabled={!reportSummary}
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Export All Excel
               </Button>
             </div>
           </div>
@@ -284,17 +325,29 @@ export default function ReportsPage() {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-4">
-                  <Button variant="outline">
+                  <Button 
+                    variant="outline"
+                    onClick={() => handleExportAll('pdf')}
+                    disabled={!reportSummary}
+                  >
                     <Download className="h-4 w-4 mr-2" />
-                    Export P&L
+                    Export All PDF
                   </Button>
-                  <Button variant="outline">
+                  <Button 
+                    variant="outline"
+                    onClick={() => handleExportAll('excel')}
+                    disabled={!reportSummary}
+                  >
                     <Download className="h-4 w-4 mr-2" />
-                    Export Cash Flow
+                    Export All Excel
                   </Button>
-                  <Button variant="outline">
+                  <Button 
+                    variant="outline"
+                    onClick={() => handleExportAll('csv')}
+                    disabled={!reportSummary}
+                  >
                     <Download className="h-4 w-4 mr-2" />
-                    Export All Reports
+                    Export All CSV
                   </Button>
                 </div>
               </CardContent>
