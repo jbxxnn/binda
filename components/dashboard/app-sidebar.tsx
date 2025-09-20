@@ -5,7 +5,7 @@ import {
   Users,
   DollarSign,
   FileText,
-  BarChart3,
+  // BarChart3,
   Settings2,
   HelpCircle,
   MessageSquare,
@@ -64,11 +64,11 @@ const data = {
       url: "/dashboard/categories",
       icon: Building2,
     },
-    {
-      title: "Analytics",
-      url: "/dashboard/analytics",
-      icon: BarChart3,
-    },
+    // {
+    //   title: "Analytics",
+    //   url: "/dashboard/analytics",
+    //   icon: BarChart3,
+    // },
     {
       title: "Reports",
       url: "/dashboard/reports",

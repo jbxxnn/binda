@@ -32,7 +32,7 @@ import {
   Send,
   Eye,
   Calendar,
-  DollarSign,
+  // DollarSign,
   User,
   Loader,
   // TrendingUp,
@@ -465,7 +465,7 @@ export default function InvoicesPage() {
           const amount = row.getValue<number>("amount");
           return (
             <div className="flex items-center gap-1">
-              <DollarSign className="w-4 h-4" />
+              {/* <DollarSign className="w-4 h-4" /> */}
               <span className="text-sm font-medium text-gray-900">
                 {formatCurrency(amount)}
               </span>

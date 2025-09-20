@@ -29,7 +29,7 @@ import {
   Trash2,
   // Plus,
   // Minus,
-  DollarSign,
+  // DollarSign,
   Calendar,
   Loader,
   TrendingUp,
@@ -356,7 +356,7 @@ export default function TransactionsPage() {
           
           return (
             <div className="flex items-center gap-1">
-              <DollarSign className="w-4 h-4" />
+              {/* <DollarSign className="w-4 h-4" /> */}
               <span className={`text-sm font-medium ${colorClass}`}>
                 {transaction.type === 'income' ? '+' : '-'}{formatCurrency(amount)}
               </span>

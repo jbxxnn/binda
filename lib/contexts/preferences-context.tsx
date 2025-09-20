@@ -78,7 +78,6 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
     // Check if preferences are still loading
     if (!currencyCode || currencyCode === 'USD') {
       console.warn('Currency not loaded yet or still USD, using NGN as fallback');
-      const fallbackCurrency = 'NGN';
       const fallbackSymbol = '₦';
       const formattedNumber = new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 2,
@@ -150,7 +149,7 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
       const result = `${symbol}${formattedNumber}`;
       console.log('Final formatted currency:', result);
       return result;
-    } catch (error) {
+    } catch {
       // Fallback formatting if number formatting fails
       const result = `${symbol}${amount.toFixed(2)}`;
       console.log('Fallback formatted currency:', result);

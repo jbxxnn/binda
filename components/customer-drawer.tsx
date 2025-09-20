@@ -7,6 +7,7 @@ import { X, Edit,
   FileText, DollarSign, CreditCard, TrendingUp, TrendingDown, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { usePreferences } from "@/lib/contexts/preferences-context";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
@@ -45,6 +46,7 @@ interface CustomerDrawerProps {
 }
 
 export function CustomerDrawer({ customer, isOpen, onClose, onDelete }: CustomerDrawerProps) {
+  const { formatCurrency, formatDate } = usePreferences();
   const [activeTab, setActiveTab] = useState<'basic' | 'contacts' | 'activities' | 'tasks'>('basic');
   const [activities, setActivities] = useState<Activity[]>([]);
   const [isLoadingActivities, setIsLoadingActivities] = useState(false);
@@ -62,23 +64,9 @@ export function CustomerDrawer({ customer, isOpen, onClose, onDelete }: Customer
     return name?.split(' ').map(n => n[0]).join('').toUpperCase() || '?';
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric'
-    });
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(amount);
-  };
 
   const formatActivityDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return formatDate(dateString, {
       month: 'short',
       day: 'numeric',
       year: 'numeric',

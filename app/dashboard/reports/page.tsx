@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { usePreferences } from "@/lib/contexts/preferences-context";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 // import { Badge } from "@/components/ui/badge";
@@ -30,6 +31,7 @@ interface ReportSummary {
 }
 
 export default function ReportsPage() {
+  const { formatCurrency } = usePreferences();
   const [reportSummary, setReportSummary] = useState<ReportSummary | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -103,12 +105,6 @@ export default function ReportsPage() {
     }
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(amount);
-  };
 
   const handleExportAll = async (format: 'pdf' | 'excel' | 'csv') => {
     if (!reportSummary) return;
