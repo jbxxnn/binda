@@ -17,7 +17,7 @@ import Link from "next/link";
 import { ExportDropdown } from "@/components/export-dropdown";
 import { ExportData } from "@/lib/export-utils";
 
-interface AccountBalance {
+interface AccountBalance extends Record<string, unknown> {
   account_type: string;
   account_name: string;
   account_code: string;
@@ -80,7 +80,7 @@ export default function BalanceSheetPage() {
           business_uuid: businesses.id,
           balance_date: selectedDate
         })
-        .single();
+        .single() as { data: { total_assets: number; total_liabilities: number; total_equity: number; is_balanced: boolean } | null };
 
       // Get detailed balance sheet data
       const { data: balanceData } = await supabase
@@ -107,9 +107,9 @@ export default function BalanceSheetPage() {
       }
 
       // Group accounts by type
-      const assets = balanceData.filter(account => account.account_type === 'asset' && account.balance_amount !== 0);
-      const liabilities = balanceData.filter(account => account.account_type === 'liability' && account.balance_amount !== 0);
-      const equity = balanceData.filter(account => account.account_type === 'equity' && account.balance_amount !== 0);
+      const assets = balanceData.filter((account: AccountBalance) => account.account_type === 'asset' && account.balance_amount !== 0);
+      const liabilities = balanceData.filter((account: AccountBalance) => account.account_type === 'liability' && account.balance_amount !== 0);
+      const equity = balanceData.filter((account: AccountBalance) => account.account_type === 'equity' && account.balance_amount !== 0);
 
       setReport({
         summary: {

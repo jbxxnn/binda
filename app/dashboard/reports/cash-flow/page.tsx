@@ -17,7 +17,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { ExportDropdown } from "@/components/export-dropdown";
 import { ExportData } from "@/lib/export-utils";
 
-interface CashFlowData {
+interface CashFlowData extends Record<string, unknown> {
   period: string;
   cash_in: number;
   cash_out: number;
