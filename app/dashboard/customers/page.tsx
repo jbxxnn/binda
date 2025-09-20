@@ -29,7 +29,7 @@ import {
   Edit,
   Trash2,
   User,
-  Building2,
+  // Building2,
   Calendar,
   MapPin,
   Loader
@@ -50,12 +50,46 @@ interface Customer {
   state?: string;
   zip_code?: string;
   country?: string;
+  // Subscription fields
+  subscription_status?: 'none' | 'active' | 'paused' | 'cancelled' | 'expired';
+  subscription_plan?: string;
+  subscription_amount?: number;
+  subscription_currency?: string;
+  subscription_interval?: 'daily' | 'weekly' | 'monthly' | 'quarterly' | 'yearly';
+  subscription_start_date?: string;
+  subscription_end_date?: string;
+  subscription_next_billing_date?: string;
+  subscription_auto_renew?: boolean;
+  subscription_notes?: string;
 }
 
 type FormState = "idle" | "loading" | "success";
 
+interface FormData {
+  name: string;
+  email: string;
+  phone: string;
+  customer_type: "individual" | "business";
+  notes: string;
+  address: string;
+  city: string;
+  state: string;
+  zip_code: string;
+  country: string;
+  subscription_status: "none" | "active" | "paused" | "cancelled" | "expired";
+  subscription_plan: string;
+  subscription_amount: number;
+  subscription_currency: string;
+  subscription_interval: "daily" | "weekly" | "monthly" | "quarterly" | "yearly";
+  subscription_start_date: string;
+  subscription_end_date: string;
+  subscription_next_billing_date: string;
+  subscription_auto_renew: boolean;
+  subscription_notes: string;
+}
+
 export default function CustomersPage() {
-  const { formatDate } = usePreferences();
+  const { formatDate, formatCurrency } = usePreferences();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [formState, setFormState] = useState<FormState>("idle");
@@ -71,7 +105,7 @@ export default function CustomersPage() {
     customerId: "",
     customerName: ""
   });
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
     phone: "",
@@ -81,7 +115,18 @@ export default function CustomersPage() {
     city: "",
     state: "",
     zip_code: "",
-    country: "US"
+    country: "US",
+    // Subscription fields
+    subscription_status: "none",
+    subscription_plan: "",
+    subscription_amount: 0,
+    subscription_currency: "USD",
+    subscription_interval: "monthly",
+    subscription_start_date: "",
+    subscription_end_date: "",
+    subscription_next_billing_date: "",
+    subscription_auto_renew: true,
+    subscription_notes: ""
   });
 
   useEffect(() => {
@@ -229,6 +274,17 @@ export default function CustomersPage() {
           state: formData.state || null,
           zip_code: formData.zip_code || null,
           country: formData.country || null,
+          // Subscription fields
+          subscription_status: formData.subscription_status,
+          subscription_plan: formData.subscription_plan || null,
+          subscription_amount: formData.subscription_amount || null,
+          subscription_currency: formData.subscription_currency,
+          subscription_interval: formData.subscription_interval,
+          subscription_start_date: formData.subscription_start_date || null,
+          subscription_end_date: formData.subscription_end_date || null,
+          subscription_next_billing_date: formData.subscription_next_billing_date || null,
+          subscription_auto_renew: formData.subscription_auto_renew,
+          subscription_notes: formData.subscription_notes || null,
         })
         .select()
         .single();
@@ -260,7 +316,18 @@ export default function CustomersPage() {
           city: "",
           state: "",
           zip_code: "",
-          country: "US"
+          country: "US",
+          // Reset subscription fields
+          subscription_status: "none",
+          subscription_plan: "",
+          subscription_amount: 0,
+          subscription_currency: "USD",
+          subscription_interval: "monthly",
+          subscription_start_date: "",
+          subscription_end_date: "",
+          subscription_next_billing_date: "",
+          subscription_auto_renew: true,
+          subscription_notes: ""
         });
       }, 2000);
 
@@ -340,7 +407,7 @@ export default function CustomersPage() {
           const phone = row.getValue<string>("phone");
           return (
             <div className="flex items-center space-x-1">
-              <span className="text-sm">🇺🇸</span>
+              {/* <span className="text-sm">🇺🇸</span> */}
               <span className="text-sm text-gray-900">{phone || 'No phone'}</span>
             </div>
           );
@@ -352,28 +419,78 @@ export default function CustomersPage() {
         },
         enableColumnFilter: true,
       },
+      // {
+      //   id: "type",
+      //   accessorKey: "customer_type",
+      //   header: ({ column }) => (
+      //     <DataTableColumnHeader column={column} title="Type" />
+      //   ),
+      //   cell: ({ row }) => {
+      //     const customer = row.original;
+      //     const type = customer.customer_type;
+      //     const Icon = type === "business" ? Building2 : User;
+      //     return (
+      //       <Badge variant="outline" className="capitalize">
+      //         <Icon className="w-3 h-3 mr-1" />
+      //         {type === "business" ? "Business" : "Individual"}
+      //       </Badge>
+      //     );
+      //   },
+      //   meta: {
+      //     label: "Type",
+      //     variant: "multiSelect",
+      //     options: [
+      //       { label: "Individual", value: "individual", icon: User },
+      //       { label: "Business", value: "business", icon: Building2 },
+      //     ],
+      //   },
+      //   enableColumnFilter: true,
+      // },
       {
-        id: "type",
-        accessorKey: "customer_type",
+        id: "subscription",
+        accessorKey: "subscription_status",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Type" />
+          <DataTableColumnHeader column={column} title="Subscription" />
         ),
         cell: ({ row }) => {
-          const type = row.getValue<string>("type");
-          const Icon = type === "business" ? Building2 : User;
+          const customer = row.original;
+          const status = customer.subscription_status || 'none';
+          const plan = customer.subscription_plan;
+          const amount = customer.subscription_amount;
+          
+          if (status === 'none') {
+            return <span className="text-sm text-gray-500">No subscription</span>;
+          }
+          
+          const statusColors = {
+            active: 'bg-green-100 text-green-800',
+            paused: 'bg-yellow-100 text-yellow-800',
+            cancelled: 'bg-red-100 text-red-800',
+            expired: 'bg-gray-100 text-gray-800'
+          };
+          
           return (
-            <Badge variant="outline" className="capitalize">
-              <Icon className="w-3 h-3 mr-1" />
-              {type === "business" ? "Business" : "Individual"}
-            </Badge>
+            <div className="space-y-1">
+              <Badge className={`${statusColors[status]} capitalize hover:bg-green-200 hover:text-green-800`}>
+                {status}
+              </Badge>
+              {plan && (
+                <div className="text-xs text-gray-600">
+                  {plan} {amount ? `(${formatCurrency(amount)})` : ''}
+                </div>
+              )}
+            </div>
           );
         },
         meta: {
-          label: "Type",
+          label: "Subscription",
           variant: "multiSelect",
           options: [
-            { label: "Individual", value: "individual", icon: User },
-            { label: "Business", value: "business", icon: Building2 },
+            { label: "No Subscription", value: "none" },
+            { label: "Active", value: "active" },
+            { label: "Paused", value: "paused" },
+            { label: "Cancelled", value: "cancelled" },
+            { label: "Expired", value: "expired" },
           ],
         },
         enableColumnFilter: true,
@@ -465,7 +582,7 @@ export default function CustomersPage() {
         },
       },
     ],
-    [handleDeleteClick]
+    [handleDeleteClick, formatDate]
   );
 
   const { table } = useDataTable({
@@ -512,7 +629,8 @@ export default function CustomersPage() {
         showCloseButton={formState !== "success"}
         showSuccess={formState === "success"}
         openChild={
-          <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <div className="max-h-[70vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+            <form onSubmit={handleSubmit} className="p-6 space-y-4">
             <div className="space-y-2">
               <label htmlFor="name" className="block text-sm font-medium text-muted-foreground">
                 Name *
@@ -564,7 +682,7 @@ export default function CustomersPage() {
               <select
                 id="customer_type"
                 value={formData.customer_type}
-                onChange={(e) => setFormData(prev => ({ ...prev, customer_type: e.target.value }))}
+                onChange={(e) => setFormData(prev => ({ ...prev, customer_type: e.target.value as "individual" | "business" }))}
                 className="w-full px-3 py-2 border border-brand-tropical rounded-md shadow-sm focus:outline-none focus:ring-brand-tropical focus:border-brand-tropical"
               >
                 <option value="individual">Individual</option>
@@ -614,11 +732,154 @@ export default function CustomersPage() {
               />
             </div>
 
+            {/* Subscription Section */}
+            <div className="border-t pt-4">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Subscription Details</h3>
+              
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label htmlFor="subscription_status" className="block text-sm font-medium text-muted-foreground">
+                    Subscription Status
+                  </label>
+                  <select
+                    id="subscription_status"
+                    value={formData.subscription_status}
+                    onChange={(e) => setFormData(prev => ({ ...prev, subscription_status: e.target.value as 'none' | 'active' | 'paused' | 'cancelled' | 'expired' }))}
+                    className="w-full px-3 py-2 border border-brand-tropical rounded-md shadow-sm focus:outline-none focus:ring-brand-tropical focus:border-brand-tropical"
+                  >
+                    <option value="none">No Subscription</option>
+                    <option value="active">Active</option>
+                    <option value="paused">Paused</option>
+                    <option value="cancelled">Cancelled</option>
+                    <option value="expired">Expired</option>
+                  </select>
+                </div>
+
+                {formData.subscription_status !== 'none' && (
+                  <>
+                    <div className="grid gap-4 grid-cols-2">
+                      <div className="space-y-2">
+                        <label htmlFor="subscription_plan" className="block text-sm font-medium text-muted-foreground">
+                          Plan Name
+                        </label>
+                        <input
+                          type="text"
+                          id="subscription_plan"
+                          value={formData.subscription_plan}
+                          onChange={(e) => setFormData(prev => ({ ...prev, subscription_plan: e.target.value }))}
+                          placeholder="e.g., Basic Plan, Premium Plan"
+                          className="w-full px-3 py-2 border border-brand-tropical rounded-md shadow-sm focus:outline-none focus:ring-brand-tropical focus:border-brand-tropical"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label htmlFor="subscription_amount" className="block text-sm font-medium text-muted-foreground">
+                          Amount
+                        </label>
+                        <input
+                          type="number"
+                          id="subscription_amount"
+                          value={formData.subscription_amount}
+                          onChange={(e) => setFormData(prev => ({ ...prev, subscription_amount: parseFloat(e.target.value) || 0 }))}
+                          min="0"
+                          step="0.01"
+                          className="w-full px-3 py-2 border border-brand-tropical rounded-md shadow-sm focus:outline-none focus:ring-brand-tropical focus:border-brand-tropical"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid gap-4 grid-cols-2">
+                      <div className="space-y-2">
+                        <label htmlFor="subscription_currency" className="block text-sm font-medium text-muted-foreground">
+                          Currency
+                        </label>
+                        <select
+                          id="subscription_currency"
+                          value={formData.subscription_currency}
+                          onChange={(e) => setFormData(prev => ({ ...prev, subscription_currency: e.target.value }))}
+                          className="w-full px-3 py-2 border border-brand-tropical rounded-md shadow-sm focus:outline-none focus:ring-brand-tropical focus:border-brand-tropical"
+                        >
+                          <option value="USD">USD - US Dollar</option>
+                          <option value="EUR">EUR - Euro</option>
+                          <option value="GBP">GBP - British Pound</option>
+                          <option value="NGN">NGN - Nigerian Naira</option>
+                          <option value="ZAR">ZAR - South African Rand</option>
+                          <option value="KES">KES - Kenyan Shilling</option>
+                          <option value="GHS">GHS - Ghanaian Cedi</option>
+                        </select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label htmlFor="subscription_interval" className="block text-sm font-medium text-muted-foreground">
+                          Billing Interval
+                        </label>
+                        <select
+                          id="subscription_interval"
+                          value={formData.subscription_interval}
+                          onChange={(e) => setFormData(prev => ({ ...prev, subscription_interval: e.target.value as 'daily' | 'weekly' | 'monthly' | 'quarterly' | 'yearly' }))}
+                          className="w-full px-3 py-2 border border-brand-tropical rounded-md shadow-sm focus:outline-none focus:ring-brand-tropical focus:border-brand-tropical"
+                        >
+                          <option value="daily">Daily</option>
+                          <option value="weekly">Weekly</option>
+                          <option value="monthly">Monthly</option>
+                          <option value="quarterly">Quarterly</option>
+                          <option value="yearly">Yearly</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="grid gap-4 grid-cols-2">
+                      <div className="space-y-2">
+                        <label htmlFor="subscription_start_date" className="block text-sm font-medium text-muted-foreground">
+                          Start Date
+                        </label>
+                        <input
+                          type="date"
+                          id="subscription_start_date"
+                          value={formData.subscription_start_date}
+                          onChange={(e) => setFormData(prev => ({ ...prev, subscription_start_date: e.target.value }))}
+                          className="w-full px-3 py-2 border border-brand-tropical rounded-md shadow-sm focus:outline-none focus:ring-brand-tropical focus:border-brand-tropical"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label htmlFor="subscription_next_billing_date" className="block text-sm font-medium text-muted-foreground">
+                          Next Billing Date
+                        </label>
+                        <input
+                          type="date"
+                          id="subscription_next_billing_date"
+                          value={formData.subscription_next_billing_date}
+                          onChange={(e) => setFormData(prev => ({ ...prev, subscription_next_billing_date: e.target.value }))}
+                          className="w-full px-3 py-2 border border-brand-tropical rounded-md shadow-sm focus:outline-none focus:ring-brand-tropical focus:border-brand-tropical"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label htmlFor="subscription_notes" className="block text-sm font-medium text-muted-foreground">
+                        Subscription Notes
+                      </label>
+                      <textarea
+                        id="subscription_notes"
+                        value={formData.subscription_notes}
+                        onChange={(e) => setFormData(prev => ({ ...prev, subscription_notes: e.target.value }))}
+                        rows={2}
+                        placeholder="Additional notes about this subscription..."
+                        className="w-full px-3 py-2 border border-brand-tropical rounded-md shadow-sm focus:outline-none focus:ring-brand-tropical focus:border-brand-tropical"
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+
             <PopoverFormButton
               loading={formState === "loading"}
               text="Add Customer"
             />
-          </form>
+            </form>
+          </div>
         }
         successChild={
           <PopoverFormSuccess

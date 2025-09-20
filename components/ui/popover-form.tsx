@@ -54,7 +54,12 @@ export function PopoverForm({
               layoutId={`${title}-wrapper`}
               className="absolute right-[10px] md:right-4 top-0 z-50 p-1 overflow-hidden bg-muted shadow-[0_0_0_1px_rgba(0,0,0,0.08),0px_1px_2px_rgba(0,0,0,0.04)] outline-none"
               ref={ref}
-              style={{ borderRadius: 10, width, height }}
+              style={{ 
+                borderRadius: 10, 
+                width, 
+                height: height === "auto" ? "auto" : height,
+                maxHeight: height === "auto" ? "80vh" : undefined
+              }}
             >
             {/* opacity-50 */}
 
@@ -103,9 +108,15 @@ export function PopoverForm({
                   }}
                   key="open-child"
                   style={{ borderRadius: 10 }}
-                  className="h-full border bg-white dark:bg-[#121212] z-20 "
+                  className={`${height === "auto" ? "max-h-[80vh] overflow-y-auto" : "h-full overflow-hidden flex flex-col"} border bg-white dark:bg-[#121212] z-20`}
                 >
-                  {openChild}
+                  {height === "auto" ? (
+                    openChild
+                  ) : (
+                    <div className="flex-1 overflow-y-auto">
+                      {openChild}
+                    </div>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>

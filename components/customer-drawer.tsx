@@ -25,6 +25,17 @@ interface Customer {
   state?: string;
   zip_code?: string;
   country?: string;
+  // Subscription fields
+  subscription_status?: 'none' | 'active' | 'paused' | 'cancelled' | 'expired';
+  subscription_plan?: string;
+  subscription_amount?: number;
+  subscription_currency?: string;
+  subscription_interval?: 'daily' | 'weekly' | 'monthly' | 'quarterly' | 'yearly';
+  subscription_start_date?: string;
+  subscription_end_date?: string;
+  subscription_next_billing_date?: string;
+  subscription_auto_renew?: boolean;
+  subscription_notes?: string;
 }
 
 interface Activity {
@@ -47,7 +58,7 @@ interface CustomerDrawerProps {
 
 export function CustomerDrawer({ customer, isOpen, onClose, onDelete }: CustomerDrawerProps) {
   const { formatCurrency, formatDate } = usePreferences();
-  const [activeTab, setActiveTab] = useState<'basic' | 'contacts' | 'activities' | 'tasks'>('basic');
+  const [activeTab, setActiveTab] = useState<'basic' | 'subscription' | 'activities' | 'tasks'>('basic');
   const [activities, setActivities] = useState<Activity[]>([]);
   const [isLoadingActivities, setIsLoadingActivities] = useState(false);
 
@@ -261,14 +272,14 @@ export function CustomerDrawer({ customer, isOpen, onClose, onDelete }: Customer
                   Basic Information
                 </button>
                 <button 
-                  onClick={() => setActiveTab('contacts')}
+                  onClick={() => setActiveTab('subscription')}
                   className={`flex-1 px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
-                    activeTab === 'contacts' 
+                    activeTab === 'subscription' 
                       ? 'text-gray-900 dark:text-white border-teal-500' 
                       : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white border-transparent'
                   }`}
                 >
-                  Contacts
+                  Subscription
                 </button>
                 <button 
                   onClick={() => setActiveTab('activities')}
@@ -382,12 +393,121 @@ export function CustomerDrawer({ customer, isOpen, onClose, onDelete }: Customer
                 </div>
               )}
 
-              {activeTab === 'contacts' && (
+
+              {activeTab === 'subscription' && (
                 <div className="space-y-6">
-                  <div className="text-center text-gray-500 dark:text-gray-400 py-8">
-                    <Phone className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>Contact management features coming soon</p>
-                  </div>
+                  {customer.subscription_status === 'none' || !customer.subscription_status ? (
+                    <div className="text-center text-gray-500 dark:text-gray-400 py-8">
+                      <CreditCard className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                      <p>No active subscription</p>
+                      <p className="text-sm mt-2">This customer doesn't have a subscription plan</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-6">
+                      {/* Subscription Status */}
+                      <div>
+                        <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Subscription Status</h3>
+                        <div className="flex items-center space-x-3">
+                          <Badge className={`${
+                            customer.subscription_status === 'active' ? 'bg-green-100 text-green-800' :
+                            customer.subscription_status === 'paused' ? 'bg-yellow-100 text-yellow-800' :
+                            customer.subscription_status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                            customer.subscription_status === 'expired' ? 'bg-gray-100 text-gray-800' :
+                            'bg-gray-100 text-gray-800'
+                          } capitalize`}>
+                            {customer.subscription_status}
+                          </Badge>
+                          {customer.subscription_auto_renew && customer.subscription_status === 'active' && (
+                            <Badge variant="outline" className="text-xs">
+                              Auto-renewal enabled
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Plan Details */}
+                      {customer.subscription_plan && (
+                        <div>
+                          <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Plan Details</h3>
+                          <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-lg font-semibold text-gray-900 dark:text-white">
+                                {customer.subscription_plan}
+                              </span>
+                              {customer.subscription_amount && (
+                                <span className="text-lg font-semibold text-gray-900 dark:text-white">
+                                  {formatCurrency(customer.subscription_amount)}
+                                </span>
+                              )}
+                            </div>
+                            {customer.subscription_interval && (
+                              <p className="text-sm text-gray-600 dark:text-gray-300 capitalize">
+                                Billed {customer.subscription_interval}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Billing Information */}
+                      <div>
+                        <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Billing Information</h3>
+                        <div className="space-y-3">
+                          {customer.subscription_start_date && (
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-gray-600 dark:text-gray-300">Start Date</span>
+                              <span className="text-sm text-gray-900 dark:text-white">
+                                {formatDate(customer.subscription_start_date)}
+                              </span>
+                            </div>
+                          )}
+                          {customer.subscription_next_billing_date && (
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-gray-600 dark:text-gray-300">Next Billing</span>
+                              <span className="text-sm text-gray-900 dark:text-white">
+                                {formatDate(customer.subscription_next_billing_date)}
+                              </span>
+                            </div>
+                          )}
+                          {customer.subscription_end_date && (
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-gray-600 dark:text-gray-300">End Date</span>
+                              <span className="text-sm text-gray-900 dark:text-white">
+                                {formatDate(customer.subscription_end_date)}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Subscription Notes */}
+                      {customer.subscription_notes && (
+                        <div>
+                          <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Subscription Notes</h3>
+                          <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
+                            <p className="text-sm text-gray-600 dark:text-gray-300">
+                              {customer.subscription_notes}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Quick Actions */}
+                      <div>
+                        <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Quick Actions</h3>
+                        <div className="grid grid-cols-2 gap-3">
+                          <Button variant="outline" size="sm" className="text-xs">
+                            <Edit className="h-3 w-3 mr-1" />
+                            Edit Plan
+                          </Button>
+                          <Button variant="outline" size="sm" className="text-xs">
+                            <CreditCard className="h-3 w-3 mr-1" />
+                            View Billing
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -473,6 +593,12 @@ export function CustomerDrawer({ customer, isOpen, onClose, onDelete }: Customer
             {/* Footer Actions */}
             <div className="p-6 border-t border-gray-200 dark:border-gray-700">
               <div className="flex space-x-3">
+                <Button variant="outline" className="flex-1" asChild>
+                  <Link href={`/dashboard/customers/${customer.id}`}>
+                    <User className="h-4 w-4 mr-2" />
+                    View Details
+                  </Link>
+                </Button>
                 <Button variant="outline" className="flex-1" asChild>
                   <Link href={`/dashboard/customers/${customer.id}/edit`}>
                     <Edit className="h-4 w-4 mr-2" />
