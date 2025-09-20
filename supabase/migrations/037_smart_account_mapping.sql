@@ -150,7 +150,7 @@ BEGIN
     UPDATE account_balances 
     SET balance_amount = 0
     WHERE business_id = business_uuid 
-    AND balance_date = balance_date;
+    AND account_balances.balance_date = balance_date;
     
     -- Process each transaction
     FOR transaction_record IN 
@@ -170,7 +170,7 @@ BEGIN
             VALUES (business_uuid, cash_account_id, balance_date, 
                    COALESCE((SELECT balance_amount FROM account_balances 
                             WHERE business_id = business_uuid AND account_id = cash_account_id 
-                            AND balance_date = balance_date), 0) + transaction_record.amount)
+                            AND account_balances.balance_date = balance_date), 0) + transaction_record.amount)
             ON CONFLICT (business_id, account_id, balance_date)
             DO UPDATE SET balance_amount = account_balances.balance_amount + transaction_record.amount;
             
@@ -179,7 +179,7 @@ BEGIN
             VALUES (business_uuid, mapped_account_id, balance_date, 
                    COALESCE((SELECT balance_amount FROM account_balances 
                             WHERE business_id = business_uuid AND account_id = mapped_account_id 
-                            AND balance_date = balance_date), 0) + transaction_record.amount)
+                            AND account_balances.balance_date = balance_date), 0) + transaction_record.amount)
             ON CONFLICT (business_id, account_id, balance_date)
             DO UPDATE SET balance_amount = account_balances.balance_amount + transaction_record.amount;
             
@@ -190,7 +190,7 @@ BEGIN
             VALUES (business_uuid, mapped_account_id, balance_date, 
                    COALESCE((SELECT balance_amount FROM account_balances 
                             WHERE business_id = business_uuid AND account_id = mapped_account_id 
-                            AND balance_date = balance_date), 0) + transaction_record.amount)
+                            AND account_balances.balance_date = balance_date), 0) + transaction_record.amount)
             ON CONFLICT (business_id, account_id, balance_date)
             DO UPDATE SET balance_amount = account_balances.balance_amount + transaction_record.amount;
             
@@ -199,7 +199,7 @@ BEGIN
             VALUES (business_uuid, cash_account_id, balance_date, 
                    COALESCE((SELECT balance_amount FROM account_balances 
                             WHERE business_id = business_uuid AND account_id = cash_account_id 
-                            AND balance_date = balance_date), 0) - transaction_record.amount)
+                            AND account_balances.balance_date = balance_date), 0) - transaction_record.amount)
             ON CONFLICT (business_id, account_id, balance_date)
             DO UPDATE SET balance_amount = account_balances.balance_amount - transaction_record.amount;
         END IF;

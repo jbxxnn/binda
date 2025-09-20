@@ -74,11 +74,12 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
     console.log('formatCurrency called with:', { amount, currencyCode, preferences });
     console.log('Current preferences state:', preferences);
     console.log('Currency from preferences:', preferences.currency);
+    console.log('Currency code type:', typeof currencyCode, 'Value:', currencyCode);
     
     // Check if preferences are still loading
-    if (!currencyCode || currencyCode === 'USD') {
-      console.warn('Currency not loaded yet or still USD, using NGN as fallback');
-      const fallbackSymbol = '₦';
+    if (!currencyCode) {
+      console.warn('Currency not loaded yet, using USD as fallback');
+      const fallbackSymbol = '$';
       const formattedNumber = new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
