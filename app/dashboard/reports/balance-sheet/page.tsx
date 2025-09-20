@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { usePreferences } from "@/lib/contexts/preferences-context";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -39,6 +40,7 @@ interface BalanceSheetReport {
 }
 
 export default function BalanceSheetPage() {
+  const { formatCurrency } = usePreferences();
   const [report, setReport] = useState<BalanceSheetReport | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
@@ -130,12 +132,6 @@ export default function BalanceSheetPage() {
     }
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(amount);
-  };
 
   const prepareExportData = (): ExportData => {
     if (!report) {

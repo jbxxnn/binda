@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { usePreferences } from "@/lib/contexts/preferences-context";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -40,6 +41,7 @@ interface CashFlowReport {
 }
 
 export default function CashFlowPage() {
+  const { formatCurrency } = usePreferences();
   const [report, setReport] = useState<CashFlowReport | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedPeriod, setSelectedPeriod] = useState<'3months' | '6months' | '1year' | 'all'>('3months');
@@ -154,12 +156,6 @@ export default function CashFlowPage() {
     });
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(amount);
-  };
 
   const prepareExportData = (): ExportData => {
     if (!report) {

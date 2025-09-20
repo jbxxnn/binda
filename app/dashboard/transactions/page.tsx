@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { usePreferences } from "@/lib/contexts/preferences-context";
 import { Button } from "@/components/ui/button";
 // import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -57,6 +58,7 @@ interface Transaction {
 type FormState = "idle" | "loading" | "success";
 
 export default function TransactionsPage() {
+  const { formatCurrency, formatDate } = usePreferences();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [formState, setFormState] = useState<FormState>("idle");
@@ -163,20 +165,7 @@ export default function TransactionsPage() {
     fetchData();
   }, []);
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(amount);
-  };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    });
-  };
 
   const handleDeleteClick = useCallback((transactionId: string, description: string) => {
     setDeleteDialog({

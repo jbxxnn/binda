@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { usePreferences } from "@/lib/contexts/preferences-context";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -65,6 +66,7 @@ interface DashboardData {
 }
 
 export default function DashboardPage() {
+  const { formatCurrency, formatDate } = usePreferences();
   const [data, setData] = useState<DashboardData>({
     todaySales: { count: 0, amount: 0, changePercent: 0 },
     todayExpenses: { count: 0, amount: 0, changePercent: 0 },
@@ -354,29 +356,17 @@ export default function DashboardPage() {
     // This effect just ensures the UI updates properly
   }, [timePeriod]);
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(amount);
-  };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric'
-    });
-  };
 
   const formatDateForSelector = (date: Date) => {
-    return date.toLocaleDateString('en-US', {
+    return formatDate(date, {
       day: '2-digit',
       // month: 'short'
     });
   };
 
   const formatDayForSelector = (date: Date) => {
-    return date.toLocaleDateString('en-US', {
+    return formatDate(date, {
       // weekday: 'short'
       month: 'short'
     });

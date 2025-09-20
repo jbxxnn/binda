@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { usePreferences } from "@/lib/contexts/preferences-context";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 // import { Badge } from "@/components/ui/badge";
@@ -50,6 +51,7 @@ interface ProfitLossReport {
 }
 
 export default function ProfitLossPage() {
+  const { formatCurrency } = usePreferences();
   const [report, setReport] = useState<ProfitLossReport | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedPeriod, setSelectedPeriod] = useState<'3months' | '6months' | '1year' | 'all'>('3months');
@@ -192,12 +194,6 @@ export default function ProfitLossPage() {
       .sort((a, b) => b.amount - a.amount);
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(amount);
-  };
 
   const formatPercentage = (value: number) => {
     return `${value.toFixed(1)}%`;

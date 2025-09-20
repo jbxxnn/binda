@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { usePreferences } from "@/lib/contexts/preferences-context";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
@@ -69,6 +70,7 @@ interface InvoiceItem {
 }
 
 export default function InvoiceDetailPage() {
+  const { formatCurrency, formatDate } = usePreferences();
   const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [invoiceItems, setInvoiceItems] = useState<InvoiceItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -171,20 +173,6 @@ export default function InvoiceDetailPage() {
     fetchInvoice();
   }, [invoiceId, router]);
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(amount);
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric'
-    });
-  };
 
   const getStatusColor = (status: string) => {
     switch (status) {

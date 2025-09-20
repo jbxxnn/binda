@@ -3,6 +3,7 @@ import { DM_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Toaster } from "sonner";
+import { PreferencesProvider } from "@/lib/contexts/preferences-context";
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -38,8 +39,10 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {children}
-            <Toaster position="bottom-right" richColors />
+            <PreferencesProvider>
+              {children}
+              <Toaster position="bottom-right" richColors />
+            </PreferencesProvider>
           </ThemeProvider>
         </NuqsAdapter>
       </body>

@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import { usePreferences } from "@/lib/contexts/preferences-context"
 
 import {
   ChartConfig,
@@ -33,6 +34,7 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export function WeeklySalesChart({ data }: WeeklySalesChartProps) {
+  const { formatCurrency } = usePreferences();
   const [activeChart, setActiveChart] = React.useState<keyof typeof chartConfig>("sales")
 
   const total = React.useMemo(
@@ -42,13 +44,6 @@ export function WeeklySalesChart({ data }: WeeklySalesChartProps) {
     }),
     [data]
   )
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(amount);
-  }
 
   return (
     <div className="py-0 bg-brand-snowman border border-brand-tropical rounded-sm">

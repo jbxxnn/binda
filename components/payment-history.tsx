@@ -1,7 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { createClient } from "@/lib/supabase/client"
+import { usePreferences } from "@/lib/contexts/preferences-context"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -45,16 +46,13 @@ interface PaymentHistoryProps {
 }
 
 export function PaymentHistory({ invoiceId, invoiceNumber, totalAmount }: PaymentHistoryProps) {
+  const { formatCurrency, formatDate } = usePreferences()
   const [payments, setPayments] = useState<Payment[]>([])
   const [paymentSummary, setPaymentSummary] = useState<PaymentSummary | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [showPaymentForm, setShowPaymentForm] = useState(false)
 
-  useEffect(() => {
-    fetchPaymentData()
-  }, [invoiceId])
-
-  const fetchPaymentData = async () => {
+  const fetchPaymentData = useCallback(async () => {
     try {
       const supabase = createClient()
       
@@ -87,26 +85,16 @@ export function PaymentHistory({ invoiceId, invoiceNumber, totalAmount }: Paymen
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [invoiceId])
+
+  useEffect(() => {
+    fetchPaymentData()
+  }, [fetchPaymentData])
 
   const handlePaymentRecorded = () => {
     fetchPaymentData()
   }
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(amount)
-  }
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    })
-  }
 
   const getStatusIcon = (status: string) => {
     switch (status) {

@@ -78,20 +78,6 @@ const data = {
       title: "Settings",
       url: "/dashboard/settings",
       icon: Settings2,
-      items: [
-        {
-          title: "Business Profile",
-          url: "/dashboard/settings/profile",
-        },
-        {
-          title: "Billing",
-          url: "/dashboard/settings/billing",
-        },
-        {
-          title: "Team",
-          url: "/dashboard/settings/team",
-        },
-      ],
     },
   ],
   navSecondary: [
