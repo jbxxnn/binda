@@ -18,10 +18,10 @@ import {
   User,
   Building2,
   CreditCard,
-  Calendar,
+  // Calendar,
   MessageCircle,
   Mail,
-  Phone,
+  // Phone,
   MapPin
 } from "lucide-react";
 import Link from "next/link";
@@ -55,7 +55,7 @@ interface Customer {
 export default function EditCustomerPage() {
   const params = useParams();
   const router = useRouter();
-  const { formatCurrency, formatDate } = usePreferences();
+  const { formatCurrency, formatDate } = usePreferences(); // eslint-disable-line @typescript-eslint/no-unused-vars
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -204,7 +204,7 @@ export default function EditCustomerPage() {
     }
   };
 
-  const formatDateForInput = (dateString: string) => {
+  const formatDateForInput = (dateString: string) => { // eslint-disable-line @typescript-eslint/no-unused-vars
     if (!dateString) return "";
     return new Date(dateString).toISOString().split('T')[0];
   };
@@ -226,7 +226,7 @@ export default function EditCustomerPage() {
         <div className="text-center">
           <User className="h-12 w-12 mx-auto mb-4 text-gray-400" />
           <h2 className="text-xl font-semibold text-gray-900 mb-2">Customer Not Found</h2>
-          <p className="text-gray-600 mb-4">The customer you're looking for doesn't exist.</p>
+          <p className="text-gray-600 mb-4">The customer you&apos;re looking for doesn&apos;t exist.</p>
           <Button asChild>
             <Link href="/dashboard/customers">
               <ArrowLeft className="h-4 w-4 mr-2" />
