@@ -400,7 +400,7 @@ export function CustomerDrawer({ customer, isOpen, onClose, onDelete }: Customer
                     <div className="text-center text-gray-500 dark:text-gray-400 py-8">
                       <CreditCard className="h-12 w-12 mx-auto mb-4 opacity-50" />
                       <p>No active subscription</p>
-                      <p className="text-sm mt-2">This customer doesn't have a subscription plan</p>
+                      <p className="text-sm mt-2">This customer doesn&apos;t have a subscription plan</p>
                     </div>
                   ) : (
                     <div className="space-y-6">
