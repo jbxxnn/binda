@@ -7,7 +7,7 @@ import { usePreferences } from "@/lib/contexts/preferences-context";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+// import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import {
   ArrowLeft,
@@ -25,7 +25,7 @@ import {
   TrendingUp,
   TrendingDown,
   Clock,
-  MoreHorizontal,
+  // MoreHorizontal,
   Download,
   Share
 } from "lucide-react";
@@ -282,7 +282,7 @@ export default function CustomerDetailPage() {
         <div className="text-center">
           <User className="h-12 w-12 mx-auto mb-4 text-gray-400" />
           <h2 className="text-xl font-semibold text-gray-900 mb-2">Customer Not Found</h2>
-          <p className="text-gray-600 mb-4">The customer you're looking for doesn't exist.</p>
+          <p className="text-gray-600 mb-4">The customer you&apos;re looking for doesn&apos;t exist.</p>
           <Button asChild>
             <Link href="/dashboard/customers">
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -460,7 +460,7 @@ export default function CustomerDetailPage() {
                   <div className="text-center text-gray-500 py-8">
                     <CreditCard className="h-12 w-12 mx-auto mb-4 opacity-50" />
                     <p>No active subscription</p>
-                    <p className="text-sm mt-2">This customer doesn't have a subscription plan</p>
+                    <p className="text-sm mt-2">This customer doesn&apos;t have a subscription plan</p>
                   </div>
                 ) : (
                   <div className="space-y-6">
