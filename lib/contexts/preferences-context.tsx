@@ -16,6 +16,7 @@ interface UserPreferences {
 interface PreferencesContextType {
   preferences: UserPreferences;
   updatePreferences: (newPreferences: Partial<UserPreferences>) => void;
+  refreshPreferences: () => Promise<void>;
   formatCurrency: (amount: number) => string;
   formatDate: (date: Date | string | number, options?: Intl.DateTimeFormatOptions) => string;
   formatDateTime: (date: Date | string | number, options?: Intl.DateTimeFormatOptions) => string;
@@ -260,6 +261,7 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
   const value: PreferencesContextType = {
     preferences,
     updatePreferences,
+    refreshPreferences: loadPreferences,
     formatCurrency,
     formatDate,
     formatDateTime,

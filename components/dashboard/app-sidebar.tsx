@@ -14,10 +14,11 @@ import {
   Building2,
   Receipt,
   FileBarChart,
+  History,
 } from "lucide-react"
 
 import { NavMain } from "@/components/dashboard/nav-main"
-import { NavProjects } from "@/components/dashboard/nav-projects"
+// import { NavProjects } from "@/components/dashboard/nav-projects"
 import { NavSecondary } from "@/components/dashboard/nav-secondary"
 import { NavUser } from "@/components/dashboard/nav-user"
 import {
@@ -82,13 +83,18 @@ const data = {
   ],
   navSecondary: [
     {
+      title: "Changelog",
+      url: "/changelog",
+      icon: History,
+    },
+    {
       title: "Support",
       url: "/support",
       icon: HelpCircle,
     },
     {
       title: "Feedback",
-      url: "/feedback",
+      url: "/dashboard/feedback",
       icon: MessageSquare,
     },
   ],
@@ -131,7 +137,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent className="px-2 bg-brand-underworld border-b border-brand-underworld w-full">
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        {/* <NavProjects projects={data.projects} /> */}
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter className="bg-brand-underworld border-t border-brand-underworld w-full">
