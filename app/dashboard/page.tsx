@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { usePreferences } from "@/lib/contexts/preferences-context";
+// import type { User } from "@supabase/supabase-js";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -92,6 +93,24 @@ export default function DashboardPage() {
     name: string;
     slug: string;
   } | null>(null);
+  // const [user, setUser] = useState<User | null>(null);
+
+  // Function to get time-based greeting
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 17) return "Good afternoon";
+    return "Good evening";
+  };
+
+  // Function to get user display name
+  // const getUserDisplayName = () => {
+  //   if (!user) return "";
+  //   return user.user_metadata?.full_name || 
+  //          user.user_metadata?.name || 
+  //          user.email?.split('@')[0] || 
+  //          "there";
+  // };
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -101,6 +120,9 @@ export default function DashboardPage() {
         // Get current user and business
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
+        
+        // Set user data
+        // setUser(user);
 
         const { data: businesses } = await supabase
           .from('businesses')
@@ -658,7 +680,11 @@ export default function DashboardPage() {
     <div className="flex flex-1 flex-col gap-6 p-6 bg-brand-lightning">
       {/* Welcome Section */}
       <div className="space-y-2 pb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Good morning! 👋</h1>
+        <h1 className="text-3xl font-bold tracking-tight">
+          {getGreeting()}
+          {/* {user ? `, ${getUserDisplayName()}` : ''} */}
+          ! 👋
+        </h1>
         <p className="text-muted-foreground">
           Here&apos;s what&apos;s happening with {business?.name || 'your business'} today.
         </p>

@@ -1,9 +1,11 @@
 "use client"
 
 import * as React from "react"
+import { useEffect, useState } from "react"
+import { createClient } from "@/lib/supabase/client"
 import {
   Users,
-  DollarSign,
+  // DollarSign,
   FileText,
   // BarChart3,
   Settings2,
@@ -33,11 +35,6 @@ import {
 } from "@/components/ui/sidebar"
 
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   navMain: [
     {
       title: "Dashboard",
@@ -108,6 +105,39 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const [business, setBusiness] = useState<{
+    name: string;
+    slug: string;
+  } | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBusiness = async () => {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (user) {
+          const { data: businesses } = await supabase
+            .from('businesses')
+            .select('name, slug')
+            .eq('owner_id', user.id)
+            .single();
+          
+          if (businesses) {
+            setBusiness(businesses);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching business:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBusiness();
+  }, []);
+
   return (
     <Sidebar 
       variant="floating" 
@@ -118,13 +148,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader className="bg-brand-underworld w-full border-b border-brand-underworld">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
+            <SidebarMenuButton size="lg" asChild className="text-brand-tropical hover:text-brand-hunter hover:bg-brand-snowman">
               <a href="/dashboard">
-                <div className="bg-primary text-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <DollarSign className="size-4" />
-                </div>
+                {/* <div className="bg-primary text-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg"> */}
+                  {/* <DollarSign className="size-4" /> */}
+                {/* </div> */}
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Binda</span>
+                  <span className="truncate font-semibold text-brand-tropical">
+                    {loading ? 'Loading...' : business?.name || 'Binda'}
+                  </span>
                   <span className="truncate text-xs text-muted-foreground">Business Management</span>
                 </div>
               </a>
@@ -141,7 +173,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter className="bg-brand-underworld border-t border-brand-underworld w-full">
-        <NavUser user={data.user} />
+        <NavUser />
       </SidebarFooter>
     </Sidebar>
   )

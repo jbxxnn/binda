@@ -1,6 +1,8 @@
 "use client";
 
-// import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 // import { Input } from "@/components/ui/input";
 import { 
@@ -8,7 +10,8 @@ import {
   Gift, 
   Bell, 
   // ChevronDown,
-  User,
+  User as UserIcon,
+  LogOut,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -17,17 +20,48 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  SidebarTrigger, 
+  // SidebarTrigger, 
   useSidebar } from "@/components/ui/sidebar";
 import { AnimatedMenuIcon } from "@/components/icons/menu/animated-menu-icon";
 
 export function AppHeader() {
   const { toggleSidebar, state } = useSidebar();
   const isMenuOpen = state === "collapsed";
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const handleMenuClick = () => {
     toggleSidebar();
   };
+
+  useEffect(() => {
+    const getUser = async () => {
+      const supabase = createClient();
+      const { data: { user }, error } = await supabase.auth.getUser();
+      
+      if (error) {
+        console.error('Error fetching user:', error);
+      } else {
+        setUser(user);
+      }
+      setLoading(false);
+    };
+
+    getUser();
+  }, []);
+
+  const handleLogout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    window.location.href = '/';
+  };
+
+  const displayName = user?.user_metadata?.full_name || 
+                     user?.user_metadata?.name || 
+                     user?.email?.split('@')[0] || 
+                     'User';
+  
+  const userId = user?.id?.slice(-7) || '';
 
   return (
     <header className="h-[4.1rem] border-b bg-brand-underworld border-brand-underworld px-6 flex items-center justify-between">
@@ -42,7 +76,7 @@ export function AppHeader() {
           />
         </div>
         <div className="hidden md:flex">
-          <SidebarTrigger />
+          {/* <SidebarTrigger /> */}
         </div>
         {/* <h1 className="text-xl font-bold text-brand-hunter">Binda</h1> */}
       </div>
@@ -78,11 +112,15 @@ export function AppHeader() {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="flex items-center space-x-2 h-auto p-2 hover:bg-gray-50">
               <div className="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
-                <User className="h-4 w-4 text-teal-700" />
+                <UserIcon className="h-4 w-4 text-teal-700" />
               </div>
               <div className="hidden md:block text-left">
-                <div className="text-sm font-medium text-brand-lightning">User Name</div>
-                <div className="text-xs text-gray-500">ID: 1234567</div>
+                <div className="text-sm font-medium text-brand-lightning">
+                  {loading ? 'Loading...' : displayName}
+                </div>
+                <div className="text-xs text-gray-500">
+                  {loading ? '...' : `ID: ${userId}`}
+                </div>
               </div>
               {/* <ChevronDown className="h-4 w-4 text-gray-400" /> */}
             </Button>
@@ -91,7 +129,10 @@ export function AppHeader() {
             <DropdownMenuItem>Profile</DropdownMenuItem>
             <DropdownMenuItem>Settings</DropdownMenuItem>
             <DropdownMenuItem>Billing</DropdownMenuItem>
-            <DropdownMenuItem className="text-red-600">Sign Out</DropdownMenuItem>
+            <DropdownMenuItem className="text-red-600" onClick={handleLogout}>
+              <LogOut className="h-4 w-4 mr-2" />
+              Sign Out
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
