@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 
 interface UserPreferences {
   notifications: {
@@ -19,6 +19,8 @@ interface PreferencesContextType {
   formatCurrency: (amount: number) => string;
   formatDate: (date: Date | string | number, options?: Intl.DateTimeFormatOptions) => string;
   formatDateTime: (date: Date | string | number, options?: Intl.DateTimeFormatOptions) => string;
+  isLoading: boolean;
+  error: string | null;
 }
 
 const defaultPreferences: UserPreferences = {
@@ -36,35 +38,100 @@ const PreferencesContext = createContext<PreferencesContextType | undefined>(und
 
 export function PreferencesProvider({ children }: { children: React.ReactNode }) {
   const [preferences, setPreferences] = useState<UserPreferences>(defaultPreferences);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Load preferences from localStorage on mount
-  useEffect(() => {
-    const savedPreferences = localStorage.getItem('userPreferences');
-    console.log('Loading preferences from localStorage:', savedPreferences);
-    if (savedPreferences) {
-      try {
-        const parsed = JSON.parse(savedPreferences);
-        // Remove theme property if it exists (migration)
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { theme, ...preferencesWithoutTheme } = parsed;
-        console.log('Parsed preferences:', preferencesWithoutTheme);
-        setPreferences(preferencesWithoutTheme);
-      } catch (error) {
-        console.error('Error loading preferences:', error);
+  // Load preferences from database on mount
+  const loadPreferences = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const response = await fetch('/api/preferences');
+      if (!response.ok) {
+        throw new Error('Failed to fetch preferences');
       }
-    } else {
-      console.log('No saved preferences found, using defaults');
+      
+      const data = await response.json();
+      console.log('Loaded preferences from database:', data.preferences);
+      
+      // Remove theme property if it exists (migration)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { theme, ...preferencesWithoutTheme } = data.preferences;
+      setPreferences(preferencesWithoutTheme);
+      
+      // Also save to localStorage as backup
+      localStorage.setItem('userPreferences', JSON.stringify(preferencesWithoutTheme));
+    } catch (error) {
+      console.error('Error loading preferences from database:', error);
+      setError('Failed to load preferences');
+      
+      // Fallback to localStorage
+      const savedPreferences = localStorage.getItem('userPreferences');
+      if (savedPreferences) {
+        try {
+          const parsed = JSON.parse(savedPreferences);
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { theme, ...preferencesWithoutTheme } = parsed;
+          console.log('Using localStorage fallback:', preferencesWithoutTheme);
+          setPreferences(preferencesWithoutTheme);
+        } catch (localError) {
+          console.error('Error loading from localStorage fallback:', localError);
+        }
+      }
+    } finally {
+      setIsLoading(false);
     }
   }, []);
 
-  // Save preferences to localStorage when they change
   useEffect(() => {
-    localStorage.setItem('userPreferences', JSON.stringify(preferences));
-  }, [preferences]);
+    loadPreferences();
+  }, [loadPreferences]);
 
-  const updatePreferences = (newPreferences: Partial<UserPreferences>) => {
-    setPreferences(prev => ({ ...prev, ...newPreferences }));
-  };
+  const updatePreferences = useCallback(async (newPreferences: Partial<UserPreferences>) => {
+    try {
+      setError(null);
+      
+      // Update local state immediately for better UX
+      const updatedPreferences = { ...preferences, ...newPreferences };
+      setPreferences(updatedPreferences);
+      
+      // Save to localStorage as backup
+      localStorage.setItem('userPreferences', JSON.stringify(updatedPreferences));
+      
+      // Save to database
+      const response = await fetch('/api/preferences', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ preferences: updatedPreferences }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to save preferences to database');
+      }
+      
+      const data = await response.json();
+      console.log('Preferences saved to database:', data.preferences);
+    } catch (error) {
+      console.error('Error saving preferences to database:', error);
+      setError('Failed to save preferences');
+      
+      // Revert local state on error
+      const savedPreferences = localStorage.getItem('userPreferences');
+      if (savedPreferences) {
+        try {
+          const parsed = JSON.parse(savedPreferences);
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { theme, ...preferencesWithoutTheme } = parsed;
+          setPreferences(preferencesWithoutTheme);
+        } catch (localError) {
+          console.error('Error reverting to localStorage:', localError);
+        }
+      }
+    }
+  }, [preferences]);
 
   // Currency formatting function
   const formatCurrency = (amount: number): string => {
@@ -195,7 +262,9 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
     updatePreferences,
     formatCurrency,
     formatDate,
-    formatDateTime
+    formatDateTime,
+    isLoading,
+    error
   };
 
   return (
