@@ -17,7 +17,7 @@ export default function Header() {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-brand-underworld/95 backdrop-blur-sm border-b border-gray-200">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-brand-underworld/95 backdrop-blur-sm border-b border-brand-hunter">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -93,7 +93,7 @@ export default function Header() {
                     Sign In
                   </Button>
                 </Link>
-                <Link href="/auth/signup" onClick={() => setIsMenuOpen(false)}>
+                <Link href="/auth/sign-up" onClick={() => setIsMenuOpen(false)}>
                   <Button className="w-full bg-brand-mint text-brand-hunter hover:bg-brand-mint/90 rounded-sm">
                     Get Started
                   </Button>

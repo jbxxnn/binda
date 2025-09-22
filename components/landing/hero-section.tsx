@@ -4,17 +4,21 @@
 // import { ArrowRight } from "lucide-react";
 // import { ChevronDown } from "lucide-react";
 // import Link from "next/link";
-// import Image from "next/image";
+import Image from "next/image";
 
 export default function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Dark Overlay */}
-      <div className="absolute inset-0 bg-gray-900">
-        <div className="absolute inset-0 bg-black/60"></div>
-        {/* Professional office background - you can replace this with an actual image */}
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900"></div>
-        {/* <Image src="/placeholder.svg" alt="Hero Background" fill className="object-cover" /> */}
+      <div className="absolute inset-0">
+        <Image 
+          src="/lifestyle-woman-office (1).jpg" 
+          alt="Professional woman in modern office" 
+          fill 
+          className="object-cover" 
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-underworld/90 via-brand-underworld/60 to-brand-hunter/20"></div>
       </div>
       
       {/* Content */}
@@ -46,16 +50,16 @@ export default function HeroSection() {
         <div className="text-left mb-12 lg:mb-0">
 
             {/* Main Headline */}
-            <h1 className="text-4xl md:text-7xl text-brand-tropical mb-6 leading-tight">
+            <h1 className="text-4xl md:text-7xl text-white mb-6 leading-tight font-bold drop-shadow-lg">
             Your Business,
               <br />
-              <span className="text-brand-tropical">Organized with</span>
+              <span className="text-brand-tropical drop-shadow-lg">Organized with</span>
               <br />
               Simplicity and Ease
             </h1>
             
             {/* Sub-headline */}
-            <p className="text-md md:text-xl text-brand-tropical mb-8 max-w-lg">
+            <p className="text-md md:text-xl text-white/90 mb-8 max-w-lg drop-shadow-md">
               Smart, compliant, and stress-free business solutions tailored to your business&apos;s needs.
             </p>
 

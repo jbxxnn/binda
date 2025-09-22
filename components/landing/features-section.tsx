@@ -3,19 +3,9 @@
 import { useState } from "react";
 // import { Card, CardContent } from "@/components/ui/card";
 import { 
-  BarChart3, 
-  Users, 
-  FileText, 
-//   CreditCard, 
-  Shield, 
-//   Smartphone,
-//   Zap,
-//   TrendingUp,
-//   Settings,
-//   Globe,
-//   Clock,
   CheckCircle
 } from "lucide-react";
+import Image from "next/image";
 
 export default function FeaturesSection() {
   const [activeFeature, setActiveFeature] = useState("smart-solutions");
@@ -25,7 +15,7 @@ export default function FeaturesSection() {
       id: "smart-solutions",
       title: "Smart Financial Solutions",
       description: "Advanced accounting and financial management tools",
-      icon: BarChart3,
+      image: "/dashboard.png",
       details: [
         "Real-time financial reporting",
         "Automated expense tracking",
@@ -37,7 +27,7 @@ export default function FeaturesSection() {
       id: "customer-management",
       title: "Customer Management",
       description: "Comprehensive customer relationship management",
-      icon: Users,
+      image: "/customer.png",
       details: [
         "Customer database management",
         "Subscription tracking",
@@ -49,7 +39,7 @@ export default function FeaturesSection() {
       id: "invoicing-billing",
       title: "Invoicing & Billing",
       description: "Streamlined invoicing and payment processing",
-      icon: FileText,
+      image: "/invoice.png",
       details: [
         "Professional invoice templates",
         "Automated payment reminders",
@@ -57,23 +47,11 @@ export default function FeaturesSection() {
         "Recurring billing setup"
       ]
     },
-    // {
-    //   id: "payment-processing",
-    //   title: "Payment Processing",
-    //   description: "Secure and efficient payment handling",
-    //   icon: CreditCard,
-    //   details: [
-    //     "Multiple payment methods",
-    //     "Secure transaction processing",
-    //     "Payment analytics",
-    //     "Refund management"
-    //   ]
-    // },
     {
       id: "security-compliance",
       title: "Security & Compliance",
       description: "Enterprise-grade security and compliance",
-      icon: Shield,
+      image: "/settings.png",
       details: [
         "Bank-level encryption",
         "GDPR compliance",
@@ -81,18 +59,6 @@ export default function FeaturesSection() {
         "Data backup & recovery"
       ]
     }
-    // {
-    //   id: "mobile-access",
-    //   title: "Mobile Access",
-    //   description: "Access your business anywhere, anytime",
-    //   icon: Smartphone,
-    //   details: [
-    //     "Mobile-responsive design",
-    //     "Offline capabilities",
-    //     "Push notifications",
-    //     "Mobile app integration"
-    //   ]
-    // }
   ];
 
   const activeFeatureData = features.find(f => f.id === activeFeature);
@@ -112,7 +78,6 @@ export default function FeaturesSection() {
         {/* Feature Tabs */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-12">
           {features.map((feature) => {
-            // const Icon = feature.icon;
             return (
               <button
                 key={feature.id}
@@ -123,7 +88,6 @@ export default function FeaturesSection() {
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
-                {/* <Icon className="w-8 h-8 mx-auto mb-2" /> */}
                 <div className="text-sm font-medium">{feature.title}</div>
               </button>
             );
@@ -149,13 +113,20 @@ export default function FeaturesSection() {
                 ))}
               </ul>
             </div>
-            <div className="bg-gradient-to-br from-brand-tropical/10 to-brand-hunter/10 rounded-2xl p-8 min-h-[500px] flex items-center justify-center">
-              <div className="text-center">
-                <activeFeatureData.icon className="w-24 h-24 text-brand-tropical mx-auto mb-4" />
-                <h4 className="text-xl font-semibold text-gray-900 mb-2">
+            <div className="bg-gradient-to-br from-brand-tropical/10 to-brand-hunter/10 rounded-sm p-0 pb-8 min-h-[500px] flex items-center justify-center">
+              <div className="text-center w-full">
+                <div className="w-full h-96 mx-auto mb-4 relative">
+                  <Image
+                    src={activeFeatureData.image}
+                    alt={activeFeatureData.title}
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+                <h4 className="text-xl font-semibold text-gray-900 mb-2 px-8">
                   {activeFeatureData.title}
                 </h4>
-                <p className="text-gray-600">
+                <p className="text-gray-600 px-8">
                   Experience the power of {activeFeatureData.title.toLowerCase()}
                 </p>
               </div>
