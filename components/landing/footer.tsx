@@ -38,18 +38,18 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-gray-900 text-white">
+    <footer className="bg-brand-underworld text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
           {/* Logo and Description */}
           <div className="lg:col-span-2">
             <div className="flex items-center mb-4">
               <div className="w-8 h-8 bg-brand-tropical rounded-lg flex items-center justify-center mr-2">
-                <span className="text-white font-bold text-lg">B</span>
+                <span className="text-brand-hunter font-bold text-lg">B</span>
               </div>
               <span className="text-xl font-bold">Binda</span>
             </div>
-            <p className="text-gray-400 mb-6 max-w-md">
+            <p className="text-brand-tropical mb-6 max-w-md">
               The all-in-one business management platform that helps you streamline operations, 
               manage customers, and grow your business with confidence.
             </p>
@@ -60,7 +60,7 @@ export default function Footer() {
                   <Link
                     key={social.name}
                     href={social.href}
-                    className="text-gray-400 hover:text-brand-tropical transition-colors"
+                    className="text-brand-tropical hover:text-brand-tropical transition-colors"
                     aria-label={social.name}
                   >
                     <Icon className="w-5 h-5" />
@@ -78,7 +78,7 @@ export default function Footer() {
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-gray-400 hover:text-white transition-colors"
+                    className="text-brand-tropical hover:text-white transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -95,7 +95,7 @@ export default function Footer() {
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-gray-400 hover:text-white transition-colors"
+                    className="text-brand-tropical hover:text-white transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -112,7 +112,7 @@ export default function Footer() {
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-gray-400 hover:text-white transition-colors"
+                    className="text-brand-tropical hover:text-white transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -129,7 +129,7 @@ export default function Footer() {
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-gray-400 hover:text-white transition-colors"
+                    className="text-brand-tropical hover:text-white transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -142,10 +142,10 @@ export default function Footer() {
         {/* Bottom Section */}
         <div className="border-t border-gray-800 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400 text-sm">
-              © 2024 Binda. All rights reserved.
+            <p className="text-brand-tropical text-sm">
+              © 2025 Binda. All rights reserved.
             </p>
-            <p className="text-gray-400 text-sm mt-2 md:mt-0">
+            <p className="text-brand-tropical text-sm mt-2 md:mt-0">
               Made with ❤️ for growing businesses
             </p>
           </div>
