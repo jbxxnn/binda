@@ -178,7 +178,7 @@ export default function ReportsPage() {
   if (isLoading) {
     return (
       <div className="flex flex-1 items-center justify-center h-full">
-        <Loader className="h-6 w-6 animate-spin" />
+        <Loader className="h-8 w-8 animate-spin" />
       </div>
     );
   }
@@ -198,6 +198,7 @@ export default function ReportsPage() {
               <Button 
                 variant="outline" 
                 size="sm"
+                className="hidden md:block"
                 onClick={() => handleExportAll('pdf')}
                 disabled={!reportSummary}
               >
@@ -206,6 +207,7 @@ export default function ReportsPage() {
               </Button>
               <Button 
                 variant="outline" 
+                className="hidden md:block"
                 size="sm"
                 onClick={() => handleExportAll('excel')}
                 disabled={!reportSummary}
@@ -225,11 +227,11 @@ export default function ReportsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+                    <CardTitle className="text-sm font-regular">Total Revenue</CardTitle>
                     <TrendingUp className="h-4 w-4 text-green-600" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-green-600">
+                    <div className="text-2xl font-regular text-green-600">
                       {formatCurrency(reportSummary.totalRevenue)}
                     </div>
                   </CardContent>
@@ -237,11 +239,11 @@ export default function ReportsPage() {
 
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Expenses</CardTitle>
+                    <CardTitle className="text-sm font-regular">Total Expenses</CardTitle>
                     <DollarSign className="h-4 w-4 text-red-600" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-red-600">
+                    <div className="text-2xl font-regular text-red-600">
                       {formatCurrency(reportSummary.totalExpenses)}
                     </div>
                   </CardContent>
@@ -249,7 +251,7 @@ export default function ReportsPage() {
 
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Net Profit</CardTitle>
+                    <CardTitle className="text-sm font-regular">Net Profit</CardTitle>
                     <BarChart3 className="h-4 w-4 text-blue-600" />
                   </CardHeader>
                   <CardContent>
@@ -261,11 +263,11 @@ export default function ReportsPage() {
 
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Outstanding Invoices</CardTitle>
+                    <CardTitle className="text-sm font-regular">Outstanding Invoices</CardTitle>
                     <Calendar className="h-4 w-4 text-orange-600" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-orange-600">
+                    <div className="text-2xl font-regular text-orange-600">
                       {reportSummary.outstandingInvoices}
                     </div>
                     <p className="text-xs text-muted-foreground">
@@ -290,7 +292,7 @@ export default function ReportsPage() {
                           </div>
                           <div>
                             <CardTitle className="text-lg">{report.title}</CardTitle>
-                            <CardDescription className="text-sm">
+                            <CardDescription className="text-sm text-gray-600">
                               {report.description}
                             </CardDescription>
                           </div>
@@ -314,8 +316,8 @@ export default function ReportsPage() {
             {/* Quick Actions */}
             <Card>
               <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-lg font-regular text-gray-900">Quick Actions</CardTitle>
+                <CardDescription className="text-sm text-gray-600">
                   Generate and export reports quickly
                 </CardDescription>
               </CardHeader>

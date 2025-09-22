@@ -622,7 +622,7 @@ export default function InvoicesPage() {
   if (isLoading) {
     return (
       <div className="flex flex-1 items-center justify-center h-full">
-       <Loader className="h-4 w-4 animate-spin" />
+       <Loader className="h-8 w-8 animate-spin" />
       </div>
     );
   }
@@ -759,13 +759,13 @@ export default function InvoicesPage() {
         </div>
 
         {/* Status Summary Cards */}
-        <div className="px-6 py-4">
+        <div className="px-6 py-4 hidden md:block">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
             <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Draft</p>
-                  <p className="text-2xl font-bold text-gray-900">{statusSummary.draft}</p>
+                  <p className="text-2xl font-regular text-gray-900">{statusSummary.draft}</p>
                 </div>
                 <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
                   <FileText className="w-4 h-4 text-gray-600" />
@@ -777,7 +777,7 @@ export default function InvoicesPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Sent</p>
-                  <p className="text-2xl font-bold text-gray-900">{statusSummary.sent}</p>
+                  <p className="text-2xl font-regular text-gray-900">{statusSummary.sent}</p>
                 </div>
                 <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                   <Send className="w-4 h-4 text-blue-600" />
@@ -789,7 +789,7 @@ export default function InvoicesPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Paid</p>
-                  <p className="text-2xl font-bold text-gray-900">{statusSummary.paid}</p>
+                  <p className="text-2xl font-regular text-gray-900">{statusSummary.paid}</p>
                 </div>
                 <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
                   <CheckCircle className="w-4 h-4 text-green-600" />
@@ -801,7 +801,7 @@ export default function InvoicesPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Overdue</p>
-                  <p className="text-2xl font-bold text-gray-900">{statusSummary.overdue}</p>
+                  <p className="text-2xl font-regular text-gray-900">{statusSummary.overdue}</p>
                 </div>
                 <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
                   <AlertCircle className="w-4 h-4 text-red-600" />
@@ -813,7 +813,7 @@ export default function InvoicesPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Cancelled</p>
-                  <p className="text-2xl font-bold text-gray-900">{statusSummary.cancelled}</p>
+                  <p className="text-2xl font-regular text-gray-900">{statusSummary.cancelled}</p>
                 </div>
                 <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
                   <X className="w-4 h-4 text-gray-600" />

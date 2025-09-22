@@ -602,7 +602,7 @@ export default function CustomersPage() {
   if (isLoading) {
     return (
       <div className="flex flex-1 items-center justify-center h-full">
-       <Loader className="h-4 w-4 animate-spin" />
+       <Loader className="h-8 w-8 animate-spin" />
       </div>
     );
   }

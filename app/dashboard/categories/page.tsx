@@ -561,7 +561,7 @@ export default function CategoriesPage() {
   if (isLoading) {
     return (
       <div className="flex flex-1 items-center justify-center h-full">
-       <Loader className="h-4 w-4 animate-spin" />
+       <Loader className="h-8 w-8 animate-spin" />
       </div>
     );
   }
@@ -575,9 +575,6 @@ export default function CategoriesPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <h1 className="text-2xl font-medium">Categories</h1>
-              <div className="text-sm text-gray-600">
-                Toggle default categories on/off or create your own
-              </div>
             </div>
             <div className="flex items-center space-x-4">
               <PopoverForm
@@ -684,6 +681,9 @@ export default function CategoriesPage() {
         {/* Data Table */}
         <div className="flex-1 overflow-auto p-6 w-full max-w-full">
           <div className="data-table-container w-full max-w-full min-w-0 overflow-x-auto">
+          <div className="text-sm text-gray-600">
+                Toggle default categories on/off or create your own
+              </div>
             <DataTable table={table}>
               <DataTableToolbar table={table} />
             </DataTable>

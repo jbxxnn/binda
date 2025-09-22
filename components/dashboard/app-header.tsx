@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 // import { Input } from "@/components/ui/input";
 import { 
   // Search, 
-  Gift, 
-  Bell, 
+  // Gift, 
+  // Bell, 
   // ChevronDown,
   User as UserIcon,
   LogOut,
@@ -100,12 +100,7 @@ export function AppHeader() {
       {/* Right Side - User Actions & Profile */}
       <div className="flex items-center space-x-2 md:space-x-4">
         {/* Action Icons (hidden on mobile) */}
-        <Button variant="ghost" size="sm" className="hidden md:flex h-8 w-8 p-0">
-          <Gift className="h-4 w-4" />
-        </Button>
-        <Button variant="ghost" size="sm" className="hidden md:flex h-8 w-8 p-0">
-          <Bell className="h-4 w-4" />
-        </Button>
+      
 
         {/* User Profile Dropdown */}
         <DropdownMenu>

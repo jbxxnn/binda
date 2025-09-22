@@ -680,7 +680,7 @@ export default function DashboardPage() {
     <div className="flex flex-1 flex-col gap-6 p-6 bg-brand-lightning">
       {/* Welcome Section */}
       <div className="space-y-2 pb-8">
-        <h1 className="text-3xl font-bold tracking-tight">
+        <h1 className="text-3xl tracking-tight">
           {getGreeting()}
           {/* {user ? `, ${getUserDisplayName()}` : ''} */}
           ! 👋
@@ -725,7 +725,7 @@ export default function DashboardPage() {
                           : 'text-brand-tropical text-sm'
                       }`}
                     >
-                      <div className="font-bold">
+                      <div className="font-regular">
                         {timePeriod === 'day' && formatDateForSelector(date)}
                         {timePeriod === 'week' && `W${Math.ceil(date.getDate() / 7)}`}
                         {timePeriod === 'month' && date.toLocaleDateString('en-US', { month: 'short' })}
@@ -798,7 +798,7 @@ export default function DashboardPage() {
       <div className="grid gap-4 bg-[#ccd6c24d] p-6 rounded-sm border border-brand-tropical">
         <div>
           <div className="border-brand-tropical pb-12 px-0 md:px-8">
-            <div className="text-2xl font-bold">Performance Metrics</div>
+            <div className="text-2xl font-regular">Performance Metrics</div>
             <div className="text-sm text-muted-foreground">A snapshot of your business</div>
           </div>
            <div className="grid md:grid-cols-4 relative gap-12 md:gap-0">
@@ -806,7 +806,7 @@ export default function DashboardPage() {
              <div className="p-4 md:pl-8 h-20 flex flex-col justify-center relative">
                <div className="hidden md:block absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-brand-hunter to-transparent shadow-[0_0_8px_rgba(251,191,36,0.3)]"></div>
               <p className="text-sm font-medium text-green-800 mb-2">Sales Today</p>
-              <div className="text-3xl font-medium text-green-900 flex items-center gap-2">
+              <div className="text-3xl font-regular text-green-900 flex items-center gap-2">
               {formatCurrency(data.todaySales.amount)}
               </div>
               <div className="flex items-center gap-2"> 
@@ -828,7 +828,7 @@ export default function DashboardPage() {
              <div className="p-4 md:pl-8 h-20 flex flex-col justify-center relative">
                <div className="hidden md:block absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-brand-hunter to-transparent shadow-[0_0_8px_rgba(251,191,36,0.3)]"></div>
                <p className="text-sm font-medium text-red-800 mb-2">Expenses Today</p>
-              <div className="text-3xl font-medium text-red-900 flex items-center gap-2">
+              <div className="text-3xl font-regular text-red-900 flex items-center gap-2">
                 {formatCurrency(data.todayExpenses.amount)}
               </div>
               <div className="flex items-center gap-2">
@@ -850,7 +850,7 @@ export default function DashboardPage() {
              <div className="p-4 md:pl-8 h-20 flex flex-col justify-center relative">
                 <div className="hidden md:block absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-brand-hunter to-transparent shadow-[0_0_8px_rgba(251,191,36,0.3)]"></div>
                <p className="text-sm font-medium text-blue-800 mb-2">New Customers</p>
-              <div className="text-3xl font-medium text-blue-900 flex items-center gap-2">
+              <div className="text-3xl font-regular text-blue-900 flex items-center gap-2">
                 {data.todayNewCustomers.count}
               </div>
               <div className="flex items-center gap-2">
@@ -872,7 +872,7 @@ export default function DashboardPage() {
              <div className="p-4 md:pl-8 h-20 flex flex-col justify-center relative">
                {/* <div className="hidden md:block absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-amber-300 to-transparent shadow-[0_0_8px_rgba(251,191,36,0.3)]"></div> */}
                <p className="text-sm font-medium text-orange-800 mb-2">Outstanding</p>
-              <div className="text-3xl font-medium text-orange-900 flex items-center gap-2">
+              <div className="text-3xl font-regular text-orange-900 flex items-center gap-2">
                 {formatCurrency(data.outstandingInvoices.amount)}
               </div>
               <div className="flex items-center gap-2">
@@ -918,7 +918,7 @@ export default function DashboardPage() {
                   <div className="text-xs text-green-600">Money coming in</div>
                 </div>
               </div>
-              <div className="text-2xl font-bold text-green-900">
+              <div className="text-2xl font-regular text-green-900">
                 {formatCurrency(data.monthlyRevenue)}
               </div>
             </div>
@@ -931,7 +931,7 @@ export default function DashboardPage() {
                   <div className="text-xs text-red-600">Money going out</div>
                 </div>
               </div>
-              <div className="text-2xl font-bold text-red-900">
+              <div className="text-2xl font-regular text-red-900">
                 {formatCurrency(data.monthlyExpenses)}
               </div>
             </div>
@@ -944,7 +944,7 @@ export default function DashboardPage() {
                   <div className="text-xs text-gray-600">Revenue - Expenses</div>
                 </div>
               </div>
-              <div className={`text-2xl font-bold ${
+              <div className={`text-2xl font-regular ${
                 data.monthlyRevenue > data.monthlyExpenses ? 'text-green-600' : 'text-red-600'
               }`}>
                 {formatCurrency(data.monthlyRevenue - data.monthlyExpenses)}
@@ -962,15 +962,15 @@ export default function DashboardPage() {
         <div className="space-y-4 mt-4">
           <div className="grid gap-4">
             <div className="text-center p-2 bg-blue-50 rounded-sm flex items-center justify-start gap-4">
-              <div className="text-2xl font-bold text-blue-900">{data.newCustomersThisWeek}</div>
+            <div className="text-2xl font-regular text-blue-900">{data.newCustomersThisWeek}</div>
               <div className="text-sm text-blue-700">New customers this week</div>
             </div>
             <div className="text-center p-2 bg-green-50 rounded-sm flex items-center justify-start gap-4">
-              <div className="text-2xl font-bold text-green-900">{data.repeatCustomersThisWeek}</div>
+              <div className="text-2xl font-regular text-green-900">{data.repeatCustomersThisWeek}</div>
               <div className="text-sm text-green-700">Repeat customers this week</div>
             </div>
             <div className="text-center p-2 bg-purple-50 rounded-sm flex items-center justify-start gap-4">
-              <div className="text-2xl font-bold text-purple-900">{data.topCustomers.length}</div>
+              <div className="text-2xl font-regular text-purple-900">{data.topCustomers.length}</div>
               <div className="text-sm text-purple-700">Top customers tracked</div>
             </div>
           </div>
@@ -982,7 +982,7 @@ export default function DashboardPage() {
                 {data.topCustomers.map((customer, index) => (
                   <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
                     <span className="text-sm font-medium">{customer.name}</span>
-                    <span className="text-sm font-bold text-green-600">{formatCurrency(customer.total)}</span>
+                    <span className="text-sm font-regular text-green-600">{formatCurrency(customer.total)}</span>
                   </div>
                 ))}
               </div>
@@ -1019,7 +1019,7 @@ export default function DashboardPage() {
                         </div>
                       </div>
                     </div>
-                    <div className={`text-sm font-bold ${
+                    <div className={`text-sm font-regular ${
                       transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
                     }`}>
                       {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}

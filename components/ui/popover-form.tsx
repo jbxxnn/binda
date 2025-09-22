@@ -137,7 +137,7 @@ export function PopoverFormButton({
   return (
     <button
       type="submit"
-      className="ml-auto flex h-10 w-36 items-center justify-center overflow-hidden rounded-md bg-brand-hunter hover:bg-brand-underworld text-white"
+      className="ml-auto flex h-10 w-40 items-center justify-center overflow-hidden rounded-md bg-brand-hunter hover:bg-brand-underworld text-white"
     >
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.span

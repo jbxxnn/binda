@@ -356,7 +356,7 @@ export default function SettingsPage() {
     if ('Notification' in window) {
       const permission = await Notification.requestPermission();
       if (permission === 'granted') {
-        toast.success('Notification permission granted');
+        // toast.success('Notification permission granted');
         // Send a test notification
         new Notification('Binda Settings', {
           body: 'Notifications are now enabled! You\'ll receive updates about your business.',
@@ -380,16 +380,16 @@ export default function SettingsPage() {
   };
 
   // Test notification function
-  const testNotification = () => {
-    if ('Notification' in window && Notification.permission === 'granted') {
-      new Notification('Test Notification', {
-        body: 'This is a test notification from Binda!',
-        icon: '/favicon.ico'
-      });
-    } else {
-      toast.error('Please enable notifications first');
-    }
-  };
+  // const testNotification = () => {
+  //   if ('Notification' in window && Notification.permission === 'granted') {
+  //     new Notification('Test Notification', {
+  //       body: 'This is a test notification from Binda!',
+  //       icon: '/favicon.ico'
+  //     });
+  //   } else {
+  //     toast.error('Please enable notifications first');
+  //   }
+  // };
 
   const handleSaveAccountingSettings = async () => {
     try {
@@ -1238,7 +1238,7 @@ export default function SettingsPage() {
                               }))}
                             />
                           </div>
-                          <div className="flex items-center justify-between">
+                          {/* <div className="flex items-center justify-between">
                             <div>
                               <Label>Push Notifications</Label>
                               <p className="text-sm text-muted-foreground">Receive browser notifications</p>
@@ -1263,7 +1263,7 @@ export default function SettingsPage() {
                                 notifications: { ...prev.notifications, sms: checked }
                               }))}
                             />
-                          </div>
+                          </div> */}
                         </div>
                       </div>
 
@@ -1286,7 +1286,7 @@ export default function SettingsPage() {
                             </>
                           )}
                         </Button>
-                        {localPreferences.notifications.push && (
+                        {/* {localPreferences.notifications.push && (
                           <Button 
                             variant="outline" 
                             onClick={testNotification}
@@ -1295,7 +1295,7 @@ export default function SettingsPage() {
                             <MessageCircle className="h-4 w-4" />
                             Test Notification
                           </Button>
-                        )}
+                        )} */}
                       </div>
                     </CardContent>
                   </Card>
@@ -1665,9 +1665,9 @@ export default function SettingsPage() {
                         <CardDescription>Add an extra layer of security to your account</CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-4">
-                        <div className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="flex flex-col md:flex-row items-center justify-between p-4 border rounded-lg">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                            <div className="hidden md:block w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
                               <Shield className="h-5 w-5 text-orange-600" />
                             </div>
                             <div>
@@ -1679,9 +1679,9 @@ export default function SettingsPage() {
                             <span className="text-muted-foreground">Coming Soon</span>
                           </Button>
                         </div>
-                        <div className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="flex flex-col md:flex-row items-center justify-between p-4 border rounded-lg">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                            <div className="hidden md:block w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                               <Shield className="h-5 w-5 text-blue-600" />
                             </div>
                             <div>
@@ -1706,9 +1706,9 @@ export default function SettingsPage() {
                         <CardDescription>Manage your active login sessions</CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-4">
-                        <div className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="flex flex-col md:flex-row items-center justify-between p-4 border rounded-lg">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                            <div className="hidden md:block w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
                               <Shield className="h-5 w-5 text-green-600" />
                             </div>
                             <div>
@@ -1737,8 +1737,8 @@ export default function SettingsPage() {
                       </CardHeader>
                       <CardContent className="space-y-4">
                         <div className="space-y-3">
-                          <div className="flex items-center gap-3 p-3 border rounded-lg">
-                            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                          <div className="flex flex-col md:flex-row items-center gap-3 p-3 border rounded-lg">
+                            <div className="hidden md:block w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                               <Shield className="h-4 w-4 text-blue-600" />
                             </div>
                             <div className="flex-1">
@@ -1781,9 +1781,9 @@ export default function SettingsPage() {
                         <CardDescription>Set up account recovery options</CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-4">
-                        <div className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="flex flex-col md:flex-row items-center justify-between p-4 border rounded-lg">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                            <div className="hidden md:block w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
                               <Shield className="h-5 w-5 text-purple-600" />
                             </div>
                             <div>
@@ -1795,9 +1795,9 @@ export default function SettingsPage() {
                             <span className="text-muted-foreground">Coming Soon</span>
                           </Button>
                         </div>
-                        <div className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="flex flex-col md:flex-row items-center justify-between p-4 border rounded-lg">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
+                            <div className="hidden md:block w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
                               <Shield className="h-5 w-5 text-indigo-600" />
                             </div>
                             <div>
@@ -1828,9 +1828,9 @@ export default function SettingsPage() {
                       </CardHeader>
                       <CardContent className="space-y-6">
                         <div className="grid grid-cols-1 gap-4">
-                          <div className="flex items-center justify-between p-4 border rounded-lg">
+                          <div className="flex flex-col md:flex-row items-center justify-between p-4 border rounded-lg">
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                              <div className="hidden md:block w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                                 <Download className="h-5 w-5 text-blue-600" />
                               </div>
                               <div>
@@ -1843,9 +1843,9 @@ export default function SettingsPage() {
                             </Button>
                           </div>
 
-                          <div className="flex items-center justify-between p-4 border rounded-lg">
+                          <div className="flex flex-col md:flex-row items-center justify-between p-4 border rounded-lg">
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                              <div className="hidden md:block w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
                                 <Download className="h-5 w-5 text-green-600" />
                               </div>
                               <div>
@@ -1858,9 +1858,9 @@ export default function SettingsPage() {
                             </Button>
                           </div>
 
-                          <div className="flex items-center justify-between p-4 border rounded-lg">
+                          <div className="flex flex-col md:flex-row items-center justify-between p-4 border rounded-lg">
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                              <div className="hidden md:block w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
                                 <Download className="h-5 w-5 text-orange-600" />
                               </div>
                               <div>
@@ -1898,9 +1898,9 @@ export default function SettingsPage() {
                         <CardDescription>Automated backup and data protection</CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-4">
-                        <div className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="flex flex-col md:flex-row items-center justify-between p-4 border rounded-lg">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                            <div className="hidden md:block w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
                               <Shield className="h-5 w-5 text-purple-600" />
                             </div>
                             <div>
@@ -1913,9 +1913,9 @@ export default function SettingsPage() {
                           </Button>
                         </div>
 
-                        <div className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="flex flex-col md:flex-row items-center justify-between p-4 border rounded-lg">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
+                            <div className="hidden md:block w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
                               <Shield className="h-5 w-5 text-indigo-600" />
                             </div>
                             <div>
@@ -1940,9 +1940,9 @@ export default function SettingsPage() {
                         <CardDescription>Import data from other systems or previous exports</CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-4">
-                        <div className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="flex flex-col md:flex-row items-center justify-between p-4 border rounded-lg">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center">
+                            <div className="hidden md:block w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center">
                               <Download className="h-5 w-5 text-teal-600" />
                             </div>
                             <div>
@@ -1955,9 +1955,9 @@ export default function SettingsPage() {
                           </Button>
                         </div>
 
-                        <div className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="flex flex-col md:flex-row items-center justify-between p-4 border rounded-lg">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-cyan-100 rounded-full flex items-center justify-center">
+                            <div className="hidden md:block w-10 h-10 bg-cyan-100 rounded-full flex items-center justify-center">
                               <Download className="h-5 w-5 text-cyan-600" />
                             </div>
                             <div>
@@ -1982,9 +1982,9 @@ export default function SettingsPage() {
                         <CardDescription>Maintain and optimize your data</CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-4">
-                        <div className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="flex flex-col md:flex-row items-center justify-between p-4 border rounded-lg">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
+                            <div className="hidden md:block w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
                               <SettingsIcon className="h-5 w-5 text-yellow-600" />
                             </div>
                             <div>
@@ -1997,9 +1997,9 @@ export default function SettingsPage() {
                           </Button>
                         </div>
 
-                        <div className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="flex flex-col md:flex-row items-center justify-between p-4 border rounded-lg">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                            <div className="hidden md:block w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
                               <SettingsIcon className="h-5 w-5 text-red-600" />
                             </div>
                             <div>
@@ -2038,9 +2038,9 @@ export default function SettingsPage() {
                           </ul>
                         </div>
 
-                        <div className="flex items-center justify-between p-4 border border-red-200 rounded-lg bg-red-50">
+                          <div className="flex flex-col md:flex-row items-center justify-between p-4 border border-red-200 rounded-lg bg-red-50">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                            <div className="hidden md:block w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
                               <Trash2 className="h-5 w-5 text-red-600" />
                             </div>
                             <div>
