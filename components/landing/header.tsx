@@ -16,7 +16,7 @@ export default function Header() {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-brand-underworld/95 backdrop-blur-sm border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -25,7 +25,7 @@ export default function Header() {
               <div className="w-8 h-8 bg-brand-tropical rounded-lg flex items-center justify-center mr-2">
                 <span className="text-white font-bold text-lg">B</span>
               </div>
-              <span className="text-xl font-bold text-gray-900">Binda</span>
+              <span className="text-xl font-bold text-brand-tropical">Binda</span>
             </Link>
           </div>
 
@@ -35,7 +35,7 @@ export default function Header() {
               <Link
                 key={item.name}
                 href={item.href}
-                className="text-gray-700 hover:text-brand-tropical transition-colors"
+                className="text-brand-tropical hover:text-brand-mint transition-colors"
               >
                 {item.name}
               </Link>
@@ -45,12 +45,12 @@ export default function Header() {
           {/* Desktop CTA Buttons */}
           <div className="hidden md:flex items-center space-x-4">
             <Link href="/auth/login">
-              <Button variant="ghost" className="text-gray-700 hover:text-brand-tropical">
+              <Button variant="ghost" className="text-brand-tropical hover:text-brand-mint">
                 Sign In
               </Button>
             </Link>
             <Link href="/auth/signup">
-              <Button className="bg-brand-tropical text-white hover:bg-brand-tropical/90 rounded-sm">
+              <Button className="bg-brand-mint text-brand-hunter hover:bg-brand-mint/90 rounded-sm">
                 Get Started
               </Button>
             </Link>
@@ -60,7 +60,7 @@ export default function Header() {
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-700 hover:text-brand-tropical"
+              className="text-brand-tropical hover:text-brand-mint"
             >
               {isMenuOpen ? (
                 <X className="w-6 h-6" />
@@ -73,13 +73,13 @@ export default function Header() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t border-gray-200">
+          <div className="md:hidden min-h-screen">
+            <div className="px-2 pt-4 flex flex-col justify-between pb-3 space-y-1 border-t border-brand-hunter h-full">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="block px-3 py-2 text-gray-700 hover:text-brand-tropical transition-colors"
+                  className="block px-3 py-2 text-brand-tropical hover:text-brand-mint transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.name}
@@ -87,12 +87,12 @@ export default function Header() {
               ))}
               <div className="pt-4 space-y-2">
                 <Link href="/auth/login" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="ghost" className="w-full text-gray-700 hover:text-brand-tropical">
+                  <Button variant="ghost" className="w-full text-brand-tropical hover:text-brand-mint">
                     Sign In
                   </Button>
                 </Link>
                 <Link href="/auth/signup" onClick={() => setIsMenuOpen(false)}>
-                  <Button className="w-full bg-brand-tropical text-white hover:bg-brand-tropical/90 rounded-sm">
+                  <Button className="w-full bg-brand-mint text-brand-hunter hover:bg-brand-mint/90 rounded-sm">
                     Get Started
                   </Button>
                 </Link>

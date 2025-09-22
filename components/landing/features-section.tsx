@@ -101,10 +101,10 @@ export default function FeaturesSection() {
     <section id="features" className="py-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-left md:text-center text-3xl md:text-4xl text-gray-900 mb-4">
             Everything you need to <span className="text-brand-tropical">grow your business</span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-left md:text-center text-xl text-gray-600 max-w-3xl mx-auto">
             Powerful tools and features designed to streamline your operations and boost productivity
           </p>
         </div>
@@ -132,7 +132,7 @@ export default function FeaturesSection() {
 
         {/* Active Feature Details */}
         {activeFeatureData && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center px-16 py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center px-0 md:px-16 py-8">
             <div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">
                 {activeFeatureData.title}

@@ -30,10 +30,10 @@ export default function TestimonialsSection() {
     <section id="testimonials" className="py-32 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-left md:text-center text-3xl md:text-4xl text-gray-900 mb-4">
             What our customers say about <span className="text-brand-tropical">Binda</span>
           </h2>
-          <p className="text-xl text-gray-600">
+          <p className="text-left md:text-center text-xl text-gray-600">
             Join thousands of satisfied businesses using Binda to grow their operations
           </p>
         </div>
