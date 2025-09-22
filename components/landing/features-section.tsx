@@ -134,7 +134,7 @@ export default function FeaturesSection() {
         {activeFeatureData && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center px-0 md:px-16 py-8">
             <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              <h3 className="text-2xl text-gray-900 mb-4">
                 {activeFeatureData.title}
               </h3>
               <p className="text-lg text-gray-600 mb-6">
@@ -152,7 +152,7 @@ export default function FeaturesSection() {
             <div className="bg-gradient-to-br from-brand-tropical/10 to-brand-hunter/10 rounded-2xl p-8 min-h-[500px] flex items-center justify-center">
               <div className="text-center">
                 <activeFeatureData.icon className="w-24 h-24 text-brand-tropical mx-auto mb-4" />
-                <h4 className="text-xl font-semibold text-gray-900 mb-2">
+                <h4 className="text-xl text-gray-900 mb-2">
                   {activeFeatureData.title}
                 </h4>
                 <p className="text-gray-600">

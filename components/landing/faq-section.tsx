@@ -57,7 +57,7 @@ export default function FAQSection() {
                 onClick={() => toggleItem(index)}
                 className="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
               >
-                <h3 className="text-lg font-semibold text-brand-hunter pr-4">
+                <h3 className="text-lg text-brand-hunter pr-4">
                   {faq.question}
                 </h3>
                 <ChevronDown 
