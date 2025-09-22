@@ -628,7 +628,7 @@ export default function InvoicesPage() {
   }
 
   return (
-    <div className="flex flex-1 h-full relative w-full max-w-full overflow-hidden">
+    <div className="flex flex-1 h-full relative w-full max-w-full">
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col w-full max-w-full min-w-0">
         {/* Page Header */}
@@ -759,8 +759,8 @@ export default function InvoicesPage() {
         </div>
 
         {/* Status Summary Cards */}
-        <div className="px-6 py-4">
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+        <div className="px-4 sm:px-6 py-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4 mb-6">
             <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 p-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -824,8 +824,8 @@ export default function InvoicesPage() {
         </div>
 
         {/* Data Table */}
-        <div className="flex-1 overflow-auto p-6 w-full max-w-full">
-          <div className="data-table-container w-full max-w-full min-w-0 overflow-x-auto">
+        <div className="flex-1 p-4 sm:p-6 w-full max-w-full min-h-0 overflow-auto">
+          <div className="data-table-container w-full max-w-full min-w-0">
             <DataTable table={table}>
               <DataTableToolbar table={table} />
             </DataTable>
