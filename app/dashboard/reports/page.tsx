@@ -149,14 +149,14 @@ export default function ReportsPage() {
       color: "bg-blue-100 text-blue-800",
       iconColor: "text-blue-600"
     },
-    {
-      title: "Balance Sheet",
-      description: "Assets, liabilities, and equity overview",
-      icon: BarChart3,
-      href: "/dashboard/reports/balance-sheet",
-      color: "bg-purple-100 text-purple-800",
-      iconColor: "text-purple-600"
-    },
+    // {
+    //   title: "Balance Sheet",
+    //   description: "Assets, liabilities, and equity overview",
+    //   icon: BarChart3,
+    //   href: "/dashboard/reports/balance-sheet",
+    //   color: "bg-purple-100 text-purple-800",
+    //   iconColor: "text-purple-600"
+    // },
     {
       title: "Sales Analytics",
       description: "Customer insights and sales trends",
@@ -194,11 +194,10 @@ export default function ReportsPage() {
               <FileText className="h-6 w-6" />
               <h1 className="text-2xl font-medium">Reports</h1>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="hidden md:block flex items-center space-x-4">
               <Button 
                 variant="outline" 
                 size="sm"
-                className="hidden md:block"
                 onClick={() => handleExportAll('pdf')}
                 disabled={!reportSummary}
               >
@@ -207,7 +206,6 @@ export default function ReportsPage() {
               </Button>
               <Button 
                 variant="outline" 
-                className="hidden md:block"
                 size="sm"
                 onClick={() => handleExportAll('excel')}
                 disabled={!reportSummary}
@@ -221,11 +219,31 @@ export default function ReportsPage() {
 
         {/* Content */}
         <div className="flex-1 overflow-auto p-6 w-full max-w-full">
+        <div className="block md:hidden flex items-center space-x-4 mb-6">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => handleExportAll('pdf')}
+                disabled={!reportSummary}
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Export All PDF
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => handleExportAll('excel')}
+                disabled={!reportSummary}
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Export All Excel
+              </Button>
+            </div>
           <div className="max-w-7xl mx-auto space-y-6">
             {/* Summary Cards */}
             {reportSummary && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <Card>
+                <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-regular">Total Revenue</CardTitle>
                     <TrendingUp className="h-4 w-4 text-green-600" />
@@ -237,7 +255,7 @@ export default function ReportsPage() {
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-regular">Total Expenses</CardTitle>
                     <DollarSign className="h-4 w-4 text-red-600" />
@@ -249,7 +267,7 @@ export default function ReportsPage() {
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-regular">Net Profit</CardTitle>
                     <BarChart3 className="h-4 w-4 text-blue-600" />
@@ -261,7 +279,7 @@ export default function ReportsPage() {
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-regular">Outstanding Invoices</CardTitle>
                     <Calendar className="h-4 w-4 text-orange-600" />
@@ -270,7 +288,7 @@ export default function ReportsPage() {
                     <div className="text-2xl font-regular text-orange-600">
                       {reportSummary.outstandingInvoices}
                     </div>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-gray-900">
                       {reportSummary.overdueInvoices} overdue
                     </p>
                   </CardContent>
@@ -283,7 +301,7 @@ export default function ReportsPage() {
               {reports.map((report) => {
                 const Icon = report.icon;
                 return (
-                  <Card key={report.title} className="hover:shadow-lg transition-shadow cursor-pointer">
+                  <Card key={report.title} className="hover:shadow-lg transition-shadow cursor-pointer bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                     <Link href={report.href}>
                       <CardHeader>
                         <div className="flex items-center space-x-3">
@@ -292,7 +310,7 @@ export default function ReportsPage() {
                           </div>
                           <div>
                             <CardTitle className="text-lg">{report.title}</CardTitle>
-                            <CardDescription className="text-sm text-gray-600">
+                            <CardDescription className="text-sm text-gray-900">
                               {report.description}
                             </CardDescription>
                           </div>
@@ -300,11 +318,11 @@ export default function ReportsPage() {
                       </CardHeader>
                       <CardContent>
                         <div className="flex items-center justify-between">
-                          <Button variant="ghost" size="sm">
+                          <Button variant="ghost" size="sm" className="text-gray-900">
                             <Eye className="h-4 w-4 mr-2" />
                             View Report
                           </Button>
-                          <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                          <ArrowRight className="h-4 w-4 text-gray-900" />
                         </div>
                       </CardContent>
                     </Link>
@@ -314,10 +332,10 @@ export default function ReportsPage() {
             </div>
 
             {/* Quick Actions */}
-            <Card>
+            <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
               <CardHeader>
                 <CardTitle className="text-lg font-regular text-gray-900">Quick Actions</CardTitle>
-                <CardDescription className="text-sm text-gray-600">
+                <CardDescription className="text-sm text-gray-900">
                   Generate and export reports quickly
                 </CardDescription>
               </CardHeader>
@@ -325,6 +343,7 @@ export default function ReportsPage() {
                 <div className="flex flex-wrap gap-4">
                   <Button 
                     variant="outline"
+                    className="text-gray-900"
                     onClick={() => handleExportAll('pdf')}
                     disabled={!reportSummary}
                   >
@@ -333,6 +352,7 @@ export default function ReportsPage() {
                   </Button>
                   <Button 
                     variant="outline"
+                    className="text-gray-900"
                     onClick={() => handleExportAll('excel')}
                     disabled={!reportSummary}
                   >
@@ -341,6 +361,7 @@ export default function ReportsPage() {
                   </Button>
                   <Button 
                     variant="outline"
+                    className="text-gray-900"
                     onClick={() => handleExportAll('csv')}
                     disabled={!reportSummary}
                   >

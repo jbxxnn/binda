@@ -261,7 +261,7 @@ export default function ProfitLossPage() {
   if (isLoading) {
     return (
       <div className="flex flex-1 items-center justify-center h-full">
-        <Loader className="h-6 w-6 animate-spin" />
+        <Loader className="h-8 w-8 animate-spin" />
       </div>
     );
   }
@@ -271,7 +271,7 @@ export default function ProfitLossPage() {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col w-full max-w-full min-w-0">
         {/* Page Header */}
-        <div className="px-6 py-4 border-b bg-brand-lightning">
+        <div className="px-6 py-4 border-b bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <Button variant="ghost" size="sm" asChild>
@@ -280,12 +280,12 @@ export default function ProfitLossPage() {
                   Back to Reports
                 </Link>
               </Button>
-              <div className="flex items-center space-x-2">
+              <div className="hidden md:block flex items-center space-x-2">
                 <TrendingUp className="h-6 w-6" />
-                <h1 className="text-2xl font-medium">Profit & Loss Statement</h1>
+                <h1 className="text-2xl text-gray-900">Profit & Loss Statement</h1>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="hidden md:flex items-center space-x-4">
               <div className="flex items-center space-x-2">
                 <Filter className="h-4 w-4" />
                 <select
@@ -327,14 +327,56 @@ export default function ProfitLossPage() {
 
         {/* Content */}
         <div className="flex-1 overflow-auto p-6 w-full max-w-full">
+        <div className="block md:hidden flex items-center space-x-2 mb-6">
+                <TrendingUp className="h-6 w-6" />
+                <h1 className="text-lg text-gray-900">Profit & Loss Statement</h1>
+              </div>
+        <div className="block md:hidden flex flex-col gap-3 space-x-4 mb-6">
+              <div className="flex items-center space-x-2">
+                <Filter className="h-4 w-4" />
+                <select
+                  aria-label="Select Period"
+                  value={selectedPeriod}
+                  onChange={(e) => setSelectedPeriod(e.target.value as '3months' | '6months' | '1year' | 'all')}
+                  className="px-3 py-1 border border-brand-tropical rounded-md text-sm"
+                >
+                  <option value="3months">Last 3 Months</option>
+                  <option value="6months">Last 6 Months</option>
+                  <option value="1year">Last Year</option>
+                  <option value="all">All Time</option>
+                </select>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant={viewMode === 'chart' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode('chart')}
+                >
+                  Chart
+                </Button>
+                <Button
+                  variant={viewMode === 'table' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode('table')}
+                >
+                  Table
+                </Button>
+                <ExportDropdown 
+                data={prepareExportData()} 
+                filename={`profit-loss-${selectedPeriod}`}
+                disabled={!report}
+              />
+              </div>
+              
+            </div>
           <div className="max-w-7xl mx-auto space-y-6">
             {report && (
               <>
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                  <Card>
+                  <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+                      <CardTitle className="text-sm text-gray-900">Total Revenue</CardTitle>
                       <TrendingUp className="h-4 w-4 text-green-600" />
                     </CardHeader>
                     <CardContent>
@@ -344,9 +386,9 @@ export default function ProfitLossPage() {
                     </CardContent>
                   </Card>
 
-                  <Card>
+                  <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Total Expenses</CardTitle>
+                      <CardTitle className="text-sm text-gray-900">Total Expenses</CardTitle>
                       <TrendingDown className="h-4 w-4 text-red-600" />
                     </CardHeader>
                     <CardContent>
@@ -356,9 +398,9 @@ export default function ProfitLossPage() {
                     </CardContent>
                   </Card>
 
-                  <Card>
+                  <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Net Profit</CardTitle>
+                      <CardTitle className="text-sm text-gray-900">Net Profit</CardTitle>
                       <DollarSign className="h-4 w-4 text-blue-600" />
                     </CardHeader>
                     <CardContent>
@@ -368,9 +410,9 @@ export default function ProfitLossPage() {
                     </CardContent>
                   </Card>
 
-                  <Card>
+                  <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Gross Margin</CardTitle>
+                      <CardTitle className="text-sm text-gray-900">Gross Margin</CardTitle>
                       <BarChart className="h-4 w-4 text-purple-600" />
                     </CardHeader>
                     <CardContent>
@@ -380,9 +422,9 @@ export default function ProfitLossPage() {
                     </CardContent>
                   </Card>
 
-                  <Card>
+                  <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Net Margin</CardTitle>
+                        <CardTitle className="text-sm text-gray-900">Net Margin</CardTitle>
                       <BarChart className="h-4 w-4 text-orange-600" />
                     </CardHeader>
                     <CardContent>
@@ -397,10 +439,10 @@ export default function ProfitLossPage() {
                 {viewMode === 'chart' ? (
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Revenue vs Expenses Chart */}
-                    <Card>
+                    <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                       <CardHeader>
-                        <CardTitle>Revenue vs Expenses</CardTitle>
-                        <CardDescription>Monthly comparison over time</CardDescription>
+                        <CardTitle className="text-brand-hunter">Revenue vs Expenses</CardTitle>
+                        <CardDescription className="text-gray-900">Monthly comparison over time</CardDescription>
                       </CardHeader>
                       <CardContent>
                         <ResponsiveContainer width="100%" height={300}>
@@ -417,10 +459,10 @@ export default function ProfitLossPage() {
                     </Card>
 
                     {/* Net Profit Trend */}
-                    <Card>
+                    <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                       <CardHeader>
-                        <CardTitle>Net Profit Trend</CardTitle>
-                        <CardDescription>Monthly profit/loss over time</CardDescription>
+                        <CardTitle className="text-brand-hunter">Net Profit Trend</CardTitle>
+                        <CardDescription className="text-gray-900">Monthly profit/loss over time</CardDescription>
                       </CardHeader>
                       <CardContent>
                         <ResponsiveContainer width="100%" height={300}>
@@ -444,10 +486,10 @@ export default function ProfitLossPage() {
                 ) : (
                   /* Table View */
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <Card>
+                    <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                       <CardHeader>
-                        <CardTitle>Monthly Summary</CardTitle>
-                        <CardDescription>Revenue, expenses, and profit by month</CardDescription>
+                        <CardTitle className="text-brand-hunter">Monthly Summary</CardTitle>
+                        <CardDescription className="text-gray-900">Revenue, expenses, and profit by month</CardDescription>
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-4">
@@ -455,12 +497,12 @@ export default function ProfitLossPage() {
                             <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
                               <div>
                                 <div className="font-medium">{month.period}</div>
-                                <div className="text-sm text-muted-foreground">
+                                <div className="text-sm text-gray-900">
                                   Revenue: {formatCurrency(month.revenue)} | 
                                   Expenses: {formatCurrency(month.expenses)}
                                 </div>
                               </div>
-                              <div className={`text-right font-bold ${month.netProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                              <div className={`text-right text-gray-900 ${month.netProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                                 {formatCurrency(month.netProfit)}
                               </div>
                             </div>
@@ -469,15 +511,15 @@ export default function ProfitLossPage() {
                       </CardContent>
                     </Card>
 
-                    <Card>
+                    <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical" >
                       <CardHeader>
-                        <CardTitle>Category Breakdown</CardTitle>
+                        <CardTitle className="text-brand-hunter">Category Breakdown</CardTitle>
                         <CardDescription>Top revenue and expense categories</CardDescription>
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-4">
                           <div>
-                            <h4 className="font-medium text-green-600 mb-2">Revenue Categories</h4>
+                            <h4 className="text-green-600 mb-2 text-brand-hunter">Revenue Categories</h4>
                             {report.revenueBreakdown.slice(0, 5).map((item, index) => (
                               <div key={index} className="flex items-center justify-between py-1">
                                 <span className="text-sm">{item.category}</span>
@@ -488,12 +530,12 @@ export default function ProfitLossPage() {
                             ))}
                           </div>
                           <div>
-                            <h4 className="font-medium text-red-600 mb-2">Expense Categories</h4>
+                            <h4 className="text-red-600 mb-2 text-brand-hunter">Expense Categories</h4>
                             {report.expenseBreakdown.slice(0, 5).map((item, index) => (
                               <div key={index} className="flex items-center justify-between py-1">
                                 <span className="text-sm">{item.category}</span>
                                 <span className="text-sm font-medium text-red-600">
-                                  {formatCurrency(item.amount)}
+                                  {formatCurrency(item.amount)} 
                                 </span>
                               </div>
                             ))}

@@ -203,7 +203,7 @@ export default function CashFlowPage() {
   if (isLoading) {
     return (
       <div className="flex flex-1 items-center justify-center h-full">
-        <Loader className="h-6 w-6 animate-spin" />
+        <Loader className="h-8 w-8 animate-spin" />
       </div>
     );
   }
@@ -222,12 +222,12 @@ export default function CashFlowPage() {
                   Back to Reports
                 </Link>
               </Button>
-              <div className="flex items-center space-x-2">
+              <div className="hidden md:block flex items-center space-x-2">
                 <DollarSign className="h-6 w-6" />
                 <h1 className="text-2xl font-medium">Cash Flow Statement</h1>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="hidden md:block flex items-center space-x-4">
               <div className="flex items-center space-x-2">
                 <Filter className="h-4 w-4" />
                 <select
@@ -253,14 +253,39 @@ export default function CashFlowPage() {
 
         {/* Content */}
         <div className="flex-1 overflow-auto p-6 w-full max-w-full">
+        <div className="block md:hidden flex items-center space-x-2 mb-6">
+                <DollarSign className="h-6 w-6" />
+                <h1 className="text-lg font-medium">Cash Flow Statement</h1>
+              </div>
+        <div className="block md:hidden flex flex-col gap-3 space-x-4 mb-6">
+              <div className="flex items-center space-x-2">
+                <Filter className="h-4 w-4" />
+                <select
+                  aria-label="Select Period"
+                  value={selectedPeriod}
+                  onChange={(e) => setSelectedPeriod(e.target.value as '3months' | '6months' | '1year' | 'all')}
+                  className="px-3 py-1 border border-brand-tropical rounded-md text-sm"
+                >
+                  <option value="3months">Last 3 Months</option>
+                  <option value="6months">Last 6 Months</option>
+                  <option value="1year">Last Year</option>
+                  <option value="all">All Time</option>
+                </select>
+              </div>
+              <ExportDropdown 
+                data={prepareExportData()} 
+                filename={`cash-flow-${selectedPeriod}`}
+                disabled={!report}
+              />
+            </div>
           <div className="max-w-7xl mx-auto space-y-6">
             {report && (
               <>
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <Card>
+                  <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Cash In</CardTitle>
+                      <CardTitle className="text-sm text-gray-900">Cash In</CardTitle>
                       <TrendingUp className="h-4 w-4 text-green-600" />
                     </CardHeader>
                     <CardContent>
@@ -270,9 +295,9 @@ export default function CashFlowPage() {
                     </CardContent>
                   </Card>
 
-                  <Card>
+                  <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Cash Out</CardTitle>
+                      <CardTitle className="text-sm text-brand-hunter">Cash Out</CardTitle>
                       <TrendingDown className="h-4 w-4 text-red-600" />
                     </CardHeader>
                     <CardContent>
@@ -282,9 +307,9 @@ export default function CashFlowPage() {
                     </CardContent>
                   </Card>
 
-                  <Card>
+                  <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Net Cash Flow</CardTitle>
+                      <CardTitle className="text-sm text-brand-hunter">Net Cash Flow</CardTitle>
                       <DollarSign className="h-4 w-4 text-blue-600" />
                     </CardHeader>
                     <CardContent>
@@ -294,9 +319,9 @@ export default function CashFlowPage() {
                     </CardContent>
                   </Card>
 
-                  <Card>
+                  <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Ending Balance</CardTitle>
+                      <CardTitle className="text-sm text-brand-hunter">Ending Balance</CardTitle>
                       <DollarSign className="h-4 w-4 text-purple-600" />
                     </CardHeader>
                     <CardContent>
@@ -310,9 +335,9 @@ export default function CashFlowPage() {
                 {/* Charts */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Cash Flow Chart */}
-                  <Card>
+                  <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                     <CardHeader>
-                      <CardTitle>Cash In vs Cash Out</CardTitle>
+                      <CardTitle className="text-brand-hunter">Cash In vs Cash Out</CardTitle>
                       <CardDescription>Monthly cash flow comparison</CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -330,9 +355,9 @@ export default function CashFlowPage() {
                   </Card>
 
                   {/* Running Balance Chart */}
-                  <Card>
+                  <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                     <CardHeader>
-                      <CardTitle>Running Balance</CardTitle>
+                      <CardTitle className="text-brand-hunter">Running Balance</CardTitle>
                       <CardDescription>Accumulated cash position over time</CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -356,9 +381,9 @@ export default function CashFlowPage() {
                 </div>
 
                 {/* Monthly Summary Table */}
-                <Card>
+                <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                   <CardHeader>
-                    <CardTitle>Monthly Cash Flow Summary</CardTitle>
+                    <CardTitle className="text-brand-hunter">Monthly Cash Flow Summary</CardTitle>
                     <CardDescription>Detailed monthly cash flow breakdown</CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -367,15 +392,15 @@ export default function CashFlowPage() {
                         <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
                           <div className="flex-1">
                             <div className="font-medium">{month.period}</div>
-                            <div className="text-sm text-muted-foreground">
+                            <div className="text-sm text-gray-900">
                               In: {formatCurrency(month.cash_in)} | Out: {formatCurrency(month.cash_out)}
                             </div>
                           </div>
                           <div className="text-right">
-                            <div className={`font-bold ${month.net_cash_flow >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            <div className={`text-gray-900 ${month.net_cash_flow >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                               {formatCurrency(month.net_cash_flow)}
                             </div>
-                            <div className="text-sm text-muted-foreground">
+                            <div className="text-sm text-gray-900">
                               Balance: {formatCurrency(month.running_balance)}
                             </div>
                           </div>

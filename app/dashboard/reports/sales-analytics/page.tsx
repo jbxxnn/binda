@@ -280,7 +280,7 @@ export default function SalesAnalyticsPage() {
   if (isLoading) {
     return (
       <div className="flex flex-1 items-center justify-center h-full">
-        <Loader className="h-6 w-6 animate-spin" />
+        <Loader className="h-8 w-8 animate-spin" />
       </div>
     );
   }
@@ -299,12 +299,12 @@ export default function SalesAnalyticsPage() {
                   Back to Reports
                 </Link>
               </Button>
-              <div className="flex items-center space-x-2">
+              <div className="hidden md:block flex items-center space-x-2">
                 <PieChart className="h-6 w-6" />
                 <h1 className="text-2xl font-medium">Sales Analytics</h1>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="hidden md:block flex items-center space-x-4">
               <div className="flex items-center space-x-2">
                 <Filter className="h-4 w-4" />
                 <select
@@ -330,14 +330,39 @@ export default function SalesAnalyticsPage() {
 
         {/* Content */}
         <div className="flex-1 overflow-auto p-6 w-full max-w-full">
+        <div className="block md:hidden flex items-center space-x-2 mb-6">
+                <PieChart className="h-6 w-6" />
+                <h1 className="text-lg font-medium">Sales Analytics</h1>
+              </div>
+        <div className="block md:hidden flex flex-col gap-3 space-x-4 mb-6">
+              <div className="flex items-center space-x-2">
+                <Filter className="h-4 w-4" />
+                <select
+                  aria-label="Select Period"
+                  value={selectedPeriod}
+                  onChange={(e) => setSelectedPeriod(e.target.value as '3months' | '6months' | '1year' | 'all')}
+                  className="px-3 py-1 border border-brand-tropical rounded-md text-sm"
+                >
+                  <option value="3months">Last 3 Months</option>
+                  <option value="6months">Last 6 Months</option>
+                  <option value="1year">Last Year</option>
+                  <option value="all">All Time</option>
+                </select>
+              </div>
+              <ExportDropdown 
+                data={prepareExportData()} 
+                filename={`sales-analytics-${selectedPeriod}`}
+                disabled={!report}
+              />
+            </div>
           <div className="max-w-7xl mx-auto space-y-6">
             {report && (
               <>
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <Card>
+                  <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+                      <CardTitle className="text-sm text-gray-900">Total Revenue</CardTitle>
                       <DollarSign className="h-4 w-4 text-green-600" />
                     </CardHeader>
                     <CardContent>
@@ -347,9 +372,9 @@ export default function SalesAnalyticsPage() {
                     </CardContent>
                   </Card>
 
-                  <Card>
+                  <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Total Transactions</CardTitle>
+                      <CardTitle className="text-sm text-gray-900">Total Transactions</CardTitle>
                       <TrendingUp className="h-4 w-4 text-blue-600" />
                     </CardHeader>
                     <CardContent>
@@ -359,9 +384,9 @@ export default function SalesAnalyticsPage() {
                     </CardContent>
                   </Card>
 
-                  <Card>
+                  <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Avg Transaction</CardTitle>
+                      <CardTitle className="text-sm text-gray-900">Avg Transaction</CardTitle>
                       <DollarSign className="h-4 w-4 text-purple-600" />
                     </CardHeader>
                     <CardContent>
@@ -371,9 +396,9 @@ export default function SalesAnalyticsPage() {
                     </CardContent>
                   </Card>
 
-                  <Card>
+                  <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Revenue Growth</CardTitle>
+                      <CardTitle className="text-sm text-gray-900">Revenue Growth</CardTitle>
                       <TrendingUp className="h-4 w-4 text-orange-600" />
                     </CardHeader>
                     <CardContent>
@@ -387,9 +412,9 @@ export default function SalesAnalyticsPage() {
                 {/* Charts */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Revenue by Category */}
-                  <Card>
+                  <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                     <CardHeader>
-                      <CardTitle>Revenue by Category</CardTitle>
+                      <CardTitle className="text-brand-hunter">Revenue by Category</CardTitle>
                       <CardDescription>Sales breakdown by service/product category</CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -421,7 +446,7 @@ export default function SalesAnalyticsPage() {
                               />
                               <span className="text-sm">{item.category}</span>
                             </div>
-                            <span className="text-sm font-medium">{formatCurrency(item.revenue)}</span>
+                            <span className="text-sm text-gray-900">{formatCurrency(item.revenue)}</span>
                           </div>
                         ))}
                       </div>
@@ -429,9 +454,9 @@ export default function SalesAnalyticsPage() {
                   </Card>
 
                   {/* Monthly Revenue Trend */}
-                  <Card>
+                  <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                     <CardHeader>
-                      <CardTitle>Monthly Revenue Trend</CardTitle>
+                      <CardTitle className="text-brand-hunter">Monthly Revenue Trend</CardTitle>
                       <CardDescription>Revenue growth over time</CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -449,9 +474,9 @@ export default function SalesAnalyticsPage() {
                 </div>
 
                 {/* Top Customers */}
-                <Card>
+                <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                   <CardHeader>
-                    <CardTitle>Top Customers</CardTitle>
+                    <CardTitle className="text-brand-hunter">Top Customers</CardTitle>
                     <CardDescription>Your highest value customers</CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -460,20 +485,20 @@ export default function SalesAnalyticsPage() {
                         <div key={customer.customer_name} className="flex items-center justify-between p-3 border rounded-lg">
                           <div className="flex items-center space-x-3">
                             <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                              <span className="text-sm font-medium text-blue-600">#{index + 1}</span>
+                              <span className="text-sm text-gray-900 font-medium text-blue-600">#{index + 1}</span>
                             </div>
                             <div>
-                              <div className="font-medium">{customer.customer_name}</div>
-                              <div className="text-sm text-muted-foreground">
+                              <div className="text-gray-900 font-medium">{customer.customer_name}</div>
+                              <div className="text-sm text-gray-900">
                                 {customer.transaction_count} transaction{customer.transaction_count !== 1 ? 's' : ''}
                               </div>
                             </div>
                           </div>
                           <div className="text-right">
-                            <div className="font-bold text-green-600">
+                            <div className="text-gray-900 font-bold text-green-600">
                               {formatCurrency(customer.revenue)}
                             </div>
-                            <div className="text-sm text-muted-foreground">
+                            <div className="text-sm text-gray-900">
                               {formatPercentage((customer.revenue / report.summary.totalRevenue) * 100)} of total
                             </div>
                           </div>

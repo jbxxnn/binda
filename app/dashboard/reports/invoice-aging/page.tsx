@@ -12,7 +12,7 @@ import {
   Calendar,
   AlertTriangle,
   Clock,
-  CheckCircle,
+  CheckCircle,  
   Loader,
   Filter,
   DollarSign
@@ -283,7 +283,7 @@ export default function InvoiceAgingPage() {
   if (isLoading) {
     return (
       <div className="flex flex-1 items-center justify-center h-full">
-        <Loader className="h-6 w-6 animate-spin" />
+        <Loader className="h-8 w-8 animate-spin" />
       </div>
     );
   }
@@ -302,12 +302,12 @@ export default function InvoiceAgingPage() {
                   Back to Reports
                 </Link>
               </Button>
-              <div className="flex items-center space-x-2">
+              <div className="hidden md:block flex items-center space-x-2">
                 <Calendar className="h-6 w-6" />
                 <h1 className="text-2xl font-medium">Invoice Aging Report</h1>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="hidden md:block flex items-center space-x-4">
               <div className="flex items-center space-x-2">
                 <Filter className="h-4 w-4" />
                 <select
@@ -333,14 +333,39 @@ export default function InvoiceAgingPage() {
 
         {/* Content */}
         <div className="flex-1 overflow-auto p-6 w-full max-w-full">
+        <div className="block md:hidden flex items-center space-x-2 mb-6">
+                <Calendar className="h-6 w-6" />
+                <h1 className="text-lg font-medium">Invoice Aging Report</h1>
+              </div>
+        <div className="block md:hidden flex flex-col gap-3 space-x-4 mb-6">
+              <div className="flex items-center space-x-2">
+                <Filter className="h-4 w-4" />
+                <select
+                  aria-label="Select Period"
+                  value={selectedPeriod}
+                  onChange={(e) => setSelectedPeriod(e.target.value as '3months' | '6months' | '1year' | 'all')}
+                  className="px-3 py-1 border border-brand-tropical rounded-md text-sm"
+                >
+                  <option value="3months">Last 3 Months</option>
+                  <option value="6months">Last 6 Months</option>
+                  <option value="1year">Last Year</option>
+                  <option value="all">All Time</option>
+                </select>
+              </div>
+              <ExportDropdown 
+                data={prepareExportData()} 
+                filename={`invoice-aging-${selectedPeriod}`}
+                disabled={!report}
+              />
+            </div>
           <div className="max-w-7xl mx-auto space-y-6">
             {report && (
               <>
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <Card>
+                  <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Total Outstanding</CardTitle>
+                      <CardTitle className="text-sm text-gray-900">Total Outstanding</CardTitle>
                       <DollarSign className="h-4 w-4 text-blue-600" />
                     </CardHeader>
                     <CardContent>
@@ -350,9 +375,9 @@ export default function InvoiceAgingPage() {
                     </CardContent>
                   </Card>
 
-                  <Card>
+                  <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Total Overdue</CardTitle>
+                      <CardTitle className="text-sm text-gray-900">Total Overdue</CardTitle>
                       <AlertTriangle className="h-4 w-4 text-red-600" />
                     </CardHeader>
                     <CardContent>
@@ -362,9 +387,9 @@ export default function InvoiceAgingPage() {
                     </CardContent>
                   </Card>
 
-                  <Card>
+                  <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Overdue Count</CardTitle>
+                      <CardTitle className="text-sm text-gray-900">Overdue Count</CardTitle>
                       <Clock className="h-4 w-4 text-orange-600" />
                     </CardHeader>
                     <CardContent>
@@ -374,9 +399,9 @@ export default function InvoiceAgingPage() {
                     </CardContent>
                   </Card>
 
-                  <Card>
+                  <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Avg Days Overdue</CardTitle>
+                      <CardTitle className="text-sm text-gray-900">Avg Days Overdue</CardTitle>
                       <Calendar className="h-4 w-4 text-purple-600" />
                     </CardHeader>
                     <CardContent>
@@ -400,7 +425,7 @@ export default function InvoiceAgingPage() {
                     };
 
                     return (
-                      <Card key={bucket}>
+                      <Card key={bucket} className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                         <CardHeader>
                           <div className="flex items-center justify-between">
                             <CardTitle className="text-sm">{bucketLabels[bucket as keyof typeof bucketLabels]}</CardTitle>
@@ -418,19 +443,19 @@ export default function InvoiceAgingPage() {
                             {invoices.slice(0, 5).map((invoice) => (
                               <div key={invoice.invoice_id} className="flex items-center justify-between p-2 border rounded">
                                 <div>
-                                  <div className="font-medium text-sm">{invoice.invoice_number}</div>
-                                  <div className="text-xs text-muted-foreground">{invoice.customer_name}</div>
+                                  <div className="text-gray-900 font-medium text-sm">{invoice.invoice_number}</div>
+                                  <div className="text-xs text-gray-900">{invoice.customer_name}</div>
                                 </div>
                                 <div className="text-right">
-                                  <div className="font-medium text-sm">{formatCurrency(invoice.outstanding_amount)}</div>
-                                  <div className="text-xs text-muted-foreground">
+                                  <div className="text-gray-900 font-medium text-sm">{formatCurrency(invoice.outstanding_amount)}</div>
+                                  <div className="text-xs text-gray-900">
                                     {invoice.days_overdue > 0 ? `${invoice.days_overdue} days` : 'Current'}
                                   </div>
                                 </div>
                               </div>
                             ))}
                             {invoices.length > 5 && (
-                              <div className="text-center text-sm text-muted-foreground">
+                                <div className="text-center text-sm text-gray-900">
                                 +{invoices.length - 5} more invoices
                               </div>
                             )}
@@ -442,9 +467,9 @@ export default function InvoiceAgingPage() {
                 </div>
 
                 {/* Detailed Invoice List */}
-                <Card>
+                <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
                   <CardHeader>
-                    <CardTitle>All Outstanding Invoices</CardTitle>
+                    <CardTitle className="text-brand-hunter">All Outstanding Invoices</CardTitle>
                     <CardDescription>Complete list of unpaid invoices</CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -457,19 +482,19 @@ export default function InvoiceAgingPage() {
                                 {getAgingBucketIcon(bucket)}
                               </div>
                               <div>
-                                <div className="font-medium">{invoice.invoice_number}</div>
-                                <div className="text-sm text-muted-foreground">{invoice.customer_name}</div>
-                                <div className="text-xs text-muted-foreground">
+                                <div className="text-gray-900 font-medium">{invoice.invoice_number}</div>
+                                <div className="text-sm text-gray-900">{invoice.customer_name}</div>
+                                <div className="text-xs text-gray-900">
                                   Due: {formatDate(invoice.due_date)}
                                 </div>
                               </div>
                             </div>
                             <div className="text-right">
-                              <div className="font-bold">{formatCurrency(invoice.outstanding_amount)}</div>
-                              <div className="text-sm text-muted-foreground">
+                              <div className="text-gray-900 font-bold">{formatCurrency(invoice.outstanding_amount)}</div>
+                                    <div className="text-sm text-gray-900">
                                 {invoice.days_overdue > 0 ? `${invoice.days_overdue} days overdue` : 'Current'}
                               </div>
-                              <div className="text-xs text-muted-foreground">
+                              <div className="text-xs text-gray-900">
                                 Paid: {formatCurrency(invoice.paid_amount)} / {formatCurrency(invoice.total_amount)}
                               </div>
                             </div>
