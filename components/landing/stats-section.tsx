@@ -7,7 +7,7 @@ export default function StatsSection() {
   ];
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-16 bg-brand-underworld">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {stats.map((stat, index) => (
@@ -15,7 +15,7 @@ export default function StatsSection() {
               <div className="text-3xl md:text-4xl text-brand-hunter mb-2">
                 {stat.value}
               </div>
-              <div className="text-gray-600 font-medium">{stat.label}</div>
+              <div className="text-brand-tropical">{stat.label}</div>
             </div>
           ))}
         </div>

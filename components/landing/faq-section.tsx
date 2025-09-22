@@ -42,10 +42,10 @@ export default function FAQSection() {
     <section id="faq" className="py-32 bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-left md:text-center text-3xl md:text-4xl text-gray-900 mb-4">
+          <h2 className="text-left md:text-center text-3xl md:text-4xl text-brand-hunter mb-4">
             Frequently Asked <span className="text-brand-tropical">Questions</span>
           </h2>
-          <p className="text-left md:text-center text-xl text-gray-600">
+          <p className="text-left md:text-center text-xl text-brand-tropical">
             Everything you need to know about Binda
           </p>
         </div>
@@ -57,7 +57,7 @@ export default function FAQSection() {
                 onClick={() => toggleItem(index)}
                 className="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
               >
-                <h3 className="text-lg font-semibold text-brand-hunter pr-4">
+                <h3 className="text-lg text-brand-hunter pr-4">
                   {faq.question}
                 </h3>
                 <ChevronDown 

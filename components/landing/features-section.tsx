@@ -67,10 +67,10 @@ export default function FeaturesSection() {
     <section id="features" className="py-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-left md:text-center text-3xl md:text-4xl text-gray-900 mb-4">
+          <h2 className="text-left md:text-center text-3xl md:text-4xl text-brand-hunter mb-4">
             Everything you need to <span className="text-brand-tropical">grow your business</span>
           </h2>
-          <p className="text-left md:text-center text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-left md:text-center text-xl text-brand-tropical max-w-3xl mx-auto">
             Powerful tools and features designed to streamline your operations and boost productivity
           </p>
         </div>
@@ -82,13 +82,13 @@ export default function FeaturesSection() {
               <button
                 key={feature.id}
                 onClick={() => setActiveFeature(feature.id)}
-                className={`p-4 rounded-lg text-center transition-all ${
+                className={`p-4 rounded-sm text-center transition-all ${
                   activeFeature === feature.id
                     ? 'bg-brand-tropical text-brand-hunter rounded-sm'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    : 'bg-brand-underworld text-brand-tropical hover:bg-brand-underworld/90'
                 }`}
               >
-                <div className="text-sm font-medium">{feature.title}</div>
+                <div className="text-sm">{feature.title}</div>
               </button>
             );
           })}
@@ -98,17 +98,17 @@ export default function FeaturesSection() {
         {activeFeatureData && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center px-0 md:px-16 py-8">
             <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              <h3 className="text-2xl font-bold text-brand-hunter mb-4">
                 {activeFeatureData.title}
               </h3>
-              <p className="text-lg text-gray-600 mb-6">
+              <p className="text-lg text-brand-tropical mb-6">
                 {activeFeatureData.description}
               </p>
               <ul className="space-y-3">
                 {activeFeatureData.details.map((detail, index) => (
                   <li key={index} className="flex items-center">
                     <CheckCircle className="w-5 h-5 text-brand-tropical mr-3 flex-shrink-0" />
-                    <span className="text-gray-700">{detail}</span>
+                    <span className="text-brand-tropical">{detail}</span>
                   </li>
                 ))}
               </ul>
@@ -123,10 +123,10 @@ export default function FeaturesSection() {
                     className="object-contain"
                   />
                 </div>
-                <h4 className="text-xl font-semibold text-gray-900 mb-2 px-8">
+                <h4 className="text-xl font-semibold text-brand-hunter mb-2 px-8">
                   {activeFeatureData.title}
                 </h4>
-                <p className="text-gray-600 px-8">
+                <p className="text-brand-tropical px-8">
                   Experience the power of {activeFeatureData.title.toLowerCase()}
                 </p>
               </div>

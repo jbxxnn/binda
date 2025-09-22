@@ -50,7 +50,7 @@ export default function HeroSection() {
         <div className="text-left mb-12 lg:mb-0">
 
             {/* Main Headline */}
-            <h1 className="text-4xl md:text-7xl text-white mb-6 leading-tight font-bold drop-shadow-lg">
+            <h1 className="text-4xl md:text-7xl text-white mb-6 leading-tight drop-shadow-lg">
             Your Business,
               <br />
               <span className="text-brand-tropical drop-shadow-lg">Organized with</span>
@@ -64,7 +64,7 @@ export default function HeroSection() {
             </p>
 
             {/* Feature Badge */}
-            <div className="bg-white/20 backdrop-blur-sm rounded-full px-6 py-3 text-white text-sm font-medium inline-flex items-center mb-8">
+            <div className="bg-white/20 backdrop-blur-sm rounded-full px-6 py-3 text-white text-sm inline-flex items-center mb-8">
               Professional
               <span className="mx-4">✖</span>
               Accurate
