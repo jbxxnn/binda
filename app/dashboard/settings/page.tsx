@@ -65,13 +65,25 @@ interface AccountingSettings {
 }
 
 export default function SettingsPage() {
-  const { preferences, updatePreferences } = usePreferences();
+  const { preferences, updatePreferences, refreshPreferences } = usePreferences();
   const [activeTab, setActiveTab] = useState('profile');
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
+  
+  // Local state for preferences form management
+  const [localPreferences, setLocalPreferences] = useState({
+    timezone: 'America/New_York',
+    currency: 'USD',
+    date_format: 'MM/DD/YYYY',
+    notifications: {
+      email: true,
+      push: true,
+      sms: false
+    }
+  });
   
   // Validation functions
   const isValidWebsite = (url: string) => {
@@ -142,6 +154,22 @@ export default function SettingsPage() {
 
     return () => clearInterval(interval);
   }, []);
+
+  // Sync local preferences with context when preferences load
+  useEffect(() => {
+    if (preferences && !isLoading) {
+      setLocalPreferences({
+        timezone: preferences.timezone || 'America/New_York',
+        currency: preferences.currency || 'USD',
+        date_format: preferences.date_format || 'MM/DD/YYYY',
+        notifications: preferences.notifications || {
+          email: true,
+          push: true,
+          sms: false
+        }
+      });
+    }
+  }, [preferences, isLoading]);
 
   const fetchSettings = async () => {
     try {
@@ -294,13 +322,33 @@ export default function SettingsPage() {
     }
   };
 
-  const handleSaveUserPreferences = () => {
-    // Request notification permissions if enabled
-    if (preferences.notifications.push) {
-      requestNotificationPermission();
-    }
+  const handleSaveUserPreferences = async () => {
+    setIsSaving(true);
+    setSaveSuccess(false);
     
-    toast.success('User preferences saved');
+    try {
+      // Request notification permissions if enabled
+      if (localPreferences.notifications.push) {
+        await requestNotificationPermission();
+      }
+      
+      // Update preferences in context (which will save to database)
+      await updatePreferences(localPreferences);
+      
+      // Refresh preferences to ensure we have the latest data
+      await refreshPreferences();
+      
+      setSaveSuccess(true);
+      toast.success('User preferences saved successfully');
+      
+      // Hide success message after 3 seconds
+      setTimeout(() => setSaveSuccess(false), 3000);
+    } catch (error) {
+      console.error('Error saving preferences:', error);
+      toast.error(`Failed to save preferences: ${error.message}`);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // Request notification permission
@@ -317,15 +365,17 @@ export default function SettingsPage() {
       } else {
         toast.error('Notification permission denied');
         // Disable push notifications if permission denied
-        updatePreferences({
-          notifications: { ...preferences.notifications, push: false }
-        });
+        setLocalPreferences(prev => ({
+          ...prev,
+          notifications: { ...prev.notifications, push: false }
+        }));
       }
     } else {
       toast.error('This browser does not support notifications');
-      updatePreferences({
-        notifications: { ...preferences.notifications, push: false }
-      });
+      setLocalPreferences(prev => ({
+        ...prev,
+        notifications: { ...prev.notifications, push: false }
+      }));
     }
   };
 
@@ -1029,7 +1079,7 @@ export default function SettingsPage() {
                             Timezone
                             <span className="text-xs text-muted-foreground">
                               Current time: {currentTime.toLocaleString('en-US', { 
-                                timeZone: preferences.timezone,
+                                timeZone: localPreferences.timezone,
                                 hour: '2-digit',
                                 minute: '2-digit',
                                 second: '2-digit',
@@ -1039,8 +1089,8 @@ export default function SettingsPage() {
                           </Label>
                           <select
                             title="Timezone"
-                            value={preferences.timezone}
-                            onChange={(e) => updatePreferences({ timezone: e.target.value })}
+                            value={localPreferences.timezone}
+                            onChange={(e) => setLocalPreferences(prev => ({ ...prev, timezone: e.target.value }))}
                             className="w-full px-3 py-2 border border-brand-tropical rounded-md"
                           >
                             <optgroup label="Americas">
@@ -1113,8 +1163,8 @@ export default function SettingsPage() {
                           <Label>Currency</Label>
                           <select
                             title="Currency"
-                            value={preferences.currency}
-                            onChange={(e) => updatePreferences({ currency: e.target.value })}
+                            value={localPreferences.currency}
+                            onChange={(e) => setLocalPreferences(prev => ({ ...prev, currency: e.target.value }))}
                             className="w-full px-3 py-2 border border-brand-tropical rounded-md"
                           >
                             <optgroup label="Major Currencies">
@@ -1181,10 +1231,11 @@ export default function SettingsPage() {
                               <p className="text-sm text-muted-foreground">Receive updates via email</p>
                             </div>
                             <Switch
-                              checked={preferences.notifications.email}
-                              onCheckedChange={(checked: boolean) => updatePreferences({
-                                notifications: { ...preferences.notifications, email: checked }
-                              })}
+                              checked={localPreferences.notifications.email}
+                              onCheckedChange={(checked: boolean) => setLocalPreferences(prev => ({
+                                ...prev,
+                                notifications: { ...prev.notifications, email: checked }
+                              }))}
                             />
                           </div>
                           <div className="flex items-center justify-between">
@@ -1193,10 +1244,11 @@ export default function SettingsPage() {
                               <p className="text-sm text-muted-foreground">Receive browser notifications</p>
                             </div>
                             <Switch
-                              checked={preferences.notifications.push}
-                              onCheckedChange={(checked: boolean) => updatePreferences({
-                                notifications: { ...preferences.notifications, push: checked }
-                              })}
+                              checked={localPreferences.notifications.push}
+                              onCheckedChange={(checked: boolean) => setLocalPreferences(prev => ({
+                                ...prev,
+                                notifications: { ...prev.notifications, push: checked }
+                              }))}
                             />
                           </div>
                           <div className="flex items-center justify-between">
@@ -1205,21 +1257,36 @@ export default function SettingsPage() {
                               <p className="text-sm text-muted-foreground">Receive text messages</p>
                             </div>
                             <Switch
-                              checked={preferences.notifications.sms}
-                              onCheckedChange={(checked: boolean) => updatePreferences({
-                                notifications: { ...preferences.notifications, sms: checked }
-                              })}
+                              checked={localPreferences.notifications.sms}
+                              onCheckedChange={(checked: boolean) => setLocalPreferences(prev => ({
+                                ...prev,
+                                notifications: { ...prev.notifications, sms: checked }
+                              }))}
                             />
                           </div>
                         </div>
                       </div>
 
                       <div className="flex gap-4">
-                        <Button onClick={handleSaveUserPreferences}>
-                          <Save className="h-4 w-4 mr-2" />
-                          Save Preferences
+                        <Button onClick={handleSaveUserPreferences} disabled={isSaving}>
+                          {isSaving ? (
+                            <>
+                              <Loader className="h-4 w-4 mr-2 animate-spin" />
+                              Saving...
+                            </>
+                          ) : saveSuccess ? (
+                            <>
+                              <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
+                              Saved!
+                            </>
+                          ) : (
+                            <>
+                              <Save className="h-4 w-4 mr-2" />
+                              Save Preferences
+                            </>
+                          )}
                         </Button>
-                        {preferences.notifications.push && (
+                        {localPreferences.notifications.push && (
                           <Button 
                             variant="outline" 
                             onClick={testNotification}

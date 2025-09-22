@@ -110,7 +110,13 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
       });
       
       if (!response.ok) {
-        throw new Error('Failed to save preferences to database');
+        const errorText = await response.text();
+        console.error('API Error Response:', {
+          status: response.status,
+          statusText: response.statusText,
+          body: errorText
+        });
+        throw new Error(`Failed to save preferences to database: ${response.status} ${response.statusText}`);
       }
       
       const data = await response.json();

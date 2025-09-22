@@ -80,13 +80,15 @@ export async function PUT(request: NextRequest) {
       .upsert({
         user_id: user.id,
         preferences: validPreferences
+      }, {
+        onConflict: 'user_id'
       })
       .select('preferences')
       .single();
 
     if (error) {
-      console.error('Error updating preferences:', error);
-      return NextResponse.json({ error: 'Failed to update preferences' }, { status: 500 });
+      console.error('Database error updating preferences:', error);
+      return NextResponse.json({ error: 'Failed to update preferences', details: error.message }, { status: 500 });
     }
 
     return NextResponse.json({ 
