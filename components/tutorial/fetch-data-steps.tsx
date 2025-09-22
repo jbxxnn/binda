@@ -59,7 +59,7 @@ export function FetchDataSteps() {
             href="https://supabase.com/dashboard/project/_/editor"
             className="font-bold hover:underline text-foreground/80"
             target="_blank"
-            rel="noreferrer"
+            rel="noreferrer noopener"
           >
             Table Editor
           </a>{" "}
@@ -70,7 +70,7 @@ export function FetchDataSteps() {
             href="https://supabase.com/dashboard/project/_/sql/new"
             className="font-bold hover:underline text-foreground/80"
             target="_blank"
-            rel="noreferrer"
+            rel="noreferrer noopener"
           >
             SQL Editor
           </a>{" "}
@@ -88,7 +88,7 @@ export function FetchDataSteps() {
             href="https://supabase.com/dashboard/project/_/editor"
             className="font-bold hover:underline text-foreground/80"
             target="_blank"
-            rel="noreferrer"
+            rel="noreferrer noopener"
           >
             Table Editor
           </a>{" "}
@@ -97,7 +97,7 @@ export function FetchDataSteps() {
             href="https://supabase.com/dashboard/project/_/sql/new"
             className="font-bold hover:underline text-foreground/80"
             target="_blank"
-            rel="noreferrer"
+            rel="noreferrer noopener"
           >
             SQL Editor
           </a>
@@ -114,7 +114,7 @@ export function FetchDataSteps() {
             href="https://supabase.com/docs/guides/auth/row-level-security"
             className="font-bold hover:underline text-foreground/80"
             target="_blank"
-            rel="noreferrer"
+            rel="noreferrer noopener"
           >
             Supabase docs
           </a>
@@ -142,6 +142,8 @@ export function FetchDataSteps() {
           <a
             href="https://supabase.com/ui"
             className="font-bold hover:underline text-foreground/80"
+            target="_blank"
+            rel="noreferrer noopener"
           >
             Supabase UI library
           </a>{" "}

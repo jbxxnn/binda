@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import { ClientAuthButton } from "@/components/client-auth-button";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -44,7 +45,7 @@ export default function Header() {
 
           {/* Desktop CTA Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <Link href="/auth/login">
+            {/* <Link href="/auth/login">
               <Button variant="ghost" className="text-brand-tropical hover:text-brand-mint">
                 Sign In
               </Button>
@@ -53,8 +54,8 @@ export default function Header() {
               <Button className="bg-brand-mint text-brand-hunter hover:bg-brand-mint/90 rounded-sm">
                 Get Started
               </Button>
-            </Link>
-
+            </Link> */}
+            <ClientAuthButton />
           </div>
 
           {/* Mobile menu button */}

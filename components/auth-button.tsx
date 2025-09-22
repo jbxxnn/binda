@@ -3,7 +3,7 @@ import { Button } from "./ui/button";
 import { createClient } from "@/lib/supabase/server";
 import { LogoutButton } from "./logout-button";
 
-export async function AuthButton() {
+export async function ServerAuthButton() {
   const supabase = await createClient();
 
   // You can also use getUser() which will be slower.
