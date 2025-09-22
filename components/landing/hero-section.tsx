@@ -24,7 +24,7 @@ export default function HeroSection() {
 
         <div className="flex flex-col gap-3 w-full">
             <div className="flex flex-wrap gap-3 mb-8 justify-between mt-10">
-            <div className="flex flow-row gap-3">
+            <div className="hidden md:block flex flex-col md:flex-row gap-3">
               <div className="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-white text-sm font-medium">
                 Since 2020
               </div>
@@ -33,7 +33,7 @@ export default function HeroSection() {
                 <ArrowRight className="ml-2 w-4 h-4" />
               </div>
               </div>
-             <div className="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-white text-sm font-medium flex items-center">
+             <div className="hidden md:block bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-white text-sm font-medium flex items-center">
               Behind the Expertise
               <ArrowRight className="ml-2 w-4 h-4" />
              </div>
@@ -46,7 +46,7 @@ export default function HeroSection() {
         <div className="text-left mb-12 lg:mb-0">
 
             {/* Main Headline */}
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+            <h1 className="text-4xl md:text-7xl text-brand-tropical mb-6 leading-tight">
             Your Business,
               <br />
               <span className="text-brand-tropical">Organized with</span>
@@ -55,7 +55,7 @@ export default function HeroSection() {
             </h1>
             
             {/* Sub-headline */}
-            <p className="text-xl text-gray-200 mb-8 max-w-lg">
+            <p className="text-md md:text-xl text-brand-tropical mb-8 max-w-lg">
               Smart, compliant, and stress-free business solutions tailored to your business&apos;s needs.
             </p>
 
