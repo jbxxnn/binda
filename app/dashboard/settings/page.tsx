@@ -345,7 +345,7 @@ export default function SettingsPage() {
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (error) {
       console.error('Error saving preferences:', error);
-      toast.error(`Failed to save preferences: ${error.message}`);
+      toast.error(`Failed to save preferences: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsSaving(false);
     }
