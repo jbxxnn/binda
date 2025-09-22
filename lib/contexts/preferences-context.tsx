@@ -49,16 +49,8 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
       setError(null);
       
       const response = await fetch('/api/preferences');
-      
-      // Check if response is HTML (error page)
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        console.warn('API returned non-JSON response, likely user not authenticated');
-        throw new Error('User not authenticated');
-      }
-      
       if (!response.ok) {
-        throw new Error(`Failed to fetch preferences: ${response.status}`);
+        throw new Error('Failed to fetch preferences');
       }
       
       const data = await response.json();
@@ -94,30 +86,7 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
   }, []);
 
   useEffect(() => {
-    // Only try to load preferences if we're in a browser environment
-    // and not on the landing page (where user might not be authenticated)
-    if (typeof window !== 'undefined') {
-      // Check if we're on the landing page
-      const isLandingPage = window.location.pathname === '/';
-      
-      if (!isLandingPage) {
-        loadPreferences();
-      } else {
-        // On landing page, just use localStorage fallback
-        const savedPreferences = localStorage.getItem('userPreferences');
-        if (savedPreferences) {
-          try {
-            const parsed = JSON.parse(savedPreferences);
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { theme, ...preferencesWithoutTheme } = parsed;
-            setPreferences(preferencesWithoutTheme);
-          } catch (localError) {
-            console.error('Error loading from localStorage:', localError);
-          }
-        }
-        setIsLoading(false);
-      }
-    }
+    loadPreferences();
   }, [loadPreferences]);
 
   const updatePreferences = useCallback(async (newPreferences: Partial<UserPreferences>) => {

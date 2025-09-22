@@ -65,7 +65,7 @@ export function SignUpForm({
           <form onSubmit={handleSignUp}>
             <div className="flex flex-col gap-6 space-y-2">
               <div className="flex flex-col items-center text-center">
-                <h1 className="text-2xl text-brand-hunter">Welcome to Binda</h1>
+                <h1 className="text-2xl font-bold text-brand-hunter">Welcome to Binda</h1>
                 <p className="text-muted-foreground text-sm">
                   Please enter your details to sign up. You&apos;ll be able to create your business account later.
                 </p>

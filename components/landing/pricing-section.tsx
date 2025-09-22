@@ -87,11 +87,11 @@ export default function PricingSection() {
               )}
               
               <CardHeader className="text-center pb-8">
-                <CardTitle className="text-2xl text-brand-hunter">
+                <CardTitle className="text-2xl font-bold text-brand-hunter">
                   {plan.name}
                 </CardTitle>
                 <div className="mt-4">
-                  <span className="text-4xl text-brand-hunter">{plan.price}</span>
+                  <span className="text-4xl font-bold text-brand-hunter">{plan.price}</span>
                   <span className="text-gray-600 ml-2">{plan.period}</span>
                 </div>
                 <p className="text-gray-600 mt-2">{plan.description}</p>

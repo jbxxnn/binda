@@ -13,7 +13,7 @@ export default function CTASection() {
           Join thousands of businesses already using Binda to streamline their operations and grow faster.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/auth/sign-up">
+          <Link href="/auth/signup">
             <Button size="lg" className="bg-brand-mint text-brand-hunter hover:bg-brand-mint/90 rounded-sm px-8 py-3">
               Get Started
               <ArrowRight className="ml-2 w-5 h-5" />
