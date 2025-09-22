@@ -123,7 +123,7 @@ export default function Header() {
                             Sign In
                           </Button>
                         </Link>
-                        <Link href="/auth/signup" onClick={() => setIsMenuOpen(false)}>
+                        <Link href="/auth/sign-up" onClick={() => setIsMenuOpen(false)}>
                           <Button className="w-full bg-brand-mint text-brand-hunter hover:bg-brand-mint/90 rounded-sm">
                             Get Started
                           </Button>

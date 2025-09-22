@@ -759,7 +759,7 @@ export default function InvoicesPage() {
         </div>
 
         {/* Status Summary Cards */}
-        <div className="px-4 sm:px-6 py-4">
+        <div className="hidden md:block px-4 sm:px-6 py-4">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4 mb-6">
             <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 p-4">
               <div className="flex items-center justify-between">
