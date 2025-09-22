@@ -375,7 +375,7 @@ export default function InvoiceDetailPage() {
   if (isLoading) {
     return (
       <div className="flex flex-1 items-center justify-center h-full">
-        <Loader className="h-4 w-4 animate-spin" />
+        <Loader className="h-8 w-8 animate-spin" />
       </div>
     );
   }
@@ -417,7 +417,82 @@ export default function InvoiceDetailPage() {
                     Created {formatDate(invoice.created_at)}
                   </p>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="hidden md:block flex items-center space-x-2">
+                  <Badge className={`capitalize ${getStatusColor(invoice.status || 'draft')}`}>
+                    {invoice.status || 'draft'}
+                  </Badge>
+                  {!isEditing && (
+                    <select
+                      title="Update invoice status"
+                      value={invoice.status}
+                      onChange={async (e) => {
+                        const newStatus = e.target.value as 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled';
+                        try { 
+                          const supabase = createClient();
+                          const { error } = await supabase
+                            .from('invoices')
+                            .update({ status: newStatus })
+                            .eq('id', invoiceId);
+                          
+                          if (error) {
+                            console.error('Error updating status:', error);
+                            toast.error('Failed to update status');
+                          } else {
+                            setInvoice(prev => prev ? { ...prev, status: newStatus } : null);
+                            toast.success('Status updated successfully');
+                          }
+                        } catch (error) {
+                          console.error('Error updating status:', error);
+                          toast.error('Failed to update status');
+                        }
+                      }}
+                      className="text-xs px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    >
+                      <option value="draft">Draft</option>
+                      <option value="sent">Sent</option>
+                      <option value="paid">Paid</option>
+                      <option value="overdue">Overdue</option>
+                      <option value="cancelled">Cancelled</option>
+                    </select>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="hidden md:flex items-center space-x-2">
+              {!isEditing ? (
+                <>
+                  <Button variant="outline" onClick={() => setIsEditing(true)}>
+                    <Edit className="h-4 w-4 mr-2" />
+                    Edit
+                  </Button>
+                  <Button variant="outline" onClick={handleGeneratePDF}>
+                    <Download className="h-4 w-4 mr-2" />
+                    Download PDF
+                  </Button>
+                  <Button onClick={handleSendInvoice}>
+                    <Send className="h-4 w-4 mr-2" />
+                    Send
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="outline" onClick={() => setIsEditing(false)}>
+                    <X className="h-4 w-4 mr-2" />
+                    Cancel
+                  </Button>
+                  <Button onClick={handleSaveChanges} disabled={isSaving}>
+                    <Save className="h-4 w-4 mr-2" />
+                    {isSaving ? "Saving..." : "Save Changes"}
+                  </Button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Invoice Content */}
+        <div className="flex-1 overflow-auto p-6 w-full max-w-full">
+        <div className="block md:hidden flex items-center space-x-2">
                   <Badge className={`capitalize ${getStatusColor(invoice.status || 'draft')}`}>
                     {invoice.status || 'draft'}
                   </Badge>
@@ -456,11 +531,10 @@ export default function InvoiceDetailPage() {
                     </select>
                   )}
                 </div>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2">
+        <div className="block md:hidden flex items-center space-x-2 mb-4 ">
               {!isEditing ? (
-                <>
+                <div className="flex flex-col space-x-2">
+                  <div className="flex items-center space-x-2">
                   <Button variant="outline" onClick={() => setIsEditing(true)}>
                     <Edit className="h-4 w-4 mr-2" />
                     Edit
@@ -469,11 +543,12 @@ export default function InvoiceDetailPage() {
                     <Download className="h-4 w-4 mr-2" />
                     Download PDF
                   </Button>
+                  </div>
                   <Button onClick={handleSendInvoice}>
                     <Send className="h-4 w-4 mr-2" />
                     Send
                   </Button>
-                </>
+                </div>
               ) : (
                 <>
                   <Button variant="outline" onClick={() => setIsEditing(false)}>
@@ -486,19 +561,15 @@ export default function InvoiceDetailPage() {
                   </Button>
                 </>
               )}
-            </div>
           </div>
-        </div>
-
-        {/* Invoice Content */}
-        <div className="flex-1 overflow-auto p-6 w-full max-w-full">
           <div className="max-w-4xl mx-auto w-full max-w-full min-w-0">
             {/* Invoice Header */}
-            <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 p-6 mb-6">
+            <div className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical p-6 mb-6">
+            
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Business Info */}
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                  <h2 className="text-xl text-gray-900 mb-2">
                     {invoice.business?.name || 'Your Business'}
                   </h2>
                   <p className="text-gray-600">Business Address</p>
@@ -509,7 +580,7 @@ export default function InvoiceDetailPage() {
 
                 {/* Invoice Details */}
                 <div className="text-right">
-                  <h1 className="text-2xl font-bold text-gray-900 mb-4">INVOICE</h1>
+                  <h1 className="text-2xl text-gray-900 mb-4">INVOICE</h1>
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Invoice #:</span>
@@ -532,7 +603,7 @@ export default function InvoiceDetailPage() {
               {/* Customer Info */}
               {invoice.customer && (
                 <div className="mt-6 pt-6 border-t border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Bill To:</h3>
+                  <h3 className="text-lg text-gray-900 mb-2">Bill To:</h3>
                   <div className="text-gray-600">
                     <p className="font-medium">{invoice.customer.name}</p>
                     {invoice.customer.email && <p>{invoice.customer.email}</p>}
@@ -552,8 +623,8 @@ export default function InvoiceDetailPage() {
 
             {/* Edit Invoice Form */}
             {isEditing && (
-              <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 p-6 mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Edit Invoice Details</h3>
+              <div className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical p-6 mb-6">
+                <h3 className="text-lg text-gray-900 mb-4">Edit Invoice Details</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
                     <div>
@@ -662,9 +733,9 @@ export default function InvoiceDetailPage() {
             )}
 
             {/* Invoice Items */}
-            <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 p-6 mb-6">
+            <div className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical p-6 mb-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">Items</h3>
+                <h3 className="text-lg text-gray-900">Items</h3>
                 {!isEditing && (
                   <Button onClick={() => setIsAddingItem(true)} size="sm">
                     <Plus className="h-4 w-4 mr-2" />
@@ -675,8 +746,8 @@ export default function InvoiceDetailPage() {
 
               {/* Add Item Form */}
               {isAddingItem && (
-                <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                  <h4 className="font-medium text-gray-900 mb-3">Add New Item</h4>
+                <div className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical p-6 mb-6">
+                  <h4 className="text-gray-900 mb-3">Add New Item</h4>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div className="md:col-span-2">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -735,12 +806,12 @@ export default function InvoiceDetailPage() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-gray-200">
-                      <th className="text-left py-2 font-medium text-gray-900">Description</th>
-                      <th className="text-right py-2 font-medium text-gray-900">Quantity</th>
-                      <th className="text-right py-2 font-medium text-gray-900">Unit Price</th>
-                      <th className="text-right py-2 font-medium text-gray-900">Total</th>
+                      <th className="text-left py-2 text-gray-900">Description</th>
+                      <th className="text-right py-2 text-gray-900">Quantity</th>
+                      <th className="text-right py-2 text-gray-900">Unit Price</th>
+                      <th className="text-right py-2 text-gray-900">Total</th>
                       {!isEditing && (
-                        <th className="text-center py-2 font-medium text-gray-900">Actions</th>
+                        <th className="text-center py-2 text-gray-900">Actions</th>
                       )}
                     </tr>
                   </thead>
@@ -750,7 +821,7 @@ export default function InvoiceDetailPage() {
                         <td className="py-3 text-gray-900">{item.description}</td>
                         <td className="py-3 text-right text-gray-900">{item.quantity}</td>
                         <td className="py-3 text-right text-gray-900">{formatCurrency(item.unit_price)}</td>
-                        <td className="py-3 text-right text-gray-900 font-medium">
+                          <td className="py-3 text-right text-gray-900">
                           {formatCurrency(item.total_price)}
                         </td>
                         {!isEditing && (
@@ -793,7 +864,7 @@ export default function InvoiceDetailPage() {
                           <span className="font-medium">{formatCurrency(invoice.tax_amount)}</span>
                         </div>
                       )}
-                      <div className="flex justify-between text-lg font-semibold border-t border-gray-200 pt-2">
+                      <div className="flex justify-between text-lg text-gray-900 border-t border-gray-200 pt-2">
                         <span>Total:</span>
                         <span>{formatCurrency(invoice.total_amount)}</span>
                       </div>
@@ -805,16 +876,16 @@ export default function InvoiceDetailPage() {
 
             {/* Notes and Terms */}
             {(invoice.notes || invoice.terms) && (
-              <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 p-6">
+              <div className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical p-6 mb-6">
                 {invoice.notes && (
                   <div className="mb-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Notes</h3>
+                    <h3 className="text-lg text-gray-900 mb-2">Notes</h3>
                     <p className="text-gray-600">{invoice.notes}</p>
                   </div>
                 )}
                 {invoice.terms && (
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Terms & Conditions</h3>
+                    <h3 className="text-lg text-gray-900 mb-2">Terms & Conditions</h3>
                     <p className="text-gray-600">{invoice.terms}</p>
                   </div>
                 )}
@@ -822,7 +893,7 @@ export default function InvoiceDetailPage() {
             )}
 
             {/* Payment History */}
-            <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 p-6">
+            <div className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical p-6">
               <PaymentHistory 
                 invoiceId={invoice.id}
                 invoiceNumber={invoice.invoice_number}

@@ -124,7 +124,7 @@ export function PaymentHistory({ invoiceId, invoiceNumber, totalAmount }: Paymen
 
   if (isLoading) {
     return (
-      <Card>
+      <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
         <CardContent className="p-6">
           <div className="flex items-center justify-center">
             <Loader className="h-6 w-6 animate-spin" />
@@ -137,16 +137,16 @@ export function PaymentHistory({ invoiceId, invoiceNumber, totalAmount }: Paymen
   return (
     <div className="space-y-4">
       {/* Payment Summary */}
-      <Card>
+      <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <DollarSign className="h-5 w-5" />
-            Payment Summary
+            <span className="text-gray-900">Payment Summary</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
           {paymentSummary && (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="text-center">
                 <div className="text-2xl font-bold">{formatCurrency(paymentSummary.total_amount)}</div>
                 <div className="text-sm text-muted-foreground">Total Amount</div>
@@ -177,7 +177,7 @@ export function PaymentHistory({ invoiceId, invoiceNumber, totalAmount }: Paymen
 
       {/* Payment Actions */}
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">Payment History</h3>
+        <h3 className="text-lg text-gray-900">Payment History</h3>
         {paymentSummary && paymentSummary.remaining_balance > 0 && (
           <Button onClick={() => setShowPaymentForm(true)}>
             <Plus className="h-4 w-4 mr-2" />
@@ -203,7 +203,7 @@ export function PaymentHistory({ invoiceId, invoiceNumber, totalAmount }: Paymen
       )}
 
       {/* Payment History List */}
-      <Card>
+      <Card className="bg-brand-snowman dark:bg-gray-900 rounded-sm border border-brand-tropical">
         <CardContent className="p-0">
           {payments.length === 0 ? (
             <div className="p-6 text-center text-muted-foreground">
