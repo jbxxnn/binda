@@ -18,13 +18,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 // import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, ArrowRight, CheckCircle, Building2, Settings, Calculator, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Building2, Settings, Calculator, Sparkles, Loader } from "lucide-react";
 
 interface BusinessInfo {
   name: string;
   slug: string;
   type: string;
   description: string;
+  phone: string;
 }
 
 interface UserPreferences {
@@ -118,7 +119,8 @@ export default function OnboardingPage() {
     name: "",
     slug: "",
     type: "",
-    description: ""
+    description: "",
+    phone: ""
   });
 
   const [userPreferences, setUserPreferences] = useState<UserPreferences>({
@@ -169,7 +171,8 @@ export default function OnboardingPage() {
           name: existingBusiness.name || '',
           slug: existingBusiness.slug || '',
           type: existingBusiness.settings?.business_type || '',
-          description: existingBusiness.settings?.description || ''
+          description: existingBusiness.settings?.description || '',
+          phone: existingBusiness.phone || ''
         }));
         
         // For existing businesses, we know the slug is available (it's their own)
@@ -462,6 +465,20 @@ export default function OnboardingPage() {
                   onChange={(e) => setBusinessInfo(prev => ({ ...prev, description: e.target.value }))}
                 />
               </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="phone">WhatsApp Phone Number (Optional)</Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  placeholder="+1234567890"
+                  value={businessInfo.phone}
+                  onChange={(e) => setBusinessInfo(prev => ({ ...prev, phone: e.target.value }))}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Include country code (e.g., +1234567890). Used for WhatsApp notifications and customer communication.
+                </p>
+              </div>
             </div>
           </div>
         );
@@ -641,9 +658,6 @@ export default function OnboardingPage() {
         return (
           <div className="space-y-6">
             <div className="text-center space-y-4">
-              <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-                <CheckCircle className="w-8 h-8 text-green-600" />
-              </div>
               <h2 className="text-2xl font-bold">Welcome to Binda! 🎉</h2>
               <p className="text-muted-foreground">
                 Your business account has been set up successfully. You&apos;re ready to start managing your finances!
@@ -682,15 +696,14 @@ export default function OnboardingPage() {
     return (
       <div className="flex min-h-svh w-full items-center justify-center">
         <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p>Loading...</p>
+          <Loader className="w-8 h-8 animate-spin mx-auto" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-svh w-full bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-svh w-full bg-gradient-to-br from-brand-lightning to-brand-tropical">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
           {/* Header */}
@@ -704,19 +717,19 @@ export default function OnboardingPage() {
                 : "Let's get your business set up in just a few steps"
               }
             </p>
-            {hasExistingBusiness && (
+            {/* {hasExistingBusiness && (
               <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                 <p className="text-sm text-blue-700">
                   You already have a business account. This will update your existing settings.
                 </p>
               </div>
-            )}
+            )} */}
           </div>
 
           {/* Progress Indicator */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              {STEPS.map((step, index) => (
+              {/* {STEPS.map((step, index) => (
                 <div key={step.id} className="flex items-center">
                   <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
                     currentStep >= step.id 
@@ -735,7 +748,7 @@ export default function OnboardingPage() {
                     }`} />
                   )}
                 </div>
-              ))}
+              ))} */}
             </div>
             <Progress value={(currentStep / STEPS.length) * 100} className="h-2" />
             <div className="flex justify-between mt-2 text-sm text-gray-600">
@@ -750,12 +763,12 @@ export default function OnboardingPage() {
           </div>
 
           {/* Step Content */}
-          <Card>
+          <Card className="bg-brand-snowman border-none shadow-none rounded-sm">
             <CardContent className="p-8">
               {renderStepContent()}
               
               {error && (
-                <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
+                <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-sm">
                   <p className="text-sm text-red-600">{error}</p>
                 </div>
               )}

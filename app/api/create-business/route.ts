@@ -62,6 +62,7 @@ export async function POST(request: NextRequest) {
         .update({
           name: businessInfo.name.trim(),
           slug: businessInfo.slug.trim(),
+          phone: businessInfo.phone?.trim() || null,
           settings: {
             business_type: businessInfo.type || '',
             description: businessInfo.description || '',
@@ -91,6 +92,7 @@ export async function POST(request: NextRequest) {
           name: businessInfo.name.trim(),
           slug: businessInfo.slug.trim(),
           owner_id: user.id,
+          phone: businessInfo.phone?.trim() || null,
           subscription_plan: 'free',
           subscription_status: 'active',
           settings: {
