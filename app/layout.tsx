@@ -14,6 +14,35 @@ export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
   title: "Binda - Your Business, Organized with Simplicity and Ease",
   description: "Smart, compliant, and stress-free business solutions tailored to your business's needs. Professional accounting, customer management, and invoicing tools.",
+  manifest: "/manifest.json",
+  icons: {
+    icon: [
+      {
+        url: "/Binda-icon.png",
+        sizes: "32x32",
+        type: "image/png",
+      },
+      {
+        url: "/Binda-icon.png",
+        sizes: "16x16",
+        type: "image/png",
+      },
+    ],
+    apple: [
+      {
+        url: "/Binda-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
+    other: [
+      {
+        rel: "icon",
+        url: "/Binda-icon.png",
+        sizes: "any",
+      },
+    ],
+  },
 };
 
 const dmMono = DM_Mono({
