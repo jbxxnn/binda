@@ -2,6 +2,8 @@
  * Utility functions for handling profile images and avatars
  */
 
+import { User } from "@supabase/supabase-js";
+
 export const DEFAULT_PROFILE_IMAGE = "/Binda-icon.png";
 
 /**
@@ -43,7 +45,7 @@ export function getUserInitials(name?: string | null): string {
  * @param user - User object with metadata
  * @returns Display name string
  */
-export function getDisplayName(user: any): string {
+export function getDisplayName(user: User): string {
   return user?.user_metadata?.full_name || 
          user?.user_metadata?.name || 
          user?.email?.split('@')[0] || 

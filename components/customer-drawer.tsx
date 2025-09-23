@@ -73,9 +73,9 @@ export function CustomerDrawer({ customer, isOpen, onClose, onDelete }: Customer
 
   if (!customer) return null;
 
-  const getInitials = (name: string) => {
-    return name?.split(' ').map(n => n[0]).join('').toUpperCase() || '?';
-  };
+  // const getInitials = (name: string) => {
+  //   return name?.split(' ').map(n => n[0]).join('').toUpperCase() || '?';
+  // };
 
 
   const formatActivityDate = (dateString: string) => {

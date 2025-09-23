@@ -14,7 +14,7 @@ import {
   // Gift, 
   // Bell, 
   // ChevronDown,
-  User as UserIcon,
+  // User as UserIcon,
   LogOut,
 } from "lucide-react";
 import {

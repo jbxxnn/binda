@@ -256,9 +256,9 @@ export default function CustomerDetailPage() {
     });
   };
 
-  const getInitials = (name: string) => {
-    return name?.split(' ').map(n => n[0]).join('').toUpperCase() || '?';
-  };
+  // const getInitials = (name: string) => {
+  //   return name?.split(' ').map(n => n[0]).join('').toUpperCase() || '?';
+  // };
 
   const formatActivityDate = (dateString: string) => {
     return formatDate(dateString, {

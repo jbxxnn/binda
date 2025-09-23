@@ -11,7 +11,7 @@ import {
   LogOut,
   Sparkles,
 } from "lucide-react"
-import { getProfileImageUrl, getUserInitials, getDisplayName } from "@/lib/profile-utils"
+import { getDisplayName } from "@/lib/profile-utils"
 
 import { ProfileAvatar } from "@/components/ui/profile-avatar"
 import {
@@ -79,8 +79,8 @@ export function NavUser() {
   }
 
   const displayName = getDisplayName(user)
-  const avatarUrl = getProfileImageUrl(user.user_metadata?.avatar_url)
-  const initials = getUserInitials(displayName)
+  // const avatarUrl = getProfileImageUrl(user.user_metadata?.avatar_url)
+  // const initials = getUserInitials(displayName)
   const userEmail = user.email || ''
 
   return (

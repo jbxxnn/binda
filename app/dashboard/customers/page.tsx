@@ -167,9 +167,9 @@ export default function CustomersPage() {
     fetchCustomers();
   }, []);
 
-  const getInitials = (name: string) => {
-    return name?.split(' ').map(n => n[0]).join('').toUpperCase() || '?';
-  };
+  // const getInitials = (name: string) => {
+  //   return name?.split(' ').map(n => n[0]).join('').toUpperCase() || '?';
+  // };
 
   // const formatCurrency = (amount: number) => {
   //   return new Intl.NumberFormat('en-US', {
