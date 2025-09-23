@@ -1,18 +1,21 @@
 import { LoginForm } from "@/components/login-form";
-import { GalleryVerticalEnd } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Page() {
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10 bg-brand-lightning">
         <div className="flex justify-center gap-2 md:justify-start">
-          <a href="#" className="flex items-center gap-2 font-medium text-brand-hunter">
-            <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
-              <GalleryVerticalEnd className="size-4" />
-            </div>
-            Binda
-          </a>
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/BINDA.svg"
+              alt="Binda Logo"
+              width={120}
+              height={40}
+              className="h-8 w-auto"
+            />
+          </Link>
         </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-sm">
@@ -22,7 +25,7 @@ export default function Page() {
       </div>
       <div className="bg-muted relative hidden lg:block">
         <Image
-          src="/placeholder.svg"
+          src="/sign-in.jpg"
           alt="Image"
           width={500}
           height={500}
