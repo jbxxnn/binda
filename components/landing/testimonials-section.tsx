@@ -31,7 +31,7 @@ export default function TestimonialsSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-left md:text-center text-3xl md:text-4xl text-gray-900 mb-4">
-            What our customers say about <span className="text-brand-tropical">Binda</span>
+            What our customers say about <span className="text-brand-mint">Binda</span>
           </h2>
           <p className="text-left md:text-center text-xl text-gray-600">
             Join thousands of satisfied businesses using Binda to grow their operations
@@ -49,7 +49,7 @@ export default function TestimonialsSection() {
                 </div>
                 <p className="text-gray-600 mb-4">&quot;{testimonial.content}&quot;</p>
                 <div className="flex items-center">
-                  <div className="w-10 h-10 bg-brand-tropical rounded-full flex items-center justify-center text-white font-semibold mr-3">
+                  <div className="w-10 h-10 bg-brand-underworld rounded-full flex items-center justify-center text-white font-semibold mr-3">
                     {testimonial.avatar}
                   </div>
                   <div>

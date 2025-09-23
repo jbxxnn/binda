@@ -43,16 +43,16 @@ export default function FAQSection() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-left md:text-center text-3xl md:text-4xl text-brand-hunter mb-4">
-            Frequently Asked <span className="text-brand-tropical">Questions</span>
+            Frequently Asked <span className="text-brand-mint">Questions</span>
           </h2>
-          <p className="text-left md:text-center text-xl text-brand-tropical">
+          <p className="text-left md:text-center text-xl text-brand-underworld">
             Everything you need to know about Binda
           </p>
         </div>
 
         <div className="space-y-4">
           {faqs.map((faq, index) => (
-            <Card key={index} className="border-brand-tropical rounded-sm shadow-none">
+            <Card key={index} className="border-brand-underworld rounded-sm shadow-none">
               <button
                 onClick={() => toggleItem(index)}
                 className="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"

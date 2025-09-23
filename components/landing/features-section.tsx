@@ -68,9 +68,9 @@ export default function FeaturesSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-left md:text-center text-3xl md:text-4xl text-brand-hunter mb-4">
-            Everything you need to <span className="text-brand-tropical">grow your business</span>
+            Everything you need to <span className="text-brand-mint">grow your business</span>
           </h2>
-          <p className="text-left md:text-center text-xl text-brand-tropical max-w-3xl mx-auto">
+          <p className="text-left md:text-center text-xl text-brand-underworld max-w-3xl mx-auto">
             Powerful tools and features designed to streamline your operations and boost productivity
           </p>
         </div>
@@ -101,14 +101,14 @@ export default function FeaturesSection() {
               <h3 className="text-2xl font-bold text-brand-hunter mb-4">
                 {activeFeatureData.title}
               </h3>
-              <p className="text-lg text-brand-tropical mb-6">
+              <p className="text-lg text-brand-underworld mb-6">
                 {activeFeatureData.description}
               </p>
               <ul className="space-y-3">
                 {activeFeatureData.details.map((detail, index) => (
                   <li key={index} className="flex items-center">
-                    <CheckCircle className="w-5 h-5 text-brand-tropical mr-3 flex-shrink-0" />
-                    <span className="text-brand-tropical">{detail}</span>
+                    <CheckCircle className="w-5 h-5 text-brand-underworld mr-3 flex-shrink-0" />
+                    <span className="text-brand-underworld">{detail}</span>
                   </li>
                 ))}
               </ul>
@@ -126,7 +126,7 @@ export default function FeaturesSection() {
                 <h4 className="text-xl font-semibold text-brand-hunter mb-2 px-8">
                   {activeFeatureData.title}
                 </h4>
-                <p className="text-brand-tropical px-8">
+                <p className="text-brand-underworld px-8">
                   Experience the power of {activeFeatureData.title.toLowerCase()}
                 </p>
               </div>
