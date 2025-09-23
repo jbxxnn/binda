@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Calendar, Tag, Settings, Zap, Bug, Plus, HelpCircle, MessageSquare } from "lucide-react";
 import Link from "next/link";
+import Header from "@/components/landing/header";
+import Footer from "@/components/landing/footer";
 
 interface ChangelogEntry {
   version: string;
@@ -21,7 +23,7 @@ interface ChangelogEntry {
 const changelogData: ChangelogEntry[] = [
   {
     version: "1.2.0",
-    date: "2024-01-15",
+    date: "2025-09-23",
     type: "major",
     title: "Enhanced Onboarding Experience",
     description: "Complete redesign of the onboarding flow with multi-step setup and improved user experience.",
@@ -37,7 +39,7 @@ const changelogData: ChangelogEntry[] = [
   },
   {
     version: "1.1.5",
-    date: "2024-01-10",
+    date: "2025-09-20",
     type: "patch",
     title: "Bug Fixes & Improvements",
     description: "Various bug fixes and performance improvements across the platform.",
@@ -51,7 +53,7 @@ const changelogData: ChangelogEntry[] = [
   },
   {
     version: "1.1.0",
-    date: "2024-01-05",
+    date: "2025-09-18",
     type: "minor",
     title: "Subscription Management",
     description: "Added comprehensive subscription management features for customers.",
@@ -65,7 +67,7 @@ const changelogData: ChangelogEntry[] = [
   },
   {
     version: "1.0.8",
-    date: "2023-12-28",
+    date: "2025-09-11",
     type: "patch",
     title: "Database & Performance",
     description: "Backend improvements and database optimizations.",
@@ -78,7 +80,7 @@ const changelogData: ChangelogEntry[] = [
   },
   {
     version: "1.0.5",
-    date: "2023-12-20",
+    date: "2025-08-25",
     type: "minor",
     title: "Accounting Settings",
     description: "Comprehensive accounting settings and configuration options.",
@@ -92,7 +94,7 @@ const changelogData: ChangelogEntry[] = [
   },
   {
     version: "1.0.0",
-    date: "2023-12-15",
+    date: "2025-08-15",
     type: "major",
     title: "Initial Release",
     description: "Launch of Binda - Your comprehensive business management platform.",
@@ -140,7 +142,8 @@ export default function ChangelogPage() {
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <div className="mb-8">
+          <Header />
+          <div className="mb-8 mt-12">
             <div className="flex items-center gap-4 mb-4">
               <Button variant="outline" className="text-brand-snowman bg-brand-hunter hover:bg-brand-underworld hover:text-brand-snowman" size="sm" asChild>
                 <Link href="/dashboard">
@@ -252,6 +255,7 @@ export default function ChangelogPage() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

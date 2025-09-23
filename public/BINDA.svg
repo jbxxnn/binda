@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1242.84 486">
+  <defs>
+    <style>
+      .cls-1 {
+        letter-spacing: 0em;
+      }
+
+      .cls-2 {
+        letter-spacing: -.02em;
+      }
+
+      .cls-3 {
+        fill: #bfd98c;
+        font-family: MoonWalk, 'Moon Walk';
+        font-size: 400.66px;
+      }
+
+      .cls-4 {
+        letter-spacing: -.13em;
+      }
+    </style>
+  </defs>
+  <text class="cls-3" transform="translate(0 343.36)"><tspan class="cls-2" x="0" y="0">b</tspan><tspan x="272.05" y="0">in</tspan><tspan class="cls-4" x="673.91" y="0">d</tspan><tspan class="cls-1" x="905.89" y="0">a</tspan></text>
+</svg>

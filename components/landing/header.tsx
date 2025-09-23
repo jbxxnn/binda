@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { ClientAuthButton } from "@/components/client-auth-button";
@@ -10,10 +11,10 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navigation = [
-    { name: "Features", href: "#features" },
-    { name: "Pricing", href: "#pricing" },
-    { name: "Testimonials", href: "#testimonials" },
-    { name: "FAQ", href: "#faq" }
+    { name: "Features", href: "/#features" },
+    { name: "Pricing", href: "/#pricing" },
+    { name: "Testimonials", href: "/#testimonials" },
+    { name: "FAQ", href: "/#faq" }
   ];
 
   return (
@@ -23,10 +24,13 @@ export default function Header() {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
-              <div className="w-8 h-8 bg-brand-tropical rounded-lg flex items-center justify-center mr-2">
-                <span className="text-white font-bold text-lg">B</span>
-              </div>
-              <span className="text-xl font-bold text-brand-tropical">Binda</span>
+              <Image
+                src="/BINDA.svg"
+                alt="Binda Logo"
+                width={120}
+                height={40}
+                className="h-8 w-auto"
+              />
             </Link>
           </div>
 

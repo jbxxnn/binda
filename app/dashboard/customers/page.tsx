@@ -24,6 +24,7 @@ import {
   PopoverFormSuccess,
 } from "@/components/ui/popover-form";
 import { CustomerDrawer } from "@/components/customer-drawer";
+import { ProfileAvatar } from "@/components/ui/profile-avatar";
 import {
   MoreHorizontal,
   Edit,
@@ -50,6 +51,7 @@ interface Customer {
   state?: string;
   zip_code?: string;
   country?: string;
+  avatar_url?: string;
   // Subscription fields
   subscription_status?: 'none' | 'active' | 'paused' | 'cancelled' | 'expired';
   subscription_plan?: string;
@@ -377,11 +379,12 @@ export default function CustomersPage() {
               className="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 p-2 -m-2 rounded-lg transition-colors"
               onClick={() => handleCustomerClick(customer)}
             >
-              <div className="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
-                <span className="text-sm font-medium text-teal-700">
-                  {getInitials(customer.name || '')}
-                </span>
-              </div>
+              <ProfileAvatar 
+                src={customer.avatar_url}
+                alt={customer.name || 'Customer'}
+                name={customer.name || 'Customer'}
+                size="md"
+              />
               <div>
                 <div className="font-medium text-gray-900">{customer.name || 'Unnamed Customer'}</div>
                 <div className="text-sm text-gray-500">{customer.email || 'No email'}</div>

@@ -86,4 +86,12 @@
   html {
     overscroll-behavior: none;
   }
+  
+  /* Temporarily force light mode while working on dark mode */
+  html.dark {
+    color-scheme: light;
+  }
+  html.dark * {
+    color-scheme: light;
+  }
 }

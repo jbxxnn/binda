@@ -25,6 +25,9 @@ const ThemeSwitcher = () => {
     return null;
   }
 
+  // Temporarily disable theme switcher while working on dark mode
+  return null;
+
   const ICON_SIZE = 16;
 
   return (

@@ -7,6 +7,7 @@ import { usePreferences } from "@/lib/contexts/preferences-context";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ProfileAvatar } from "@/components/ui/profile-avatar";
 // import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import {
@@ -45,6 +46,7 @@ interface Customer {
   state?: string;
   zip_code?: string;
   country?: string;
+  avatar_url?: string;
   // Subscription fields
   subscription_status?: 'none' | 'active' | 'paused' | 'cancelled' | 'expired';
   subscription_plan?: string;
@@ -309,11 +311,13 @@ export default function CustomerDetailPage() {
                 </Link>
               </Button>
               <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center">
-                  <span className="text-lg font-semibold text-teal-700">
-                    {getInitials(customer.name)}
-                  </span>
-                </div>
+                <ProfileAvatar 
+                  src={customer.avatar_url}
+                  alt={customer.name}
+                  name={customer.name}
+                  size="lg"
+                  className="w-12 h-12"
+                />
                 <div>
                   <h1 className="text-2xl font-medium">{customer.name}</h1>
                   <p className="text-sm text-gray-600">

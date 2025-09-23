@@ -8,12 +8,12 @@ import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
-  : "http://localhost:3000";
+  : "https://getbinda.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Next.js and Supabase Starter Kit",
-  description: "The fastest way to build apps with Next.js and Supabase",
+  title: "Binda - Your Business, Organized with Simplicity and Ease",
+  description: "Smart, compliant, and stress-free business solutions tailored to your business's needs. Professional accounting, customer management, and invoicing tools.",
 };
 
 const dmMono = DM_Mono({
@@ -35,8 +35,9 @@ export default function RootLayout({
         <NuqsAdapter>
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
-            enableSystem
+            defaultTheme="light"
+            forcedTheme="light"
+            enableSystem={false}
             disableTransitionOnChange
           >
             <PreferencesProvider>

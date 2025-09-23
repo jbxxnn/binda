@@ -1,9 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { ProfileAvatar } from "@/components/ui/profile-avatar";
+import { getDisplayName } from "@/lib/profile-utils";
 // import { Input } from "@/components/ui/input";
 import { 
   // Search, 
@@ -56,17 +60,13 @@ export function AppHeader() {
     window.location.href = '/';
   };
 
-  const displayName = user?.user_metadata?.full_name || 
-                     user?.user_metadata?.name || 
-                     user?.email?.split('@')[0] || 
-                     'User';
-  
+  const displayName = getDisplayName(user);
   const userId = user?.id?.slice(-7) || '';
 
   return (
     <header className="h-[4.1rem] border-b bg-brand-underworld border-brand-underworld px-6 flex items-center justify-between">
       {/* Left Side - Mobile Menu & Logo */}
-      <div className="flex items-center">
+      <div className="flex items-center space-x-4">
         <div className="md:hidden">
           <AnimatedMenuIcon 
             size={24}
@@ -78,7 +78,16 @@ export function AppHeader() {
         <div className="hidden md:flex">
           {/* <SidebarTrigger /> */}
         </div>
-        {/* <h1 className="text-xl font-bold text-brand-hunter">Binda</h1> */}
+        {/* Logo */}
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/BINDA.svg"
+            alt="Binda Logo"
+            width={120}
+            height={40}
+            className="h-8 w-auto"
+          />
+        </Link>
       </div>
 
       {/* Center - Search Bar (hidden on mobile) */}
@@ -106,9 +115,12 @@ export function AppHeader() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="flex items-center space-x-2 h-auto p-2 hover:bg-gray-50">
-              <div className="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
-                <UserIcon className="h-4 w-4 text-teal-700" />
-              </div>
+              <ProfileAvatar 
+                src={user?.user_metadata?.avatar_url}
+                alt={displayName}
+                name={displayName}
+                size="md"
+              />
               <div className="hidden md:block text-left">
                 <div className="text-sm font-medium text-brand-lightning">
                   {loading ? 'Loading...' : displayName}

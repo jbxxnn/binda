@@ -11,12 +11,9 @@ import {
   LogOut,
   Sparkles,
 } from "lucide-react"
+import { getProfileImageUrl, getUserInitials, getDisplayName } from "@/lib/profile-utils"
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar"
+import { ProfileAvatar } from "@/components/ui/profile-avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -81,13 +78,9 @@ export function NavUser() {
     return null
   }
 
-  const displayName = user.user_metadata?.full_name || 
-                     user.user_metadata?.name || 
-                     user.email?.split('@')[0] || 
-                     'User'
-  
-  const avatarUrl = user.user_metadata?.avatar_url
-  const initials = displayName.split(' ').map((n: string) => n[0] || '').join('').toUpperCase()
+  const displayName = getDisplayName(user)
+  const avatarUrl = getProfileImageUrl(user.user_metadata?.avatar_url)
+  const initials = getUserInitials(displayName)
   const userEmail = user.email || ''
 
   return (
@@ -99,10 +92,13 @@ export function NavUser() {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={avatarUrl} alt={displayName} />
-                <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
-              </Avatar>
+              <ProfileAvatar 
+                src={user.user_metadata?.avatar_url}
+                alt={displayName}
+                name={displayName}
+                size="md"
+                className="rounded-lg"
+              />
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{displayName}</span>
                 <span className="truncate text-xs">{userEmail}</span>
@@ -118,10 +114,13 @@ export function NavUser() {
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={avatarUrl} alt={displayName} />
-                  <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
-                </Avatar>
+                <ProfileAvatar 
+                  src={user.user_metadata?.avatar_url}
+                  alt={displayName}
+                  name={displayName}
+                  size="md"
+                  className="rounded-lg"
+                />
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{displayName}</span>
                   <span className="truncate text-xs">{userEmail}</span>

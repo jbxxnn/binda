@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Facebook, Twitter, Linkedin, Instagram, Youtube } from "lucide-react";
 
 export default function Footer() {
@@ -43,12 +44,15 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
           {/* Logo and Description */}
           <div className="lg:col-span-2">
-            <div className="flex items-center mb-4">
-              <div className="w-8 h-8 bg-brand-tropical rounded-lg flex items-center justify-center mr-2">
-                <span className="text-brand-hunter font-bold text-lg">B</span>
-              </div>
-              <span className="text-xl font-bold">Binda</span>
-            </div>
+            <Link href="/" className="flex items-center mb-4">
+              <Image
+                src="/BINDA.svg"
+                alt="Binda Logo"
+                width={120}
+                height={40}
+                className="h-8 w-auto"
+              />
+            </Link>
             <p className="text-brand-tropical mb-6 max-w-md">
               The all-in-one business management platform that helps you streamline operations, 
               manage customers, and grow your business with confidence.

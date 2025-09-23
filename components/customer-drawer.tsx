@@ -7,6 +7,7 @@ import { X, Edit,
   FileText, DollarSign, CreditCard, TrendingUp, TrendingDown, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ProfileAvatar } from "@/components/ui/profile-avatar";
 import { usePreferences } from "@/lib/contexts/preferences-context";
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -25,6 +26,7 @@ interface Customer {
   state?: string;
   zip_code?: string;
   country?: string;
+  avatar_url?: string;
   // Subscription fields
   subscription_status?: 'none' | 'active' | 'paused' | 'cancelled' | 'expired';
   subscription_plan?: string;
@@ -223,11 +225,13 @@ export function CustomerDrawer({ customer, isOpen, onClose, onDelete }: Customer
             <div className="relative p-6 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-center space-x-4">
                 <div className="relative">
-                  <div className="w-16 h-16 bg-teal-100 dark:bg-teal-900 rounded-full flex items-center justify-center">
-                    <span className="text-2xl font-semibold text-teal-700 dark:text-teal-300">
-                      {getInitials(customer.name)}
-                    </span>
-                  </div>
+                  <ProfileAvatar 
+                    src={customer.avatar_url}
+                    alt={customer.name}
+                    name={customer.name}
+                    size="xl"
+                    className="w-16 h-16"
+                  />
                   <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
                     <div className="w-3 h-3 bg-white rounded-full"></div>
                   </div>

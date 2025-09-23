@@ -26,6 +26,8 @@ import {
   Shield,
 } from "lucide-react";
 import Link from "next/link";
+import Header from "@/components/landing/header";
+import Footer from "@/components/landing/footer";
 
 interface FAQ {
   id: string;
@@ -235,7 +237,8 @@ export default function SupportPage() {
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
-          <div className="mb-8">
+          <Header />
+          <div className="mb-8 mt-12">
             <div className="flex items-center gap-4 mb-4">
               <Button size="sm" asChild className="bg-brand-hunter text-brand-snowman rounded-sm">
                 <Link href="/dashboard">
@@ -502,6 +505,7 @@ export default function SupportPage() {
           </div>
         </div>
       </div>
+          <Footer />
     </div>
   );
 }
