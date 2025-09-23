@@ -45,13 +45,13 @@ export default function Footer() {
           {/* Logo and Description */}
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center mb-4">
-              <Image
-                src="/BINDA.svg"
-                alt="Binda Logo"
-                width={120}
-                height={40}
-                className="h-8 w-auto"
-              />
+        <Image
+          src="/BINDA.png"
+          alt="Binda Logo"
+          width={120}
+          height={40}
+          className="h-8 w-auto"
+        />
             </Link>
             <p className="text-brand-tropical mb-6 max-w-md">
               The all-in-one business management platform that helps you streamline operations, 

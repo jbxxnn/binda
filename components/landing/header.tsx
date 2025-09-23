@@ -25,7 +25,7 @@ export default function Header() {
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
               <Image
-                src="/BINDA.svg"
+                src="/BINDA.png"
                 alt="Binda Logo"
                 width={120}
                 height={40}

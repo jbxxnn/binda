@@ -9,7 +9,7 @@ export default function Page() {
       <div className="flex justify-center gap-2 md:justify-start">
         <Link href="/" className="flex items-center">
           <Image
-            src="/BINDA.svg"
+            src="/BINDA.png"
             alt="Binda Logo"
             width={120}
             height={40}
