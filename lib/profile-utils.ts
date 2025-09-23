@@ -45,9 +45,11 @@ export function getUserInitials(name?: string | null): string {
  * @param user - User object with metadata
  * @returns Display name string
  */
-export function getDisplayName(user: User): string {
-  return user?.user_metadata?.full_name || 
-         user?.user_metadata?.name || 
-         user?.email?.split('@')[0] || 
+export function getDisplayName(user: User | null): string {
+  if (!user) return 'User';
+  
+  return user.user_metadata?.full_name || 
+         user.user_metadata?.name || 
+         user.email?.split('@')[0] || 
          'User';
 }
