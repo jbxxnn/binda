@@ -50,14 +50,14 @@ export default async function PublicBookingLayout({
                         {tenant.name}
                     </h1> */}
                 </div>
-                <div className='w-full max-w-4xl mx-auto mt-8 flex flex-row gap-8'>
-                    <div className='w-1/2 relative'>
+                <div className='w-full max-w-4xl mx-auto mt-8 flex flex-col md:flex-row gap-8'>
+                    <div className='w-full md:w-1/2 relative'>
                         <div className='bg-primary text-primary-foreground p-2 absolute top-[-5%] left-0 shadow-lg font-mono' style={{ borderRadius: '0.3rem' }}>{tenant.name}</div>
                         <div className='w-full max-h-[400px] h-full bg-primary'>
                             {/* <Image src='/opengraph-image.png' alt={tenant.name} width={100} height={100} /> */}
                         </div>
                     </div>
-                    <div className="w-1/2">
+                    <div className="w-full md:w-1/2">
                         {children}
                     </div>
                 </div>
