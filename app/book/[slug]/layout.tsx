@@ -46,7 +46,9 @@ export default async function PublicBookingLayout({
 
     return (
         <div className="min-h-screen bg-slate-50 flex flex-col items-center py-6 sm:py-12 bg-background">
-            <TenantContainer tenant={tenant} />
+            <div className="w-full max-w-7xl px-4">
+                <TenantContainer tenant={tenant} />
+            </div>
 
             <div className="w-full max-w-7xl px-4 flex flex-col">
                 <div className="mb-8 text-start">
