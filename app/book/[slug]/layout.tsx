@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
+import TenantContainer from '@/components/public-booking/tenant-container';
 
 // Force dynamic rendering since we depend on route params and Admin access
 export const dynamic = 'force-dynamic';
@@ -35,7 +36,7 @@ export default async function PublicBookingLayout({
 
     const { data: tenant, error } = await supabase
         .from('tenants')
-        .select('id, name, slug, currency')
+        .select('id, name, slug, currency, timezone, location_photos')
         .eq('slug', slug)
         .single();
 
@@ -45,6 +46,8 @@ export default async function PublicBookingLayout({
 
     return (
         <div className="min-h-screen bg-slate-50 flex flex-col items-center py-6 sm:py-12 bg-background">
+            <TenantContainer tenant={tenant} />
+
             <div className="w-full max-w-7xl px-4 flex flex-col">
                 <div className="mb-8 text-start">
                     {/* <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
@@ -67,6 +70,8 @@ export default async function PublicBookingLayout({
                     Powered by Binda
                 </div>
             </div>
+
+
             <div className='w-full px-4 border-t border-slate-200 flex flex-row justify-between items-center fixed bottom-0 left-0 right-0 z-50 bg-white' style={{ height: '5rem' }}>
                 <p>57 services available</p>
                 <Button className='bg-primary-foreground text-primary rounded-full'> Book Now </Button>

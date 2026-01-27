@@ -1,7 +1,6 @@
 import BookingContainer from '@/components/public-booking/booking-container';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { notFound } from 'next/navigation';
-import TenantContainer from '@/components/public-booking/tenant-container';
 
 export default async function BookingPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
@@ -17,7 +16,6 @@ export default async function BookingPage({ params }: { params: Promise<{ slug: 
 
     return (
         <>
-            <TenantContainer tenant={tenant} />
             <BookingContainer tenant={tenant} />
         </>
     );
