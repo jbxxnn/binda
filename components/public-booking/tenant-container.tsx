@@ -21,18 +21,6 @@ import TenantStatus from './tenant-status';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Location08Icon } from '@hugeicons/core-free-icons';
 
-interface Tenant {
-    id: string;
-    name: string;
-    slug: string;
-    currency: string;
-    timezone: string;
-    location_photos: string[];
-    about_us?: string;
-    address?: string;
-    latitude?: number;
-    longitude?: number;
-}
 
 
 export default function TenantContainer({ tenant }: { tenant: Tenant }) {
@@ -46,9 +34,9 @@ export default function TenantContainer({ tenant }: { tenant: Tenant }) {
                         {/* Status Component */}
                     </div>
                     {tenant.address && (
-                        <p className="text-slate-500 text-sm mt-1 flex items-center gap-1 truncate w-full overflow-hidden text-ellipsis whitespace-nowrap">
-                            <HugeiconsIcon icon={Location08Icon} size={12} />
-                            {tenant.address}
+                        <p className="text-slate-500 text-sm mt-1 flex items-center gap-1">
+                            <HugeiconsIcon icon={Location08Icon} size={12} className="shrink-0" />
+                            <span className="truncate">{tenant.address}</span>
                         </p>
                     )}
                     <TenantStatus tenantId={tenant.id} timezone={tenant.timezone} />
