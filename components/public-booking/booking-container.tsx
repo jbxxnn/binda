@@ -28,6 +28,8 @@ interface Tenant {
     name: string;
     currency: string;
     timezone: string;
+    slug: string;
+    location_photos: string[];
 }
 
 const STEPS = {

@@ -1,14 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+
+
+import PhotoUpload from '@/components/ui/photo-upload';
 
 export default function TenantSettingsPage() {
-    const supabase = createClient();
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
@@ -17,6 +18,7 @@ export default function TenantSettingsPage() {
         slug: '',
         timezone: 'UTC',
         currency: 'NGN',
+        location_photos: [] as string[],
     });
 
     useEffect(() => {
@@ -33,6 +35,7 @@ export default function TenantSettingsPage() {
                     slug: tenant.slug,
                     timezone: tenant.timezone,
                     currency: tenant.currency,
+                    location_photos: tenant.location_photos || [],
                 });
             } catch (error) {
                 console.error(error);
@@ -88,56 +91,70 @@ export default function TenantSettingsPage() {
                     <CardTitle>Business Settings</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div>
-                            <Label htmlFor="name">Business Name</Label>
-                            <Input
-                                id="name"
-                                value={formData.name}
-                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                required
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div className="space-y-4">
+                            <div>
+                                <Label htmlFor="name">Business Name</Label>
+                                <Input
+                                    id="name"
+                                    value={formData.name}
+                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                    required
+                                />
+                            </div>
+
+                            <div>
+                                <Label htmlFor="slug">Slug (URL)</Label>
+                                <Input
+                                    id="slug"
+                                    value={formData.slug}
+                                    disabled // Changing slug is complex, disable for now
+                                    className="bg-gray-100"
+                                />
+                                <p className="text-xs text-gray-500 mt-1">Cannot be changed.</p>
+                            </div>
+
+                            <div>
+                                <Label htmlFor="timezone">Timezone</Label>
+                                <select
+                                    id="timezone"
+                                    value={formData.timezone}
+                                    onChange={(e) => setFormData({ ...formData, timezone: e.target.value })}
+                                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                >
+                                    <option value="Africa/Lagos">Africa/Lagos</option>
+                                    <option value="Africa/Accra">Africa/Accra</option>
+                                    <option value="Africa/Nairobi">Africa/Nairobi</option>
+                                    <option value="UTC">UTC</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <Label htmlFor="currency">Currency</Label>
+                                <select
+                                    id="currency"
+                                    value={formData.currency}
+                                    onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
+                                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                >
+                                    <option value="NGN">NGN - Nigerian Naira</option>
+                                    <option value="GHS">GHS - Ghanaian Cedi</option>
+                                    <option value="KES">KES - Kenyan Shilling</option>
+                                    <option value="USD">USD - US Dollar</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="space-y-4 pt-4 border-t">
+                            <Label>Location Photos</Label>
+                            <p className="text-sm text-gray-500 mb-2">
+                                Upload up to 5 photos of your salon or business location. These will be displayed to customers.
+                            </p>
+                            <PhotoUpload
+                                photos={formData.location_photos}
+                                onChange={(photos) => setFormData({ ...formData, location_photos: photos })}
+                                maxPhotos={5}
                             />
-                        </div>
-
-                        <div>
-                            <Label htmlFor="slug">Slug (URL)</Label>
-                            <Input
-                                id="slug"
-                                value={formData.slug}
-                                disabled // Changing slug is complex, disable for now
-                                className="bg-gray-100"
-                            />
-                            <p className="text-xs text-gray-500 mt-1">Cannot be changed.</p>
-                        </div>
-
-                        <div>
-                            <Label htmlFor="timezone">Timezone</Label>
-                            <select
-                                id="timezone"
-                                value={formData.timezone}
-                                onChange={(e) => setFormData({ ...formData, timezone: e.target.value })}
-                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                            >
-                                <option value="Africa/Lagos">Africa/Lagos</option>
-                                <option value="Africa/Accra">Africa/Accra</option>
-                                <option value="Africa/Nairobi">Africa/Nairobi</option>
-                                <option value="UTC">UTC</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <Label htmlFor="currency">Currency</Label>
-                            <select
-                                id="currency"
-                                value={formData.currency}
-                                onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
-                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                            >
-                                <option value="NGN">NGN - Nigerian Naira</option>
-                                <option value="GHS">GHS - Ghanaian Cedi</option>
-                                <option value="KES">KES - Kenyan Shilling</option>
-                                <option value="USD">USD - US Dollar</option>
-                            </select>
                         </div>
 
                         {message && (

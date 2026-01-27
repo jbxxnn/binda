@@ -7,7 +7,7 @@ import { normalizeTenantSlug, isValidTenantSlug } from '@/lib/tenant/utils';
  * GET /api/tenants
  * Get current user's tenant
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const supabase = await createClient();
 
@@ -171,7 +171,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name, timezone, currency } = body;
+    const { name, timezone, currency, location_photos } = body;
 
     // Validate input
     if (!name) {
@@ -187,6 +187,7 @@ export async function PATCH(request: NextRequest) {
         name,
         timezone,
         currency,
+        location_photos,
         updated_at: new Date().toISOString(),
       })
       .eq('id', userProfile.tenant_id)
