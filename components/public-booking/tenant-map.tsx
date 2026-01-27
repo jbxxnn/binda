@@ -23,7 +23,7 @@ const options = {
 };
 
 export default function TenantMap({ latitude, longitude }: TenantMapProps) {
-    const { isLoaded } = useJsApiLoader({
+    const { isLoaded, loadError } = useJsApiLoader({
         id: 'google-map-script',
         googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""
     });
@@ -32,6 +32,14 @@ export default function TenantMap({ latitude, longitude }: TenantMapProps) {
         lat: latitude,
         lng: longitude
     }), [latitude, longitude]);
+
+    if (loadError) {
+        return (
+            <div className="w-full h-[250px] bg-red-50 text-red-600 rounded-lg flex items-center justify-center text-sm p-4 text-center border border-red-100">
+                Map Error: {loadError.message}
+            </div>
+        );
+    }
 
     if (!isLoaded) {
         return <div className="w-full h-[250px] bg-slate-100 rounded-lg animate-pulse" />;
