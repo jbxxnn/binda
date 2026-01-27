@@ -146,13 +146,6 @@ export default function BookingContainer({ tenant }: { tenant: Tenant }) {
 
     return (
         <div className="bg-card flex flex-col gap-4 justify-center border border-primary overflow-hidden min-h-[400px]" style={{}}>
-            {/* Simple Progress Bar */}
-            {/* <div className="h-[10px] bg-slate-100 w-[100px] top-[10px] left-[10px] relative rounded-full shadow-[1px_1px_0_rgba(0,0,0,0.25)]">
-                <div
-                    className="bg-slate-900 transition-all duration-300"
-                    style={{ width: `${((step + 1) / 4) * 100}%` }}
-                />
-            </div> */}
 
             <div className="p-4 sm:p-6">
                 {/* 

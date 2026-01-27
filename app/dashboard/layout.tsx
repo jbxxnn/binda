@@ -24,8 +24,8 @@ export default function DashboardLayout({
         <div className="flex h-screen w-full flex-col">
             <SidebarProvider>
                 <AppSidebar />
-                <main className="flex-1 overflow-auto p-6">
-                    <header className="flex h-16 items-center border-b px-6 justify-between">
+                <main className="flex-1 overflow-auto">
+                    <header className="flex p-4 items-center border-b px-6 justify-between">
                         <div className="font-bold text-lg">
                             <Link href="/dashboard">Binda Dashboard</Link>
                         </div>

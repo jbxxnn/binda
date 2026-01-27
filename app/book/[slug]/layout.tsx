@@ -2,6 +2,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import Image from 'next/image';
+import { Button } from '@/components/ui/button';
 
 // Force dynamic rendering since we depend on route params and Admin access
 export const dynamic = 'force-dynamic';
@@ -65,6 +66,10 @@ export default async function PublicBookingLayout({
                 <div className="mt-8 text-center text-xs text-slate-400">
                     Powered by Binda
                 </div>
+            </div>
+            <div className='w-full px-4 border-t border-slate-200 flex flex-row justify-between items-center fixed bottom-0 left-0 right-0 z-50 bg-white' style={{ height: '5rem' }}>
+                <p>57 services available</p>
+                <Button className='bg-primary-foreground text-primary rounded-full'> Book Now </Button>
             </div>
         </div>
     );
