@@ -188,6 +188,10 @@ export async function PATCH(request: NextRequest) {
         timezone,
         currency,
         location_photos,
+        about_us: body.about_us,
+        address: body.address,
+        latitude: body.latitude,
+        longitude: body.longitude,
         updated_at: new Date().toISOString(),
       })
       .eq('id', userProfile.tenant_id)

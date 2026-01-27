@@ -36,7 +36,7 @@ export default async function PublicBookingLayout({
 
     const { data: tenant, error } = await supabase
         .from('tenants')
-        .select('id, name, slug, currency, timezone, location_photos')
+        .select('id, name, slug, currency, timezone, location_photos, about_us, address, latitude, longitude')
         .eq('slug', slug)
         .single();
 
