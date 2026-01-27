@@ -17,16 +17,38 @@ interface Tenant {
 }
 
 
+import TenantStatus from './tenant-status';
+
+interface Tenant {
+    id: string;
+    name: string;
+    slug: string;
+    currency: string;
+    timezone: string;
+    location_photos: string[];
+    about_us?: string;
+    address?: string;
+    latitude?: number;
+    longitude?: number;
+}
+
+
 export default function TenantContainer({ tenant }: { tenant: Tenant }) {
     return (
         <div>
             <TenantImageSlider images={tenant.location_photos} name={tenant.name} className="h-[300px]" />
             <div className='px-4 mt-6 space-y-6'>
                 <div>
-                    <h2 className='text-2xl font-medium'>{tenant.name}</h2>
+                    <div className="flex flex-col gap-1 mb-2">
+                        <h2 className='text-2xl font-medium'>{tenant.name}</h2>
+                        {/* Status Component */}
+                    </div>
                     {tenant.address && (
-                        <p className="text-slate-500 text-sm mt-1">{tenant.address}</p>
+                        <p className="text-slate-500 text-xs mt-1">{tenant.address}</p>
                     )}
+                    <TenantStatus tenantId={tenant.id} timezone={tenant.timezone} />
+
+
                 </div>
 
                 {tenant.about_us && (
