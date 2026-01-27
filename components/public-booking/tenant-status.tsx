@@ -1,4 +1,6 @@
 import { createAdminClient } from '@/lib/supabase/admin';
+import { SmartWatch04Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
 import { Clock } from 'lucide-react';
 
 interface TenantStatusProps {
@@ -138,8 +140,8 @@ export default async function TenantStatus({ tenantId, timezone }: TenantStatusP
     }
 
     return (
-        <div className={`flex items-center gap-2 text-xs font-medium ${isOpen ? 'text-green-700' : 'text-slate-500'}`}>
-            <Clock className="w-4 h-4" />
+        <div className={`flex items-center gap-1 text-sm font-medium ${isOpen ? 'text-green-700' : 'text-slate-500'}`}>
+            <HugeiconsIcon icon={SmartWatch04Icon} size={12} />
             <span>{statusText}</span>
         </div>
     );
