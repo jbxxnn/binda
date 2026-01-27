@@ -95,7 +95,7 @@ export default function BookingContainer({ tenant }: { tenant: Tenant }) {
                                 // If they haven't selected staff yet, staffId might be undefined.
                                 // StepStaff handles explicit "Any" selection by passing id: null.
                                 // So we need to ensure staffId is set (either string or null), but not undefined.
-                                className="w-full sm:w-auto bg-primary-foreground text-primary border-primary-foreground hover:bg-[#343434] hover:text-primary hover:border hover:border-primary-foreground transition-all"
+                                className="w-full sm:w-auto h-12 bg-primary-foreground text-primary border-primary-foreground hover:bg-[#343434] hover:text-primary hover:border hover:border-primary-foreground transition-all"
                                 style={{ borderRadius: '0.3rem' }}
                             >
                                 Continue to Date
@@ -145,7 +145,7 @@ export default function BookingContainer({ tenant }: { tenant: Tenant }) {
     };
 
     return (
-        <div className="bg-card flex flex-col gap-4 justify-center border border-slate-200 overflow-hidden min-h-[400px]" style={{}}>
+        <div className="bg-card flex flex-col gap-4 justify-center border border-primary overflow-hidden min-h-[400px]" style={{}}>
             {/* Simple Progress Bar */}
             {/* <div className="h-[10px] bg-slate-100 w-[100px] top-[10px] left-[10px] relative rounded-full shadow-[1px_1px_0_rgba(0,0,0,0.25)]">
                 <div
