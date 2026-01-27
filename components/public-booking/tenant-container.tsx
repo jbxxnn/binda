@@ -20,7 +20,7 @@ export default function TenantContainer({ tenant }: { tenant: Tenant }) {
             {tenant.slug}
             {tenant.currency}
             {tenant.timezone}
-            <TenantImageSlider images={tenant.location_photos} name={tenant.name} className="h-[500px]" />
+            <TenantImageSlider images={tenant.location_photos} name={tenant.name} className="h-[300px]" />
         </div>
     );
 }

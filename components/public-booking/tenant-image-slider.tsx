@@ -54,7 +54,7 @@ export default function TenantImageSlider({ images, name, className }: TenantIma
     };
 
     return (
-        <div className={cn("relative group w-full overflow-hidden rounded-xl aspect-video bg-muted", className)}>
+        <div className={cn("relative group w-full overflow-hidden aspect-video bg-muted", className)}>
             <AnimatePresence initial={false} custom={direction}>
                 <motion.div
                     key={currentIndex}
