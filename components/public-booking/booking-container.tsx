@@ -147,7 +147,7 @@ export default function BookingContainer({ tenant }: { tenant: Tenant }) {
     };
 
     return (
-        <div className="bg-card flex flex-col gap-4 align-center justify-center border border-primary overflow-hidden min-h-[400px]" style={{}}>
+        <div className="bg-card flex flex-col gap-4 align-center justify-center border border-2 border-primary overflow-hidden min-h-[400px]" style={{ borderRadius: '1rem' }}>
 
             <div className="p-4 sm:p-6">
                 {renderStep()}

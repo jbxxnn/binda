@@ -64,12 +64,12 @@ export default function StepService({ tenantId, currency, value, onSelect }: Pro
     return (
         <div className="space-y-2">
             <div>
-                <h2 className="text-md font-regular text-slate-800">Select a Service</h2>
+                {/* <h2 className="text-md font-regular text-slate-800">Select a Service</h2> */}
                 {/* <p className="text-sm text-slate-500">Choose the treatment you'd like to book</p> */}
             </div>
 
             <Select value={value} onValueChange={handleValueChange}>
-                <SelectTrigger className="w-full h-[90px] rounded-md bg-primary border border-primary focus:border-primary active:border-primary focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0" style={{ height: '50px', borderRadius: '0.3rem' }}>
+                <SelectTrigger className="w-full h-[90px] rounded-lg border border-2 border-gray-300 focus:border-gray-300 active:border-gray-300 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0" style={{ height: '55px', borderRadius: '0.5rem' }}>
                     <SelectValue placeholder="Select a service..." />
                 </SelectTrigger>
                 <SelectContent>

@@ -58,7 +58,7 @@ export default function StepStaff({ serviceId, onSelect, value }: Props) {
         return (
             <div className="space-y-2">
                 <div>
-                    <h2 className="text-md font-regular text-slate-800">Select Professional</h2>
+                    {/* <h2 className="text-md font-regular text-slate-800">Select Professional</h2> */}
                 </div>
                 <div className="h-[90px] w-full bg-primary animate-pulse border border-primary rounded-md" style={{ height: '50px', borderRadius: '0.3rem' }} />
             </div>
@@ -68,7 +68,7 @@ export default function StepStaff({ serviceId, onSelect, value }: Props) {
     return (
         <div className="space-y-2">
             <div>
-                <h2 className="text-md font-regular text-slate-800">Select Professional</h2>
+                {/* <h2 className="text-md font-regular text-slate-800">Select Professional</h2> */}
                 {/* <p className="text-sm text-slate-500">Choose who you'd like to book with</p> */}
             </div>
 
@@ -77,7 +77,7 @@ export default function StepStaff({ serviceId, onSelect, value }: Props) {
                 onValueChange={handleValueChange}
                 disabled={!serviceId}
             >
-                <SelectTrigger className="w-full h-[50px] border border-primary rounded-sm bg-primary text-primary-foreground ring-0 ring-offset-0 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0" style={{ height: '50px', borderRadius: '0.3rem' }}>
+                <SelectTrigger className="w-full h-[50px] border border-2 border-gray-300 rounded-sm text-primary-foreground ring-0 ring-offset-0 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0" style={{ height: '55px', borderRadius: '0.5rem' }}>
                     <SelectValue placeholder={!serviceId ? "Select a service first" : "Select professional..."} />
                 </SelectTrigger>
                 <SelectContent>
