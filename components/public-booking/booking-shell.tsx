@@ -65,7 +65,7 @@ export default function BookingShell({
                         animate={{ y: 0 }}
                         exit={{ y: 100 }}
                         transition={{ duration: 0.3 }}
-                        className='w-full px-4 border-t border-slate-200 flex flex-row justify-between items-center fixed bottom-0 left-0 right-0 z-50 bg-white'
+                        className='w-full px-4 border-t border-slate-200 flex flex-row justify-between items-center fixed inset-x-0 bottom-0 left-0 right-0 z-50 bg-white'
                         style={{
                             height: '5rem',
                             paddingBottom: 'env(safe-area-inset-bottom)',
