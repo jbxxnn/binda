@@ -40,7 +40,7 @@ export default function TenantContainer({ tenant }: { tenant: Tenant }) {
 
                 </div>
 
-                <div className='flex flex-col md:flex-row gap-2 md:gap-8'>
+                <div className='flex flex-col md:flex-row gap-4 md:gap-8'>
 
                     <div className='w-full'>
 
@@ -54,14 +54,14 @@ export default function TenantContainer({ tenant }: { tenant: Tenant }) {
                         )}
                     </div>
 
-                    <div className='w-full space-y-2 md:space-y-8'>
+                    <div className='w-full space-y-4 md:space-y-8'>
                         <TenantOpeningHours tenantId={tenant.id} />
 
                         {tenant.latitude && tenant.longitude && (
                             <div>
                                 <h3 className="text-lg font-semibold mb-2">Location</h3>
                                 <div className="space-y-3">
-                                    <TenantMap latitude={tenant.latitude} longitude={tenant.longitude} />
+                                    {/* <TenantMap latitude={tenant.latitude} longitude={tenant.longitude} /> */}
 
                                     <div className="bg-card p-4 rounded-lg border border-slate-100 flex items-center justify-between" style={{ borderRadius: '0.3rem' }}>
                                         <div className="flex flex-col gap-1">
