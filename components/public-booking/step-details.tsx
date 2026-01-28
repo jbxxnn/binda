@@ -84,7 +84,7 @@ export default function StepDetails({ data, onBack, onSubmit, tenantId }: Props)
                     {paymentMethod === 'venue' && <span className="block mt-2 font-medium text-amber-600">Please pay at the venue.</span>}
                 </p>
                 <div className="pt-8">
-                    <Button variant="default" className="bg-primary-foreground text-primary hover:bg-primary-foreground hover:text-primary" style={{ borderRadius: '0.3rem' }} onClick={() => window.location.reload()}>Book Another</Button>
+                    <Button variant="default" className="bg-primary-foreground text-primary hover:bg-primary-foreground hover:text-primary" style={{ borderRadius: '10rem' }} onClick={() => window.location.reload()}>Book Another</Button>
                 </div>
             </div>
         );
@@ -116,7 +116,7 @@ export default function StepDetails({ data, onBack, onSubmit, tenantId }: Props)
                     <Label htmlFor="name" className="text-sm font-medium text-primary-foreground font-mono">Full Name</Label>
                     <Input
                         id="name"
-                        className="text-sm text-primary-foreground font-grotesk border border-2 border-gray-300 h-12"
+                        className="text-base text-primary-foreground font-grotesk border border-2 border-gray-300 h-12"
                         style={{
                             borderRadius: '0.5rem',
                             height: '55px'
@@ -132,7 +132,7 @@ export default function StepDetails({ data, onBack, onSubmit, tenantId }: Props)
                     <Label htmlFor="phone" className="text-sm font-medium text-primary-foreground font-mono">Phone Number</Label>
                     <Input
                         id="phone"
-                        className="text-sm text-primary-foreground font-grotesk border border-2 border-gray-300 h-12"
+                        className="text-base text-primary-foreground font-grotesk border border-2 border-gray-300 h-12"
                         style={{
                             borderRadius: '0.5rem',
                             height: '55px'
