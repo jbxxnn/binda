@@ -5,6 +5,8 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import TenantContainer from '@/components/public-booking/tenant-container';
 
+import BookingShell from '@/components/public-booking/booking-shell';
+
 // Force dynamic rendering since we depend on route params and Admin access
 export const dynamic = 'force-dynamic';
 
@@ -45,39 +47,11 @@ export default async function PublicBookingLayout({
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col items-center py-6 sm:py-12 bg-background">
-            <div className="w-full max-w-7xl">
-                <TenantContainer tenant={tenant} />
-            </div>
-
-            <div className="w-full max-w-7xl px-4 flex flex-col">
-                <div className="mb-8 text-start">
-                    {/* <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-                        {tenant.name}
-                    </h1> */}
-                </div>
-                <div className='w-full max-w-4xl mx-auto mt-8 flex flex-col md:flex-row gap-8'>
-                    <div className='w-full md:w-1/2 relative'>
-                        <div className='bg-primary text-primary-foreground p-2 absolute top-[-5%] left-0 shadow-lg font-mono' style={{ borderRadius: '0.3rem' }}>{tenant.name}</div>
-                        <div className='w-full max-h-[400px] h-full bg-primary'>
-                            {/* <Image src='/opengraph-image.png' alt={tenant.name} width={100} height={100} /> */}
-                        </div>
-                    </div>
-                    <div className="w-full md:w-1/2">
-                        {children}
-                    </div>
-                </div>
-
-                <div className="mt-8 text-center text-xs text-slate-400">
-                    Powered by Binda
-                </div>
-            </div>
-
-
-            <div className='w-full px-4 border-t border-slate-200 flex flex-row justify-between items-center fixed bottom-0 left-0 right-0 z-50 bg-white' style={{ height: '5rem' }}>
-                <p>57 services available</p>
-                <Button className='bg-primary-foreground text-primary rounded-full'> Book Now </Button>
-            </div>
-        </div>
+        <BookingShell
+            tenantName={tenant.name}
+            header={<TenantContainer tenant={tenant} />}
+        >
+            {children}
+        </BookingShell>
     );
 }
