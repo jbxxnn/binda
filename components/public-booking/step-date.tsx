@@ -87,10 +87,10 @@ export default function StepDate({ serviceId, staffId, timezone, onSelect, onBac
                                         disabled={!slot.available}
                                         onClick={() => handleSlotClick(slot.start)}
                                         className={`
-                                            py-2 px-1 text-xs bg-primary rounded border transition-all
+                                            py-2 px-1 text-xs bg-white shadow-md rounded border border-2 border-gray-200 transition-all
                                             ${!slot.available
-                                                ? 'bg-secondary text-primary-foreground border-transparent cursor-not-allowed'
-                                                : 'hover:border-slate-900 border-slate-200 text-slate-700 active:bg-secondary active:text-primary-foreground'}
+                                                ? 'bg-primary-foreground text-white border-transparent cursor-not-allowed'
+                                                : 'hover:border-gray-400 border-border-400 text-slate-700 active:bg-primary-foreground active:text-white'}
                                         `}
                                     >
                                         {time}

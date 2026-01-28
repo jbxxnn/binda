@@ -33,7 +33,7 @@ function Calendar({
     <DayPicker
       showOutsideDays={showOutsideDays}
       className={cn(
-        "bg-primary p-3 [--cell-size:3rem] rounded-xl shadow-sm border-none w-fit",
+        "bg-white p-3 [--cell-size:3rem] rounded-xl shadow-md border-none w-fit",
         String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
         String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
         className
@@ -209,7 +209,7 @@ function CalendarDayButton({
       data-range-end={modifiers.range_end}
       data-today={modifiers.today}
       className={cn(
-        "data-[selected-single=true]:bg-secondary data-[selected-single=true]:text-black data-[range-middle=true]:bg-primary data-[range-middle=true]:text-white data-[range-start=true]:bg-secondary data-[range-start=true]:text-black data-[range-end=true]:bg-secondary data-[range-end=true]:text-black hover:bg-black/5 flex aspect-square size-auto w-full min-w-[var(--cell-size)] flex-col gap-1 leading-none font-medium text-xs [&>span]:hidden rounded-full font-mono",
+        "data-[selected-single=true]:bg-primary-foreground data-[selected-single=true]:text-white data-[range-middle=true]:bg-primary data-[range-middle=true]:text-white data-[range-start=true]:bg-primary-foreground data-[range-start=true]:text-white data-[range-end=true]:bg-primary-foreground data-[range-end=true]:text-white hover:bg-black/5 flex aspect-square size-auto w-full min-w-[var(--cell-size)] flex-col gap-1 leading-none font-medium text-xs [&>span]:hidden rounded-full font-mono",
         defaultClassNames.day,
         className
       )}
