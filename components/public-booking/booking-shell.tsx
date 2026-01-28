@@ -69,7 +69,10 @@ export default function BookingShell({
                     >
                         <p>{serviceCount} services available</p>
                         <Button
-                            onClick={() => setIsBooking(true)}
+                            onClick={() => {
+                                setIsBooking(true);
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }}
                             className='bg-primary-foreground text-primary rounded-full'
                         >
                             Book Now
