@@ -40,40 +40,48 @@ export default function TenantContainer({ tenant }: { tenant: Tenant }) {
 
                 </div>
 
-                {tenant.about_us && (
-                    <div>
-                        <h3 className="text-lg font-semibold mb-2">About Us</h3>
-                        <p className="text-slate-700 whitespace-pre-wrap text-sm leading-relaxed">
-                            {tenant.about_us}
-                        </p>
-                    </div>
-                )}
+                <div className='flex flex-col md:flex-row gap-2 md:gap-8'>
 
-                <TenantOpeningHours tenantId={tenant.id} />
+                    <div className='w-full'>
 
-                {tenant.latitude && tenant.longitude && (
-                    <div>
-                        <h3 className="text-lg font-semibold mb-2">Location</h3>
-                        <div className="space-y-3">
-                            <TenantMap latitude={tenant.latitude} longitude={tenant.longitude} />
-
-                            <div className="bg-slate-50 p-4 rounded-lg border border-slate-100 flex items-center justify-between">
-                                <div className="flex flex-col gap-1">
-                                    <span className="text-sm font-medium text-slate-900">Get Directions</span>
-                                    <span className="text-xs text-slate-500">View on Google Maps</span>
-                                </div>
-                                <a
-                                    href={`https://www.google.com/maps/dir/?api=1&destination=${tenant.latitude},${tenant.longitude}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2"
-                                >
-                                    Get Directions
-                                </a>
+                        {tenant.about_us && (
+                            <div>
+                                <h3 className="text-lg font-semibold mb-2">About Us</h3>
+                                <p className="text-slate-700 whitespace-pre-wrap text-sm leading-relaxed">
+                                    {tenant.about_us}
+                                </p>
                             </div>
-                        </div>
+                        )}
                     </div>
-                )}
+
+                    <div className='w-full space-y-2 md:space-y-8'>
+                        <TenantOpeningHours tenantId={tenant.id} />
+
+                        {tenant.latitude && tenant.longitude && (
+                            <div>
+                                <h3 className="text-lg font-semibold mb-2">Location</h3>
+                                <div className="space-y-3">
+                                    <TenantMap latitude={tenant.latitude} longitude={tenant.longitude} />
+
+                                    <div className="bg-card p-4 rounded-lg border border-slate-100 flex items-center justify-between" style={{ borderRadius: '0.3rem' }}>
+                                        <div className="flex flex-col gap-1">
+                                            <span className="text-sm font-medium text-slate-900">Get Directions</span>
+                                            <span className="text-xs text-slate-500">View on Google Maps</span>
+                                        </div>
+                                        <a
+                                            href={`https://www.google.com/maps/dir/?api=1&destination=${tenant.latitude},${tenant.longitude}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center justify-center rounded-full text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary-foreground text-primary hover:bg-primary-foreground h-9 px-4 py-2"
+                                        >
+                                            Get Directions
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
     );

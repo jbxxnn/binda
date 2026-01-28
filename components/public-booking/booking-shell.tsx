@@ -30,6 +30,7 @@ export default function BookingShell({
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.3 }}
                         className="w-full flex flex-col items-center"
+                        style={{ marginBottom: '4rem' }}
                     >
                         {/* Header (TenantContainer) */}
                         <div className="w-full max-w-7xl">
@@ -73,7 +74,7 @@ export default function BookingShell({
                                 setIsBooking(true);
                                 window.scrollTo({ top: 0, behavior: 'smooth' });
                             }}
-                            className='bg-primary-foreground text-primary rounded-full'
+                            className='bg-primary-foreground hover:bg-primary-foreground hover:text-primary text-primary rounded-full'
                         >
                             Book Now
                         </Button>
