@@ -60,7 +60,7 @@ export default function StepStaff({ serviceId, onSelect, value }: Props) {
                 <div>
                     {/* <h2 className="text-md font-regular text-slate-800">Select Professional</h2> */}
                 </div>
-                <div className="h-[90px] w-full text-sm font-mono animate-pulse border border-2 border-gray-300 rounded-md" style={{ height: '55px', borderRadius: '0.5rem' }}>
+                <div className="h-[90px] w-full text-sm font-mono animate-pulse border border-2 border-gray-300 rounded-md flex items-center px-2" style={{ height: '55px', borderRadius: '0.5rem' }}>
                     <p>Loading professionals...</p>
                 </div>
             </div>
