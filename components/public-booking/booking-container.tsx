@@ -147,13 +147,9 @@ export default function BookingContainer({ tenant }: { tenant: Tenant }) {
     };
 
     return (
-        <div className="bg-card flex flex-col gap-4 justify-center border border-primary overflow-hidden min-h-[400px]" style={{}}>
+        <div className="bg-card flex flex-col gap-4 align-center justify-center border border-primary overflow-hidden min-h-[400px]" style={{}}>
 
             <div className="p-4 sm:p-6">
-                {/* 
-                 AnimatePresence for smooth transitions? 
-                 Optional. Keeping it simple first.
-                 */}
                 {renderStep()}
             </div>
         </div>
