@@ -1,7 +1,10 @@
-
+import TenantOpeningHours from './tenant-opening-hours';
 import Image from 'next/image';
 import TenantImageSlider from './tenant-image-slider';
 import TenantMap from './tenant-map';
+import TenantStatus from './tenant-status';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Location08Icon } from '@hugeicons/core-free-icons';
 
 interface Tenant {
     id: string;
@@ -15,13 +18,6 @@ interface Tenant {
     latitude?: number;
     longitude?: number;
 }
-
-
-import TenantStatus from './tenant-status';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { Location08Icon } from '@hugeicons/core-free-icons';
-
-
 
 export default function TenantContainer({ tenant }: { tenant: Tenant }) {
     return (
@@ -52,6 +48,8 @@ export default function TenantContainer({ tenant }: { tenant: Tenant }) {
                         </p>
                     </div>
                 )}
+
+                <TenantOpeningHours tenantId={tenant.id} />
 
                 {tenant.latitude && tenant.longitude && (
                     <div>
