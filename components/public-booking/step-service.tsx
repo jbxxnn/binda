@@ -20,6 +20,7 @@ interface Props {
 }
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Skeleton } from '../ui/skeleton';
 
 export default function StepService({ tenantId, currency, value, onSelect }: Props) {
     const [services, setServices] = useState<Service[]>([]);
@@ -53,10 +54,12 @@ export default function StepService({ tenantId, currency, value, onSelect }: Pro
     if (loading) {
         return (
             <div className="space-y-2">
-                <div>
+                {/* <div>
                     <h2 className="text-md font-regular text-slate-800">Select a Service</h2>
+                </div> */}
+                <div className="h-[90px] w-full animate-pulse text-sm font-mono border border-2 border-gray-300 rounded-md flex items-center px-2" style={{ height: '55px', borderRadius: '0.5rem' }}>
+                    <p>loading services...</p>
                 </div>
-                <div className="h-[90px] w-full bg-primary animate-pulse border border-primary rounded-md" style={{ height: '50px', borderRadius: '0.3rem' }} />
             </div>
         );
     }
