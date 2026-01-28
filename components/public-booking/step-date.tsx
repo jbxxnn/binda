@@ -49,7 +49,7 @@ export default function StepDate({ serviceId, staffId, timezone, onSelect, onBac
     return (
         <div className="space-y-6">
             <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" className="-ml-3 rounded-full hover:bg-secondary hover:text-primary-foreground transition-all" onClick={onBack}>
+                <Button variant="ghost" size="icon" className="-ml-3 rounded-full hover:text-primary-foreground transition-all" onClick={onBack}>
                     <ArrowLeft className="h-4 w-4" />
                 </Button>
                 <h2 className="text-sm font-semibold text-slate-800">Change Service or Staff</h2>

@@ -91,32 +91,35 @@ export default function StepDetails({ data, onBack, onSubmit, tenantId }: Props)
     }
 
     const dateLabel = data.date && data.slot
-        ? DateTime.fromISO(data.slot).toLocaleString(DateTime.DATETIME_SHORT)
+        ? DateTime.fromISO(data.slot).toFormat('MMM dd yyyy, h:mm a')
         : 'Selected Time';
 
     return (
         <div className="space-y-6">
             <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" className="-ml-3 rounded-full hover:bg-secondary hover:text-primary-foreground" onClick={onBack}>
+                <Button variant="ghost" size="icon" className="-ml-3 rounded-full hover:text-primary-foreground" onClick={onBack}>
                     <ArrowLeft className="h-4 w-4" />
                 </Button>
                 <h2 className="text-sm font-semibold text-slate-800">Change date or time</h2>
             </div>
 
-            <div className="bg-slate-50 p-4 rounded-lg text-sm space-y-1 mb-6 border">
-                <p className="font-semibold text-lg text-slate-900">{data.serviceName} ({data.servicePrice ? `₦${data.servicePrice.toLocaleString()}` : 'Price TBD'})</p>
-                <p className="text-slate-500">{dateLabel}</p>
-                <p className="text-slate-500">with {data.staffName || 'Professional'}</p>
+            <div className="bg-slate-50 p-4 rounded-lg text-sm space-y-1 mb-6 border flex flex-col gap-2" style={{ borderRadius: '1rem' }}>
+                <div>
+                    <p className="font-semibold text-lg text-slate-900">{data.serviceName} ({data.servicePrice ? `₦${data.servicePrice.toLocaleString()}` : 'Price TBD'})</p>
+                    <p className="text-slate-500">{dateLabel}</p>
+                </div>
+                <p className="text-slate-800 bg-slate-200 p-2" style={{ borderRadius: '0.3rem' }}>with {data.staffName || 'Professional'}</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4 pt-8">
                 <div className="space-y-2">
                     <Label htmlFor="name" className="text-sm font-medium text-primary-foreground font-mono">Full Name</Label>
                     <Input
                         id="name"
-                        className="text-sm text-primary-foreground font-grotesk bg-primary h-12"
+                        className="text-sm text-primary-foreground font-grotesk border border-2 border-gray-300 h-12"
                         style={{
-                            borderRadius: '0.3rem'
+                            borderRadius: '0.5rem',
+                            height: '55px'
                         }}
                         value={name}
                         onChange={e => setName(e.target.value)}
@@ -129,9 +132,10 @@ export default function StepDetails({ data, onBack, onSubmit, tenantId }: Props)
                     <Label htmlFor="phone" className="text-sm font-medium text-primary-foreground font-mono">Phone Number</Label>
                     <Input
                         id="phone"
-                        className="text-sm text-primary-foreground font-grotesk bg-primary h-12"
+                        className="text-sm text-primary-foreground font-grotesk border border-2 border-gray-300 h-12"
                         style={{
-                            borderRadius: '0.3rem'
+                            borderRadius: '0.5rem',
+                            height: '55px'
                         }}
                         value={phone}
                         onChange={e => setPhone(e.target.value)}
@@ -140,7 +144,7 @@ export default function StepDetails({ data, onBack, onSubmit, tenantId }: Props)
                     />
                 </div>
 
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                     <Label htmlFor="email" className="text-sm font-medium text-primary-foreground font-mono">Email (Optional)</Label>
                     <Input
                         id="email"
@@ -153,10 +157,10 @@ export default function StepDetails({ data, onBack, onSubmit, tenantId }: Props)
                         onChange={e => setEmail(e.target.value)}
                         placeholder="Enter your email address"
                     />
-                </div>
+                </div> */}
 
                 {/* Payment Method Selection */}
-                <div className="space-y-3 pt-2">
+                <div className="space-y-3 pt-8">
                     <Label className="text-sm font-medium text-primary-foreground font-mono">Payment Method</Label>
                     <RadioGroup
                         value={paymentMethod}
@@ -186,7 +190,7 @@ export default function StepDetails({ data, onBack, onSubmit, tenantId }: Props)
                                 }}
                             >
                                 <span className="mb-1 text-sm font-medium">Pay Online</span>
-                                <span className="text-xs">Card/Transfer (coming soon)</span>
+                                <span className="text-xs">(coming soon)</span>
                             </Label>
                         </div>
                     </RadioGroup>
