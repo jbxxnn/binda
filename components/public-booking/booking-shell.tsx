@@ -20,7 +20,7 @@ export default function BookingShell({
     const [isBooking, setIsBooking] = useState(false);
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center py-6 sm:py-12 overflow-hidden bg-[linear-gradient(-45deg,#FFDBD0,#FFD1E2,#D5F4FF,#DCFFF7)] bg-[length:400%_400%] animate-gradient">
+        <div className="min-h-screen flex flex-col items-center justify-center py-6 sm:py-12 overflow-hidden bg-[linear-gradient(-45deg,#FFF6F3,#FFE7F0,#E8F9FF,#F6FFFD)] bg-[length:400%_400%] animate-gradient">
             <AnimatePresence mode="wait">
                 {!isBooking ? (
                     <motion.div

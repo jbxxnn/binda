@@ -142,6 +142,9 @@ export async function generateSlots(
         let cursor = workingHours.start;
         const shiftEnd = workingHours.end;
 
+        // Current time in tenant timezone
+        const now = DateTime.now().setZone(timezone);
+
         while (cursor.plus({ minutes: totalDuration }) <= shiftEnd) {
             // Define the block required for this service
             // blockStart = cursor - bufferBefore (But can't go before shift start? Usually buffers can bleed into off-time, but let's say NO for now)
@@ -157,6 +160,12 @@ export async function generateSlots(
             // 1. Integrity Check: Is effective block inside working hours? (Strict mode)
             // If we allow buffers outside, change this.
             if (effectiveStart < workingHours.start || effectiveEnd > workingHours.end) {
+                cursor = cursor.plus({ minutes: SLOT_INTERVAL });
+                continue;
+            }
+
+            // 1.5. Past Check: Skip if the slot starts in the past
+            if (apptStart < now) {
                 cursor = cursor.plus({ minutes: SLOT_INTERVAL });
                 continue;
             }

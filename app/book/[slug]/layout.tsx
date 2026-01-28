@@ -46,10 +46,17 @@ export default async function PublicBookingLayout({
         notFound();
     }
 
+    const { count: serviceCount } = await supabase
+        .from('services')
+        .select('*', { count: 'exact', head: true })
+        .eq('tenant_id', tenant.id)
+        .eq('is_active', true);
+
     return (
         <BookingShell
             tenantName={tenant.name}
             header={<TenantContainer tenant={tenant} />}
+            serviceCount={serviceCount || 0}
         >
             {children}
         </BookingShell>
