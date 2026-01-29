@@ -8,10 +8,12 @@ import { ArrowLeft, Loader2, CheckCircle } from 'lucide-react';
 import { BookingData } from './booking-container';
 import { DateTime } from 'luxon';
 import Link from 'next/link';
+import { toast } from 'sonner';
 
 import { createBooking } from '@/app/actions/booking';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { toast } from 'sonner';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Textarea } from '@/components/ui/textarea';
 
 interface Props {
     data: BookingData;
@@ -24,6 +26,8 @@ export default function StepDetails({ data, onBack, onSubmit, tenantId }: Props)
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
     const [email, setEmail] = useState('');
+    const [notes, setNotes] = useState('');
+    const [showNotes, setShowNotes] = useState(false);
 
     // Payment State
     const [paymentMethod, setPaymentMethod] = useState<'venue' | 'online'>('venue');
@@ -47,6 +51,7 @@ export default function StepDetails({ data, onBack, onSubmit, tenantId }: Props)
                 customerName: name,
                 customerPhone: phone,
                 customerEmail: email,
+                notes: notes,
                 paymentMethod: paymentMethod,
                 callbackUrl: `${window.location.origin}/book/${data.serviceId}/success` // Placeholder callback
             });
@@ -158,7 +163,33 @@ export default function StepDetails({ data, onBack, onSubmit, tenantId }: Props)
                         onChange={e => setEmail(e.target.value)}
                         placeholder="Enter your email address"
                     />
-                </div> */}
+                {/* Notes Section */}
+                <div className="space-y-4 pt-4 border-t">
+                    <div className="flex items-center space-x-2">
+                        <Checkbox
+                            id="add-notes"
+                            checked={showNotes}
+                            onCheckedChange={(checked) => setShowNotes(checked as boolean)}
+                        />
+                        <Label htmlFor="add-notes" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                            Add booking notes?
+                        </Label>
+                    </div>
+
+                    {showNotes && (
+                        <div className="space-y-2">
+                            <Label htmlFor="notes" className="text-sm font-medium text-primary-foreground font-mono">Special Requests / Notes</Label>
+                            <Textarea
+                                id="notes"
+                                className="text-base text-primary-foreground font-grotesk border-2 border-gray-300 resize-none"
+                                style={{ borderRadius: '0.5rem', minHeight: '100px' }}
+                                value={notes}
+                                onChange={e => setNotes(e.target.value)}
+                                placeholder="Any specific details we should know?"
+                            />
+                        </div>
+                    )}
+                </div>
 
                 {/* Payment Method Selection */}
                 <div className="space-y-3 pt-8">

@@ -20,11 +20,12 @@ export interface BookingData {
     // Payment Logic
     paymentMethod: 'venue' | 'online';
     callbackUrl?: string; // For Paystack redirect
+    notes?: string;
 }
 
 export type BookingResult =
     | { success: true; bookingId: string; status: 'confirmed'; message: string }
-    | { success: true; bookingId: string; status: 'payment_pending'; paymentUrl: string; reference: string; message: string }
+    | { success: true; bookingId: string; status: 'payment_pending'; paymentUrl: string; paymentReference: string; message: string }
     | { success: false; error: string };
 
 
@@ -130,7 +131,7 @@ export async function createBooking(data: BookingData): Promise<BookingResult> {
                 start_time: start.toISO(),
                 end_time: end.toISO(),
                 status: initialStatus,
-                notes: `Payment Method: ${data.paymentMethod}`
+                notes: data.notes || null, // Using notes directly
             })
             .select()
             .single();
@@ -172,7 +173,7 @@ export async function createBooking(data: BookingData): Promise<BookingResult> {
                         bookingId: appointment.id,
                         status: 'payment_pending',
                         paymentUrl: response.data.authorization_url,
-                        reference: response.data.reference,
+                        paymentReference: response.data.reference,
                         message: 'Redirecting to payment...'
                     };
                 } else {
