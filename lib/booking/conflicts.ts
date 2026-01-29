@@ -45,8 +45,8 @@ export async function hasConflict(
         .from('staff_time_off')
         .select('id')
         .eq('staff_id', staffId)
-        .lt('start_datetime', end)
-        .gt('end_datetime', start)
+        .lt('start_time', end)
+        .gt('end_time', start)
         .limit(1);
 
     if (timeOffError) {
@@ -110,10 +110,10 @@ export async function getDayBlocks(
 
     const { data: timeOff } = await supabase
         .from('staff_time_off')
-        .select('start_datetime, end_datetime')
+        .select('start_time, end_time')
         .eq('staff_id', staffId)
-        .gte('end_datetime', dayStart)
-        .lte('start_datetime', dayEnd);
+        .gte('end_time', dayStart)
+        .lte('start_time', dayEnd);
 
     // Ensure slot locks are fetched (Re-applying to be safe)
     const { data: locks } = await supabase
