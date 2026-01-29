@@ -130,7 +130,6 @@ export async function createBooking(data: BookingData): Promise<BookingResult> {
                 start_time: start.toISO(),
                 end_time: end.toISO(),
                 status: initialStatus,
-                booking_source: 'online',
                 notes: `Payment Method: ${data.paymentMethod}`
             })
             .select()
