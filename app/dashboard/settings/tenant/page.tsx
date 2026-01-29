@@ -10,6 +10,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import PhotoUpload from '@/components/ui/photo-upload';
 import { AddressAutocomplete } from '@/components/settings/address-autocomplete';
 import { useJsApiLoader } from '@react-google-maps/api';
+import TenantClosureManager from '@/components/settings/tenant-closure-manager';
 
 // Dynamically import LocationPicker to avoid SSR issues with Leaflet
 const LocationPicker = dynamic(() => import('@/components/settings/location-picker'), {
@@ -235,6 +236,11 @@ export default function TenantSettingsPage() {
                             />
                         </div>
 
+
+                        <div className="pt-4 border-t">
+                            <TenantClosureManager />
+                        </div>
+
                         {message && (
                             <div className={`p-3 rounded text-sm ${message.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                                 {message.text}
@@ -247,6 +253,6 @@ export default function TenantSettingsPage() {
                     </form>
                 </CardContent>
             </Card>
-        </div>
+        </div >
     );
 }

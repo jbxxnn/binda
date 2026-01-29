@@ -47,13 +47,56 @@ export default function ServiceForm({
         is_active: true,
     });
 
+    const [assignedStaffIds, setAssignedStaffIds] = useState<string[]>([]);
+    const [staffList, setStaffList] = useState<{ id: string; name: string }[]>([]);
+    const [staffLoading, setStaffLoading] = useState(false);
+
+    // Fetch staff list - effect runs once on mount
+    useState(() => {
+        const fetchStaff = async () => {
+            setStaffLoading(true);
+            try {
+                const response = await fetch('/api/staff');
+                if (response.ok) {
+                    const data = await response.json();
+                    setStaffList(data);
+                }
+            } catch (err) {
+                console.error('Failed to load staff:', err);
+            } finally {
+                setStaffLoading(false);
+            }
+        };
+        fetchStaff();
+    });
+
+    // If in edit mode (initialData exists), fetch CURRENTLY assigned staff
+    useState(() => {
+        if (initialData && (initialData as any).id) {
+            const fetchAssigned = async () => {
+                try {
+                    const response = await fetch(`/api/services/${(initialData as any).id}/staff`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        // The API returns staff objects, we need IDs
+                        setAssignedStaffIds(data.map((s: any) => s.id));
+                    }
+                } catch (err) {
+                    console.error('Failed to load assigned staff:', err);
+                }
+            };
+            fetchAssigned();
+        }
+    });
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit(formData);
+        // Include assignedStaffIds in the submission
+        onSubmit({ ...formData, assignedStaffIds });
     };
 
     return (
-        <Card className={!showTitle ? 'border-0 shadow-none' : ''}>
+        <Card className={!showTitle ? 'border-0 shadow-none p-4 py-8' : ''}>
             {showTitle && <CardHeader><CardTitle>{title}</CardTitle></CardHeader>}
             <CardContent className={!showTitle ? 'p-0' : ''}>
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -62,6 +105,8 @@ export default function ServiceForm({
                         <Input
                             id="name"
                             required
+                            className='border border-2 text-sm'
+                            style={{ borderRadius: '0.3rem', height: '50px' }}
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                             placeholder="e.g. Haircut"
@@ -72,6 +117,8 @@ export default function ServiceForm({
                         <Label htmlFor="description">Description</Label>
                         <Textarea
                             id="description"
+                            className='border border-2 text-sm'
+                            style={{ borderRadius: '0.3rem', height: '100px' }}
                             value={formData.description}
                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                             placeholder="Service details..."
@@ -87,6 +134,8 @@ export default function ServiceForm({
                                 required
                                 min="5"
                                 step="5"
+                                className='border border-2 text-sm'
+                                style={{ borderRadius: '0.3rem', height: '50px' }}
                                 value={formData.duration_minutes}
                                 onChange={(e) => setFormData({ ...formData, duration_minutes: parseInt(e.target.value) })}
                             />
@@ -99,6 +148,8 @@ export default function ServiceForm({
                                 type="number"
                                 required
                                 min="0"
+                                className='border border-2 text-sm'
+                                style={{ borderRadius: '0.3rem', height: '50px' }}
                                 value={formData.price}
                                 onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
                             />
@@ -113,6 +164,8 @@ export default function ServiceForm({
                                 type="number"
                                 min="0"
                                 step="5"
+                                className='border border-2 text-sm'
+                                style={{ borderRadius: '0.3rem', height: '50px' }}
                                 value={formData.buffer_before_minutes}
                                 onChange={(e) => setFormData({ ...formData, buffer_before_minutes: parseInt(e.target.value) })}
                             />
@@ -125,6 +178,8 @@ export default function ServiceForm({
                                 type="number"
                                 min="0"
                                 step="5"
+                                className='border border-2 text-sm'
+                                style={{ borderRadius: '0.3rem', height: '50px' }}
                                 value={formData.buffer_after_minutes}
                                 onChange={(e) => setFormData({ ...formData, buffer_after_minutes: parseInt(e.target.value) })}
                             />
@@ -135,7 +190,8 @@ export default function ServiceForm({
                         <Label htmlFor="deposit_type">Deposit Type</Label>
                         <select
                             id="deposit_type"
-                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            className="flex h-10 w-full border border-2 text-sm ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 "
+                            style={{ borderRadius: '0.3rem', height: '50px' }}
                             value={formData.deposit_type}
                             onChange={(e) => setFormData({ ...formData, deposit_type: e.target.value })}
                         >
@@ -155,6 +211,8 @@ export default function ServiceForm({
                                 type="number"
                                 required
                                 min="0"
+                                className='border border-2 text-sm'
+                                style={{ borderRadius: '0.3rem', height: '50px' }}
                                 value={formData.deposit_value}
                                 onChange={(e) => setFormData({ ...formData, deposit_value: parseFloat(e.target.value) })}
                             />
@@ -167,7 +225,45 @@ export default function ServiceForm({
                         </div>
                     )}
 
-                    <Button type="submit" className="w-full" disabled={loading}>
+                    <div className="grid gap-2">
+                        <Label>Assign Staff</Label>
+                        <div className="border rounded-md p-4 space-y-2 max-h-60 overflow-y-auto" style={{ borderRadius: '0.5rem' }}>
+                            {staffLoading ? (
+                                <div className="text-sm text-muted-foreground">Loading staff...</div>
+                            ) : staffList.length === 0 ? (
+                                <div className="text-sm text-muted-foreground">No staff members found.</div>
+                            ) : (
+                                staffList.map((staff) => (
+                                    <div key={staff.id} className="flex items-center space-x-2">
+                                        <input
+                                            type="checkbox"
+                                            id={`staff-${staff.id}`}
+                                            checked={assignedStaffIds.includes(staff.id)}
+                                            onChange={(e) => {
+                                                if (e.target.checked) {
+                                                    setAssignedStaffIds([...assignedStaffIds, staff.id]);
+                                                } else {
+                                                    setAssignedStaffIds(assignedStaffIds.filter(id => id !== staff.id));
+                                                }
+                                            }}
+                                            className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                                        />
+                                        <label
+                                            htmlFor={`staff-${staff.id}`}
+                                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                                        >
+                                            {staff.name}
+                                        </label>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                            Select staff members who can perform this service.
+                        </p>
+                    </div>
+
+                    <Button type="submit" className="bg-primary-foreground text-primary hover:bg-primary-foreground hover:text-primary rounded-full" disabled={loading}>
                         {loading ? 'Saving...' : 'Save Service'}
                     </Button>
                 </form>

@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { DashboardHeader } from "@/components/dashboard/header";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
+import { DashboardNav } from "@/components/dashboard/nav"
 
 
 function HeaderSkeleton() {
@@ -24,11 +25,12 @@ export default function DashboardLayout({
         <div className="flex h-screen w-full flex-col">
             <SidebarProvider>
                 <AppSidebar />
-                <main className="flex-1 overflow-auto">
-                    <header className="flex p-4 items-center border-b px-6 justify-between">
+                <main className="flex-1 overflow-auto bg-muted">
+                    <header className="flex p-2 items-center bg-card border-b px-6 justify-between">
                         <div className="font-bold text-lg">
                             <Link href="/dashboard">Binda Dashboard</Link>
                         </div>
+                        <DashboardNav />
                         <Suspense fallback={<HeaderSkeleton />}>
                             <DashboardHeader />
                         </Suspense>

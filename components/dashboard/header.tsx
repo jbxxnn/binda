@@ -31,13 +31,8 @@ export async function DashboardHeader() {
 
     return (
         <div className="flex items-center gap-4">
-            <nav className="flex items-center gap-4 mr-4 border-r pr-4 h-6">
-                <Link href="/dashboard/services" className="text-sm hover:underline font-medium">Services</Link>
-                <Link href="/dashboard/staff" className="text-sm hover:underline font-medium">Staff</Link>
-                <Link href="/dashboard/customers" className="text-sm hover:underline font-medium">Customers</Link>
-            </nav>
-            <Link href="/dashboard/settings/tenant" className="text-sm hover:underline">Settings</Link>
-            <ThemeSwitcher />
+
+            {/* <ThemeSwitcher /> */}
             <AuthButton />
         </div>
     );

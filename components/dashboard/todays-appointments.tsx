@@ -35,17 +35,17 @@ export default function TodaysAppointments({ appointments }: Props) {
     }
 
     return (
-        <Card className="col-span-3">
-            <CardHeader className="flex flex-row items-center justify-between">
+        <Card className="col-span-3 shadow-none" style={{ borderRadius: '1rem' }}>
+            <CardHeader className="flex flex-row items-center justify-between border-b bg-muted p-2 px-4 mb-8" style={{ borderTopLeftRadius: '1rem', borderTopRightRadius: '1rem' }}>
                 <CardTitle>Today's Schedule</CardTitle>
                 <Link href="/dashboard/appointments">
-                    <Button variant="ghost" size="sm">
+                    <Button variant="ghost" size="sm" className='rounded-full bg-accent'>
                         View All <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                 </Link>
             </CardHeader>
             <CardContent>
-                <div className="space-y-8">
+                <div className="space-y-4">
                     {appointments.map((appt) => {
                         const time = DateTime.fromISO(appt.start_time).toLocaleString(DateTime.TIME_SIMPLE);
 

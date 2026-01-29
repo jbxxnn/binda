@@ -109,7 +109,6 @@ export async function POST(request: NextRequest) {
                 start_time: start.toUTC().toISO(),
                 end_time: end.toUTC().toISO(),
                 status: 'confirmed', // Or 'pending_payment' if we integrate that later
-                booking_source: 'admin' // Or 'online' for public API
             })
             .select()
             .single();

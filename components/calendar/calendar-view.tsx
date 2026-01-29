@@ -5,6 +5,8 @@ import { Calendar, luxonLocalizer, Views, View } from 'react-big-calendar';
 import { DateTime } from 'luxon';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -31,6 +33,8 @@ export default function CalendarView({ staffList }: Props) {
     const [events, setEvents] = useState<CalendarEvent[]>([]);
     const [staffFilter, setStaffFilter] = useState<string>('all');
     const [loading, setLoading] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const fetchEvents = useCallback(async (currentDate: Date, currentView: View) => {
         setLoading(true);
@@ -104,7 +108,8 @@ export default function CalendarView({ staffList }: Props) {
     };
 
     const handleSelectEvent = (event: CalendarEvent) => {
-        router.push(`/dashboard/appointments/${event.id}`);
+        setSelectedEvent(event);
+        setIsModalOpen(true);
     };
 
     return (
@@ -141,6 +146,50 @@ export default function CalendarView({ staffList }: Props) {
                 min={new Date(0, 0, 0, 8, 0, 0)} // Start at 8 AM display
                 max={new Date(0, 0, 0, 20, 0, 0)} // End at 8 PM display
             />
+
+            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Appointment Details</DialogTitle>
+                    </DialogHeader>
+                    {selectedEvent && (
+                        <div className="space-y-4">
+                            <div className="grid grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <p className="font-semibold text-gray-500">Service</p>
+                                    <p>{selectedEvent.resource.service?.name}</p>
+                                </div>
+                                <div>
+                                    <p className="font-semibold text-gray-500">Customer</p>
+                                    <p>{selectedEvent.resource.customer?.name}</p>
+                                </div>
+                                <div>
+                                    <p className="font-semibold text-gray-500">Start Time</p>
+                                    <p>{DateTime.fromJSDate(selectedEvent.start).toLocaleString(DateTime.DATETIME_SHORT)}</p>
+                                </div>
+                                <div>
+                                    <p className="font-semibold text-gray-500">End Time</p>
+                                    <p>{DateTime.fromJSDate(selectedEvent.end).toLocaleString(DateTime.DATETIME_SHORT)}</p>
+                                </div>
+                                <div>
+                                    <p className="font-semibold text-gray-500">Staff</p>
+                                    <p>{selectedEvent.resource.staff?.name}</p>
+                                </div>
+                                <div>
+                                    <p className="font-semibold text-gray-500">Status</p>
+                                    <p className="capitalize">{selectedEvent.status.replace('_', ' ')}</p>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-end pt-4">
+                                <Button onClick={() => router.push(`/dashboard/appointments/${selectedEvent.id}`)}>
+                                    View Full Details / Edit
+                                </Button>
+                            </div>
+                        </div>
+                    )}
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

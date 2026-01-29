@@ -39,14 +39,14 @@ export default function NewServicePage() {
     };
 
     return (
-        <div className="max-w-2xl mx-auto space-y-6">
+        <div className="max-w-lg mx-auto space-y-6 py-8">
             <div className="flex items-center gap-4">
                 <Link href="/dashboard/services">
                     <Button variant="ghost" size="icon">
                         <ArrowLeft className="h-4 w-4" />
                     </Button>
                 </Link>
-                <h1 className="text-2xl font-bold">Add New Service</h1>
+                <h1 className="text-lg font-bold">Add New Service</h1>
             </div>
 
             <ServiceForm

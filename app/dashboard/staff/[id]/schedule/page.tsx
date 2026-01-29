@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
+import TimeOffManager from '@/components/staff/time-off-manager';
 
 const DAYS = [
     'Sunday',
@@ -128,11 +129,48 @@ export default function StaffSchedulePage({ params }: { params: Promise<{ id: st
     };
 
     if (loading) {
-        return <div className="p-8 text-center">Loading schedule...</div>;
+        return (
+            <div className="max-w-3xl mx-auto space-y-6">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <Button variant="ghost" size="icon" disabled>
+                            <ArrowLeft className="h-4 w-4" />
+                        </Button>
+                        <div>
+                            <div className="h-8 w-48 bg-gray-200 rounded animate-pulse mb-1" />
+                            <div className="h-4 w-24 bg-gray-200 rounded animate-pulse" />
+                        </div>
+                    </div>
+                    <div className="h-10 w-32 bg-gray-200 rounded animate-pulse" />
+                </div>
+
+                <Card>
+                    <CardHeader>
+                        <div className="h-6 w-48 bg-gray-200 rounded animate-pulse mb-2" />
+                        <div className="h-4 w-72 bg-gray-200 rounded animate-pulse" />
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        {Array(7).fill(0).map((_, index) => (
+                            <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                                <div className="flex items-center gap-4 w-48">
+                                    <div className="h-6 w-10 bg-gray-200 rounded-full animate-pulse" />
+                                    <div className="h-4 w-24 bg-gray-200 rounded animate-pulse" />
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="h-10 w-32 bg-gray-200 rounded animate-pulse" />
+                                    <div className="h-4 w-4 bg-gray-200 rounded animate-pulse" />
+                                    <div className="h-10 w-32 bg-gray-200 rounded animate-pulse" />
+                                </div>
+                            </div>
+                        ))}
+                    </CardContent>
+                </Card>
+            </div>
+        );
     }
 
     return (
-        <div className="max-w-3xl mx-auto space-y-6">
+        <div className="max-w-2xl mx-auto space-y-6 py-8">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                     <Link href="/dashboard/staff">
@@ -141,11 +179,11 @@ export default function StaffSchedulePage({ params }: { params: Promise<{ id: st
                         </Button>
                     </Link>
                     <div>
-                        <h1 className="text-2xl font-bold">Edit Schedule</h1>
+                        <h1 className="text-lg font-bold">Edit Schedule</h1>
                         <p className="text-sm text-gray-500">for {staffName}</p>
                     </div>
                 </div>
-                <Button onClick={handleSave} disabled={saving}>
+                <Button onClick={handleSave} disabled={saving} className="text-sm bg-primary-foreground text-primary hover:bg-primary-foreground hover:text-primary rounded-full">
                     {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
                     Save Changes
                 </Button>
@@ -164,10 +202,11 @@ export default function StaffSchedulePage({ params }: { params: Promise<{ id: st
                 </CardHeader>
                 <CardContent className="space-y-6">
                     {DAYS.map((dayName, index) => (
-                        <div key={dayName} className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50 transition-colors">
+                        <div key={dayName} className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50 transition-colors" style={{ borderRadius: "1rem" }}>
                             <div className="flex items-center gap-4 w-48">
                                 <Switch
                                     checked={schedule[index].isOpen}
+                                    className='data-[state=checked]:bg-primary-foreground'
                                     onCheckedChange={(checked) => updateDay(index, 'isOpen', checked)}
                                     id={`switch-${index}`}
                                 />
@@ -181,6 +220,7 @@ export default function StaffSchedulePage({ params }: { params: Promise<{ id: st
                                     <Input
                                         type="time"
                                         className="w-32"
+                                        style={{ borderRadius: "1rem" }}
                                         value={schedule[index].start}
                                         onChange={(e) => updateDay(index, 'start', e.target.value)}
                                     />
@@ -188,6 +228,7 @@ export default function StaffSchedulePage({ params }: { params: Promise<{ id: st
                                     <Input
                                         type="time"
                                         className="w-32"
+                                        style={{ borderRadius: "1rem" }}
                                         value={schedule[index].end}
                                         onChange={(e) => updateDay(index, 'end', e.target.value)}
                                     />
@@ -201,6 +242,8 @@ export default function StaffSchedulePage({ params }: { params: Promise<{ id: st
                     ))}
                 </CardContent>
             </Card>
+
+            <TimeOffManager staffId={id} />
         </div>
     );
 }

@@ -9,8 +9,8 @@ interface AnalyticsChartProps {
 
 export function AnalyticsChart({ data }: AnalyticsChartProps) {
     return (
-        <Card className="col-span-4">
-            <CardHeader>
+        <Card className="col-span-4 shadow-none" style={{ borderRadius: '1rem' }}>
+            <CardHeader className="flex flex-row items-center justify-between border-b bg-muted p-2 px-4 mb-8" style={{ borderTopLeftRadius: '1rem', borderTopRightRadius: '1rem' }}>
                 <CardTitle>Overview</CardTitle>
                 <CardDescription>Monthly Revenue Estimates</CardDescription>
             </CardHeader>

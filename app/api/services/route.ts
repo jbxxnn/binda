@@ -106,6 +106,26 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: error.message }, { status: 500 });
         }
 
+        // Handle initial staff assignment if provided
+        if (body.assignedStaffIds && Array.isArray(body.assignedStaffIds) && body.assignedStaffIds.length > 0) {
+            const staffInserts = body.assignedStaffIds.map((staffId: string) => ({
+                service_id: service.id,
+                staff_id: staffId
+            }));
+
+            const { error: staffError } = await supabase
+                .from('service_staff')
+                .insert(staffInserts);
+
+            if (staffError) {
+                console.error('Error assigning staff:', staffError);
+                // We don't fail the whole request, but we log it. 
+                // Ideally we could return a warning or partial success.
+            }
+        }
+
+
+
         return NextResponse.json(service, { status: 201 });
     } catch (error) {
         console.error('Error in POST /api/services:', error);

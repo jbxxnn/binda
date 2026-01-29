@@ -73,6 +73,40 @@ export async function PUT(
             return NextResponse.json({ error: error.message }, { status: 500 });
         }
 
+        // Handle staff assignment sync if provided
+        if (body.assignedStaffIds && Array.isArray(body.assignedStaffIds)) {
+            // This is a "sync" operation:
+            // 1. Delete all existing for this service
+            // 2. Insert new ones
+            // OR use upsert/diff logic. Deleting all and re-inserting is simplest for now 
+            // but risky if there's other metadata on the relationship.
+            // Assuming `service_staff` is just a join table (service_id, staff_id).
+
+            // First, delete all existing assignments
+            const { error: deleteError } = await supabase
+                .from('service_staff')
+                .delete()
+                .eq('service_id', id);
+
+            if (deleteError) {
+                console.error('Error clearing staff assignments:', deleteError);
+            } else if (body.assignedStaffIds.length > 0) {
+                // Insert new ones
+                const staffInserts = body.assignedStaffIds.map((staffId: string) => ({
+                    service_id: id,
+                    staff_id: staffId
+                }));
+
+                const { error: insertError } = await supabase
+                    .from('service_staff')
+                    .insert(staffInserts);
+
+                if (insertError) {
+                    console.error('Error inserting staff assignments:', insertError);
+                }
+            }
+        }
+
         return NextResponse.json(service);
     } catch (error) {
         console.error('Error updating service:', error);

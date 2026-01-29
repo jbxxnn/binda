@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
                 start_time,
                 end_time,
                 status,
-                service:services(name, color), 
+                service:services(name), 
                 staff:staff(name),
                 customer:customers(name)
             `)

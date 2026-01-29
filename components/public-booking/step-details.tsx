@@ -11,6 +11,7 @@ import Link from 'next/link';
 
 import { createBooking } from '@/app/actions/booking';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { toast } from 'sonner';
 
 interface Props {
     data: BookingData;
@@ -66,7 +67,7 @@ export default function StepDetails({ data, onBack, onSubmit, tenantId }: Props)
 
         } catch (err: any) {
             console.error(err);
-            setError(err.message || 'Booking failed');
+            toast.error(err.message || 'Booking failed');
         } finally {
             setLoading(false);
         }
@@ -195,12 +196,6 @@ export default function StepDetails({ data, onBack, onSubmit, tenantId }: Props)
                         </div>
                     </RadioGroup>
                 </div>
-
-                {error && (
-                    <div className="text-red-500 text-sm p-3 bg-red-50 rounded">
-                        {error}
-                    </div>
-                )}
 
                 <Button type="submit" className="w-full h-12 text-md mt-8 bg-primary-foreground text-primary hover:bg-[#343434] hover:text-primary" style={{ borderRadius: '0.3rem' }} disabled={loading}>
                     {loading ? <Loader2 className="animate-spin mr-2" /> : null}

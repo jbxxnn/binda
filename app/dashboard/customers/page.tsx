@@ -2,8 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Plus, Edit, Trash2, Phone, Mail, User } from 'lucide-react';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import { Plus, Edit, Trash2, Search, User, Phone, Mail } from 'lucide-react';
+import { Skeleton } from "@/components/ui/skeleton";
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 
@@ -65,7 +73,10 @@ export default function CustomersPage() {
             });
 
             if (response.ok) {
-                setCustomers(customers.filter(c => c.id !== id));
+                const newCustomers = customers.filter(c => c.id !== id);
+                setCustomers(newCustomers);
+                // Filter will automatically update via useEffect, but to be instant:
+                if (!search) setFilteredCustomers(newCustomers);
             } else {
                 alert('Failed to delete customer');
             }
@@ -74,88 +85,124 @@ export default function CustomersPage() {
         }
     }
 
-    if (loading) {
-        return <div className="p-8 text-center">Loading customers...</div>;
-    }
-
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 max-w-7xl w-full mx-auto py-8">
             <div className="flex justify-between items-center">
                 <h1 className="text-3xl font-bold">Customers</h1>
                 <Link href="/dashboard/customers/new">
-                    <Button>
+                    <Button className='bg-primary-foreground text-primary hover:bg-primary-foreground hover:text-primary rounded-full'>
                         <Plus className="mr-2 h-4 w-4" />
                         Add Customer
                     </Button>
                 </Link>
             </div>
 
-            <div className="flex items-center space-x-2">
+            <div className="relative max-w-sm">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                     placeholder="Search by name, phone or email..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="max-w-sm"
+                    className="pl-9 bg-white"
                 />
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {filteredCustomers.length === 0 ? (
-                    <div className="col-span-full text-center py-12 text-gray-500 bg-gray-50 rounded-lg">
-                        No customers found.
-                    </div>
-                ) : (
-                    filteredCustomers.map((customer) => (
-                        <Card key={customer.id} className="overflow-hidden">
-                            <CardContent className="p-0">
-                                <div className="p-6">
-                                    <div className="flex items-start justify-between">
+            <div className="rounded-md border overflow-hidden" style={{ borderRadius: '1rem' }}>
+                <Table className='bg-card'>
+                    <TableHeader className='bg-accent'>
+                        <TableRow>
+                            <TableHead className="w-[30%]">Name</TableHead>
+                            <TableHead>Contact Info</TableHead>
+                            <TableHead>Joined Date</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {loading ? (
+                            Array.from({ length: 5 }).map((_, i) => (
+                                <TableRow key={i}>
+                                    <TableCell>
                                         <div className="flex items-center gap-3">
-                                            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                                                <User className="h-5 w-5" />
-                                            </div>
-                                            <div>
-                                                <h3 className="font-semibold text-lg">{customer.name}</h3>
-                                                <p className="text-xs text-muted-foreground">
-                                                    Joined {new Date(customer.created_at).toLocaleDateString()}
-                                                </p>
+                                            <Skeleton className="h-9 w-9 rounded-full" />
+                                            <div className="space-y-1">
+                                                <Skeleton className="h-4 w-[120px]" />
+                                                <Skeleton className="h-3 w-[80px]" />
                                             </div>
                                         </div>
-                                    </div>
-
-                                    <div className="mt-4 space-y-2 text-sm">
-                                        <div className="flex items-center text-gray-600">
-                                            <Phone className="h-4 w-4 mr-2" />
-                                            {customer.phone}
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="space-y-1">
+                                            <Skeleton className="h-4 w-[100px]" />
+                                            <Skeleton className="h-3 w-[140px]" />
                                         </div>
-                                        {customer.email && (
-                                            <div className="flex items-center text-gray-600">
-                                                <Mail className="h-4 w-4 mr-2" />
-                                                {customer.email}
+                                    </TableCell>
+                                    <TableCell>
+                                        <Skeleton className="h-4 w-[100px]" />
+                                    </TableCell>
+                                    <TableCell className="text-right">
+                                        <div className="flex justify-end gap-2">
+                                            <Skeleton className="h-8 w-8" />
+                                            <Skeleton className="h-8 w-8" />
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : filteredCustomers.length === 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={4} className="h-24 text-center">
+                                    No customers found.
+                                </TableCell>
+                            </TableRow>
+                        ) : (
+                            filteredCustomers.map((customer) => (
+                                <TableRow key={customer.id}>
+                                    <TableCell>
+                                        <div className="flex items-center gap-3">
+                                            <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                                                <User className="h-4 w-4 text-primary-foreground" />
                                             </div>
-                                        )}
-                                    </div>
-                                </div>
-
-                                <div className="bg-gray-50 px-6 py-3 flex justify-end gap-2 border-t">
-                                    <Button variant="ghost" size="sm" asChild>
-                                        <Link href={`/dashboard/customers/${customer.id}/edit`}>
-                                            <Edit className="h-4 w-4 mr-1" /> Edit
-                                        </Link>
-                                    </Button>
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                                        onClick={() => handleDelete(customer.id)}
-                                    >
-                                        <Trash2 className="h-4 w-4 mr-1" /> Delete
-                                    </Button>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    ))
-                )}
+                                            <div className="font-medium">{customer.name}</div>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex flex-col gap-1 text-sm text-muted-foreground">
+                                            <div className="flex items-center gap-2">
+                                                <Phone className="h-3 w-3" />
+                                                {customer.phone}
+                                            </div>
+                                            {customer.email && (
+                                                <div className="flex items-center gap-2">
+                                                    <Mail className="h-3 w-3" />
+                                                    {customer.email}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        {new Date(customer.created_at).toLocaleDateString()}
+                                    </TableCell>
+                                    <TableCell className="text-right">
+                                        <div className="flex justify-end gap-2">
+                                            {/* <Link href={`/dashboard/customers/${customer.id}/edit`}>
+                                                <Button variant="ghost" size="icon">
+                                                    <Edit className="h-4 w-4" />
+                                                </Button>
+                                            </Link> */}
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() => handleDelete(customer.id)}
+                                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        )}
+                    </TableBody>
+                </Table>
             </div>
         </div>
     );

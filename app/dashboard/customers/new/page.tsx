@@ -47,7 +47,7 @@ export default function NewCustomerPage() {
     };
 
     return (
-        <div className="max-w-2xl mx-auto space-y-6">
+        <div className="max-w-2xl mx-auto space-y-6 py-8">
             <div className="flex items-center gap-4">
                 <Link href="/dashboard/customers">
                     <Button variant="ghost" size="icon">
@@ -101,7 +101,7 @@ export default function NewCustomerPage() {
                             </div>
                         )}
 
-                        <Button type="submit" className="w-full" disabled={loading}>
+                        <Button type="submit" className="bg-primary-foreground text-primary hover:bg-primary-foreground hover:text-primary rounded-full" disabled={loading}>
                             {loading ? 'Creating Customer...' : 'Add Customer'}
                         </Button>
                     </form>

@@ -45,7 +45,7 @@ export default function EditServiceView({ service }: EditServiceViewProps) {
     };
 
     return (
-        <div className="max-w-2xl mx-auto space-y-6 pb-20">
+        <div className="max-w-2xl mx-auto space-y-6 py-8">
             <div className="flex items-center gap-4">
                 <Link href="/dashboard/services">
                     <Button variant="ghost" size="icon">
@@ -63,8 +63,7 @@ export default function EditServiceView({ service }: EditServiceViewProps) {
                 title="Service Details"
             />
 
-            {/* Staff Assignment Section */}
-            <StaffAssignment serviceId={service.id} />
+
         </div>
     );
 }
