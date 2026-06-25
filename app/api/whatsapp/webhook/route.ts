@@ -30,6 +30,25 @@ function normalizePhoneNumber(phone: string) {
   return phone.startsWith("+") ? phone : `+${phone}`;
 }
 
+function parseBooleanLike(value: unknown) {
+  if (typeof value === "boolean") {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+    if (normalized === "true" || normalized === "yes") {
+      return true;
+    }
+
+    if (normalized === "false" || normalized === "no") {
+      return false;
+    }
+  }
+
+  return false;
+}
+
 async function sendVendorMenu(sender: string, businessId: string, ownerName: string) {
   const admin = createSupabaseAdminClient();
   const summary = await getVendorDashboardSummary(businessId, admin);
@@ -119,11 +138,10 @@ async function handleFlowCompletion(message: WhatsAppMessage, sender: string) {
     const payload = {
       businessName: String(response.businessName ?? ""),
       ownerName: String(response.ownerName ?? ""),
-      phoneNumber: String(response.phoneNumber ?? normalizePhoneNumber(sender)),
       whatsappPhone: String(response.whatsappPhone ?? normalizePhoneNumber(sender)),
       categoryId: String(response.categoryId ?? ""),
       locationArea: String(response.locationArea ?? ""),
-      deliveryAvailable: Boolean(response.deliveryAvailable ?? false),
+      deliveryAvailable: parseBooleanLike(response.deliveryAvailable),
       productsServices: String(response.productsServices ?? ""),
       profileImageUrl:
         typeof response.profileImageUrl === "string" && response.profileImageUrl.length > 0
