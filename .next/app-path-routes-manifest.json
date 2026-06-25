@@ -1,1 +1,21 @@
-{"/api/jobs/summaries/route":"/api/jobs/summaries","/api/reports/vendor/[businessId]/route":"/api/reports/vendor/[businessId]","/api/whatsapp/flows/onboarding/route":"/api/whatsapp/flows/onboarding","/api/whatsapp/flows/record-sale/route":"/api/whatsapp/flows/record-sale","/api/whatsapp/webhook/route":"/api/whatsapp/webhook","/_not-found/page":"/_not-found","/admin/businesses/page":"/admin/businesses","/admin/enquiries/page":"/admin/enquiries","/admin/page":"/admin","/login/page":"/login","/page":"/","/vendor/business-profile/page":"/vendor/business-profile","/vendor/customers/page":"/vendor/customers","/vendor/page":"/vendor","/vendor/products/page":"/vendor/products","/vendor/reports/page":"/vendor/reports","/vendor/settings/page":"/vendor/settings","/vendor/record-sale/page":"/vendor/record-sale"}
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/admin/businesses/page": "/admin/businesses",
+  "/admin/enquiries/page": "/admin/enquiries",
+  "/admin/page": "/admin",
+  "/api/jobs/summaries/route": "/api/jobs/summaries",
+  "/api/reports/vendor/[businessId]/route": "/api/reports/vendor/[businessId]",
+  "/api/whatsapp/flows/onboarding/route": "/api/whatsapp/flows/onboarding",
+  "/api/whatsapp/flows/record-sale/route": "/api/whatsapp/flows/record-sale",
+  "/api/whatsapp/webhook/route": "/api/whatsapp/webhook",
+  "/login/page": "/login",
+  "/page": "/",
+  "/vendor/business-profile/page": "/vendor/business-profile",
+  "/vendor/customers/page": "/vendor/customers",
+  "/vendor/page": "/vendor",
+  "/vendor/products/page": "/vendor/products",
+  "/vendor/record-sale/page": "/vendor/record-sale",
+  "/vendor/reports/page": "/vendor/reports",
+  "/vendor/settings/page": "/vendor/settings"
+}

@@ -1,0 +1,17 @@
+{
+  "node": {
+    "40e7d93c16eb083d40f1d910f7c5008bb7b694f37f": {
+      "workers": {
+        "app/login/page": {
+          "moduleId": 8752,
+          "async": false,
+          "exportedName": "loginAction",
+          "filename": "app/login/actions.ts"
+        }
+      },
+      "exportedName": "loginAction",
+      "filename": "app/login/actions.ts"
+    }
+  },
+  "edge": {}
+}

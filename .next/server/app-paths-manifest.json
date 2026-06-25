@@ -1,20 +1,21 @@
 {
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/admin/businesses/page": "app/admin/businesses/page.js",
+  "/admin/enquiries/page": "app/admin/enquiries/page.js",
+  "/admin/page": "app/admin/page.js",
   "/api/jobs/summaries/route": "app/api/jobs/summaries/route.js",
   "/api/reports/vendor/[businessId]/route": "app/api/reports/vendor/[businessId]/route.js",
   "/api/whatsapp/flows/onboarding/route": "app/api/whatsapp/flows/onboarding/route.js",
   "/api/whatsapp/flows/record-sale/route": "app/api/whatsapp/flows/record-sale/route.js",
   "/api/whatsapp/webhook/route": "app/api/whatsapp/webhook/route.js",
-  "/_not-found/page": "app/_not-found/page.js",
-  "/admin/businesses/page": "app/admin/businesses/page.js",
-  "/admin/enquiries/page": "app/admin/enquiries/page.js",
-  "/admin/page": "app/admin/page.js",
   "/login/page": "app/login/page.js",
   "/page": "app/page.js",
   "/vendor/business-profile/page": "app/vendor/business-profile/page.js",
   "/vendor/customers/page": "app/vendor/customers/page.js",
   "/vendor/page": "app/vendor/page.js",
   "/vendor/products/page": "app/vendor/products/page.js",
+  "/vendor/record-sale/page": "app/vendor/record-sale/page.js",
   "/vendor/reports/page": "app/vendor/reports/page.js",
-  "/vendor/settings/page": "app/vendor/settings/page.js",
-  "/vendor/record-sale/page": "app/vendor/record-sale/page.js"
+  "/vendor/settings/page": "app/vendor/settings/page.js"
 }

@@ -1,1 +1,162 @@
-{"version":3,"pages404":true,"caseSensitive":false,"basePath":"","redirects":[{"source":"/:path+/","destination":"/:path+","internal":true,"statusCode":308,"regex":"^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"}],"headers":[],"dynamicRoutes":[{"page":"/api/reports/vendor/[businessId]","regex":"^/api/reports/vendor/([^/]+?)(?:/)?$","routeKeys":{"nxtPbusinessId":"nxtPbusinessId"},"namedRegex":"^/api/reports/vendor/(?<nxtPbusinessId>[^/]+?)(?:/)?$"}],"staticRoutes":[{"page":"/","regex":"^/(?:/)?$","routeKeys":{},"namedRegex":"^/(?:/)?$"},{"page":"/_not-found","regex":"^/_not\\-found(?:/)?$","routeKeys":{},"namedRegex":"^/_not\\-found(?:/)?$"},{"page":"/admin","regex":"^/admin(?:/)?$","routeKeys":{},"namedRegex":"^/admin(?:/)?$"},{"page":"/admin/businesses","regex":"^/admin/businesses(?:/)?$","routeKeys":{},"namedRegex":"^/admin/businesses(?:/)?$"},{"page":"/admin/enquiries","regex":"^/admin/enquiries(?:/)?$","routeKeys":{},"namedRegex":"^/admin/enquiries(?:/)?$"},{"page":"/login","regex":"^/login(?:/)?$","routeKeys":{},"namedRegex":"^/login(?:/)?$"},{"page":"/vendor","regex":"^/vendor(?:/)?$","routeKeys":{},"namedRegex":"^/vendor(?:/)?$"},{"page":"/vendor/business-profile","regex":"^/vendor/business\\-profile(?:/)?$","routeKeys":{},"namedRegex":"^/vendor/business\\-profile(?:/)?$"},{"page":"/vendor/customers","regex":"^/vendor/customers(?:/)?$","routeKeys":{},"namedRegex":"^/vendor/customers(?:/)?$"},{"page":"/vendor/products","regex":"^/vendor/products(?:/)?$","routeKeys":{},"namedRegex":"^/vendor/products(?:/)?$"},{"page":"/vendor/record-sale","regex":"^/vendor/record\\-sale(?:/)?$","routeKeys":{},"namedRegex":"^/vendor/record\\-sale(?:/)?$"},{"page":"/vendor/reports","regex":"^/vendor/reports(?:/)?$","routeKeys":{},"namedRegex":"^/vendor/reports(?:/)?$"},{"page":"/vendor/settings","regex":"^/vendor/settings(?:/)?$","routeKeys":{},"namedRegex":"^/vendor/settings(?:/)?$"}],"dataRoutes":[],"rsc":{"header":"RSC","varyHeader":"RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Router-Segment-Prefetch","prefetchHeader":"Next-Router-Prefetch","didPostponeHeader":"x-nextjs-postponed","contentTypeHeader":"text/x-component","suffix":".rsc","prefetchSuffix":".prefetch.rsc"},"rewrites":[]}
+{
+  "version": 3,
+  "pages404": true,
+  "appType": "app",
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "priority": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "onMatchHeaders": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [
+    {
+      "page": "/api/reports/vendor/[businessId]",
+      "regex": "^/api/reports/vendor/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPbusinessId": "nxtPbusinessId"
+      },
+      "namedRegex": "^/api/reports/vendor/(?<nxtPbusinessId>[^/]+?)(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_global-error",
+      "regex": "^/_global\\-error(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_global\\-error(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/admin",
+      "regex": "^/admin(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin(?:/)?$"
+    },
+    {
+      "page": "/admin/businesses",
+      "regex": "^/admin/businesses(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/businesses(?:/)?$"
+    },
+    {
+      "page": "/admin/enquiries",
+      "regex": "^/admin/enquiries(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/enquiries(?:/)?$"
+    },
+    {
+      "page": "/api/jobs/summaries",
+      "regex": "^/api/jobs/summaries(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/jobs/summaries(?:/)?$"
+    },
+    {
+      "page": "/api/whatsapp/flows/onboarding",
+      "regex": "^/api/whatsapp/flows/onboarding(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/whatsapp/flows/onboarding(?:/)?$"
+    },
+    {
+      "page": "/api/whatsapp/flows/record-sale",
+      "regex": "^/api/whatsapp/flows/record\\-sale(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/whatsapp/flows/record\\-sale(?:/)?$"
+    },
+    {
+      "page": "/api/whatsapp/webhook",
+      "regex": "^/api/whatsapp/webhook(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/whatsapp/webhook(?:/)?$"
+    },
+    {
+      "page": "/login",
+      "regex": "^/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/login(?:/)?$"
+    },
+    {
+      "page": "/vendor",
+      "regex": "^/vendor(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/vendor(?:/)?$"
+    },
+    {
+      "page": "/vendor/business-profile",
+      "regex": "^/vendor/business\\-profile(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/vendor/business\\-profile(?:/)?$"
+    },
+    {
+      "page": "/vendor/customers",
+      "regex": "^/vendor/customers(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/vendor/customers(?:/)?$"
+    },
+    {
+      "page": "/vendor/products",
+      "regex": "^/vendor/products(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/vendor/products(?:/)?$"
+    },
+    {
+      "page": "/vendor/record-sale",
+      "regex": "^/vendor/record\\-sale(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/vendor/record\\-sale(?:/)?$"
+    },
+    {
+      "page": "/vendor/reports",
+      "regex": "^/vendor/reports(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/vendor/reports(?:/)?$"
+    },
+    {
+      "page": "/vendor/settings",
+      "regex": "^/vendor/settings(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/vendor/settings(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments",
+    "clientParamParsing": false,
+    "dynamicRSCPrerender": false
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

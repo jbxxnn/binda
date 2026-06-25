@@ -1,0 +1,77 @@
+{
+  "node": {
+    "00772165e1af4b429a93075b4516de973d541f1a23": {
+      "workers": {
+        "app/vendor/products/page": {
+          "moduleId": 16588,
+          "async": false,
+          "exportedName": "requireActiveBusiness",
+          "filename": "lib/vendor-actions.ts"
+        }
+      },
+      "exportedName": "requireActiveBusiness",
+      "filename": "lib/vendor-actions.ts"
+    },
+    "403af73ecc5b0f4f845d494ecdc002e36656313773": {
+      "workers": {
+        "app/vendor/products/page": {
+          "moduleId": 16588,
+          "async": false,
+          "exportedName": "createProductAction",
+          "filename": "lib/vendor-actions.ts"
+        }
+      },
+      "exportedName": "createProductAction",
+      "filename": "lib/vendor-actions.ts"
+    },
+    "406dce264bdd71b14fbef30df731a7f357ef610f14": {
+      "workers": {
+        "app/vendor/products/page": {
+          "moduleId": 16588,
+          "async": false,
+          "exportedName": "createCustomerAction",
+          "filename": "lib/vendor-actions.ts"
+        }
+      },
+      "exportedName": "createCustomerAction",
+      "filename": "lib/vendor-actions.ts"
+    },
+    "4087eb568ea3a03a11c12d02ba3b629c88fa6093d6": {
+      "workers": {
+        "app/vendor/products/page": {
+          "moduleId": 16588,
+          "async": false,
+          "exportedName": "toggleProductAction",
+          "filename": "lib/vendor-actions.ts"
+        }
+      },
+      "exportedName": "toggleProductAction",
+      "filename": "lib/vendor-actions.ts"
+    },
+    "40de741ebf1f2f5a13773fd3b00919164c41d7ccb3": {
+      "workers": {
+        "app/vendor/products/page": {
+          "moduleId": 16588,
+          "async": false,
+          "exportedName": "updateBusinessProfileAction",
+          "filename": "lib/vendor-actions.ts"
+        }
+      },
+      "exportedName": "updateBusinessProfileAction",
+      "filename": "lib/vendor-actions.ts"
+    },
+    "40fd2ffcfb2c1cf37ea46a24621efbc87f41af7976": {
+      "workers": {
+        "app/vendor/products/page": {
+          "moduleId": 16588,
+          "async": false,
+          "exportedName": "recordSaleAction",
+          "filename": "lib/vendor-actions.ts"
+        }
+      },
+      "exportedName": "recordSaleAction",
+      "filename": "lib/vendor-actions.ts"
+    }
+  },
+  "edge": {}
+}
