@@ -107,10 +107,9 @@ function pickState(data: Record<string, unknown> | undefined): FlowState {
 async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
   if (!input.flow_token) {
     return {
-      screen: input.screen ?? "SALE_MODE",
+      version: "3.0",
       data: {
-        productOptions: [{ id: "NEW_ITEM", title: "Enter new item" }],
-        customerOptions: [{ id: "NEW_CUSTOMER", title: "New customer" }]
+        status: "active"
       }
     };
   }
