@@ -10,6 +10,7 @@ const onboardingSchema = z.object({
   whatsappPhone: z.string().min(7),
   categoryId: z.string().uuid(),
   locationArea: z.string().min(2),
+  otherLocationArea: z.string().optional(),
   deliveryAvailable: z.boolean(),
   productsServices: z.string().min(2),
   profileImageUrl: z.string().url().optional()
@@ -19,6 +20,17 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
   const input = onboardingSchema.parse(body);
   const supabase = createSupabaseAdminClient();
+  const resolvedLocationArea =
+    input.locationArea === "Other"
+      ? String(input.otherLocationArea ?? "").trim()
+      : input.locationArea;
+
+  if (!resolvedLocationArea || resolvedLocationArea.length < 2) {
+    return NextResponse.json(
+      { error: "Please provide a valid location area." },
+      { status: 400 }
+    );
+  }
 
   const businessPayload = {
     category_id: input.categoryId,
@@ -26,7 +38,7 @@ export async function POST(request: NextRequest) {
     owner_name: input.ownerName,
     phone_number: input.whatsappPhone,
     whatsapp_phone: input.whatsappPhone,
-    location_area: input.locationArea,
+    location_area: resolvedLocationArea,
     delivery_available: input.deliveryAvailable,
     products_services: input.productsServices,
     profile_image_url: input.profileImageUrl,
