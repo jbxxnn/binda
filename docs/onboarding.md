@@ -10,6 +10,8 @@ Current app expectation:
   - `businessName`
   - `ownerName`
   - `whatsappPhone`
+  - `email` optional
+  - `password` optional
   - `categoryId`
   - `locationArea`
   - `otherLocationArea` optional
@@ -33,8 +35,7 @@ After publishing the Flow:
     {
       "id": "BUSINESS_SETUP",
       "title": "Set up your business",
-      "terminal": true,
-      "success": true,
+      "terminal": false,
       "data": {
         "whatsappPhone": {
           "type": "string",
@@ -87,46 +88,46 @@ After publishing the Flow:
                 "label": "Business category",
                 "required": true,
                 "data-source": [
-  {
-    "id": "773f0b14-1a00-41f0-95b9-4aa925391512",
-    "title": "Agriculture"
-  },
-  {
-    "id": "c81c0e5e-32f1-433d-bb14-f7c8cf96dc62",
-    "title": "Beauty"
-  },
-  {
-    "id": "55ccfbfa-16a2-4243-aa64-9f355b23e32e",
-    "title": "Education"
-  },
-  {
-    "id": "9e4ef1ad-8d76-4ec3-b9d4-8af0e70f35c7",
-    "title": "Electronics"
-  },
-  {
-    "id": "25461066-23b8-4717-85ed-2410011dcd3a",
-    "title": "Events"
-  },
-  {
-    "id": "020ce626-c3a9-47ef-8a0b-d5ca782ce038",
-    "title": "Fashion"
-  },
-  {
-    "id": "e9e32f5c-7935-4f3d-9c57-0267e94caf5c",
-    "title": "Food"
-  },
-  {
-    "id": "64888493-2305-4903-8388-0acd63198256",
-    "title": "Health"
-  },
-  {
-    "id": "ced6f5ca-03f9-469d-a7df-5e8c6c2fcee8",
-    "title": "Home Goods"
-  },
-  {
-    "id": "59aaec58-6b90-4813-84f4-25e3f65ea3c4",
-    "title": "Services"
-  }
+                  {
+                    "id": "773f0b14-1a00-41f0-95b9-4aa925391512",
+                    "title": "Agriculture"
+                  },
+                  {
+                    "id": "c81c0e5e-32f1-433d-bb14-f7c8cf96dc62",
+                    "title": "Beauty"
+                  },
+                  {
+                    "id": "55ccfbfa-16a2-4243-aa64-9f355b23e32e",
+                    "title": "Education"
+                  },
+                  {
+                    "id": "9e4ef1ad-8d76-4ec3-b9d4-8af0e70f35c7",
+                    "title": "Electronics"
+                  },
+                  {
+                    "id": "25461066-23b8-4717-85ed-2410011dcd3a",
+                    "title": "Events"
+                  },
+                  {
+                    "id": "020ce626-c3a9-47ef-8a0b-d5ca782ce038",
+                    "title": "Fashion"
+                  },
+                  {
+                    "id": "e9e32f5c-7935-4f3d-9c57-0267e94caf5c",
+                    "title": "Food"
+                  },
+                  {
+                    "id": "64888493-2305-4903-8388-0acd63198256",
+                    "title": "Health"
+                  },
+                  {
+                    "id": "ced6f5ca-03f9-469d-a7df-5e8c6c2fcee8",
+                    "title": "Home Goods"
+                  },
+                  {
+                    "id": "59aaec58-6b90-4813-84f4-25e3f65ea3c4",
+                    "title": "Services"
+                  }
                 ]
               },
               {
@@ -241,9 +242,13 @@ After publishing the Flow:
               },
               {
                 "type": "Footer",
-                "label": "Finish setup",
+                "label": "Next",
                 "on-click-action": {
-                  "name": "complete",
+                  "name": "navigate",
+                  "next": {
+                    "type": "screen",
+                    "name": "ACCOUNT_SETUP"
+                  },
                   "payload": {
                     "businessName": "${form.businessName}",
                     "ownerName": "${form.ownerName}",
@@ -254,6 +259,105 @@ After publishing the Flow:
                     "deliveryAvailable": "${form.deliveryAvailable}",
                     "productsServices": "${form.productsServices}",
                     "profileImageUrl": "${form.profileImageUrl}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "ACCOUNT_SETUP",
+      "title": "Create your account",
+      "terminal": true,
+      "success": true,
+      "data": {
+        "whatsappPhone": {
+          "type": "string",
+          "__example__": "+2348012345678"
+        },
+        "businessName": {
+          "type": "string",
+          "__example__": "Amina Cakes"
+        },
+        "ownerName": {
+          "type": "string",
+          "__example__": "Amina Musa"
+        },
+        "categoryId": {
+          "type": "string",
+          "__example__": "e9e32f5c-7935-4f3d-9c57-0267e94caf5c"
+        },
+        "locationArea": {
+          "type": "string",
+          "__example__": "Tunga"
+        },
+        "otherLocationArea": {
+          "type": "string",
+          "__example__": "Mandela Road"
+        },
+        "deliveryAvailable": {
+          "type": "string",
+          "__example__": "true"
+        },
+        "productsServices": {
+          "type": "string",
+          "__example__": "Birthday cakes, dessert cups"
+        },
+        "profileImageUrl": {
+          "type": "string",
+          "__example__": "https://example.com/image.jpg"
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "accountSetupForm",
+            "children": [
+              {
+                "type": "TextHeading",
+                "text": "Create your account"
+              },
+              {
+                "type": "TextBody",
+                "text": "Add an email and password so you can sign in to your dashboard after setup."
+              },
+              {
+                "type": "TextInput",
+                "name": "email",
+                "label": "Email address",
+                "required": true,
+                "input-type": "email",
+                "helper-text": "Use an email you can sign in with"
+              },
+              {
+                "type": "TextInput",
+                "name": "password",
+                "label": "Password",
+                "required": true,
+                "input-type": "password",
+                "helper-text": "Use at least 8 characters"
+              },
+              {
+                "type": "Footer",
+                "label": "Finish setup",
+                "on-click-action": {
+                  "name": "complete",
+                  "payload": {
+                    "businessName": "${data.businessName}",
+                    "ownerName": "${data.ownerName}",
+                    "whatsappPhone": "${data.whatsappPhone}",
+                    "email": "${form.email}",
+                    "password": "${form.password}",
+                    "categoryId": "${data.categoryId}",
+                    "locationArea": "${data.locationArea}",
+                    "otherLocationArea": "${data.otherLocationArea}",
+                    "deliveryAvailable": "${data.deliveryAvailable}",
+                    "productsServices": "${data.productsServices}",
+                    "profileImageUrl": "${data.profileImageUrl}"
                   }
                 }
               }
@@ -272,6 +376,7 @@ After publishing the Flow:
 - Keep the payload keys exactly as written above.
 - Use `Without Endpoint` for this onboarding Flow.
 - `whatsappPhone` should be the only number field in the Flow.
+- Add a second screen for account creation with `email` and `password`.
 - The app launch already sends the sender's current WhatsApp number as `data.whatsappPhone`, so use that as the field's initial value if Meta accepts `init-value` in your editor.
 - Keep the fields and submit footer inside a `Form` container so `${form...}` bindings resolve correctly on submit.
 - If `locationArea` is `Other`, the backend will store `otherLocationArea` instead.

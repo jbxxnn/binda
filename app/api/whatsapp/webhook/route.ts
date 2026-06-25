@@ -139,6 +139,12 @@ async function handleFlowCompletion(message: WhatsAppMessage, sender: string) {
       businessName: String(response.businessName ?? ""),
       ownerName: String(response.ownerName ?? ""),
       whatsappPhone: String(response.whatsappPhone ?? normalizePhoneNumber(sender)),
+      email:
+        typeof response.email === "string" && response.email.length > 0 ? response.email : undefined,
+      password:
+        typeof response.password === "string" && response.password.length > 0
+          ? response.password
+          : undefined,
       categoryId: String(response.categoryId ?? ""),
       locationArea: String(response.locationArea ?? ""),
       otherLocationArea:
@@ -171,7 +177,9 @@ async function handleFlowCompletion(message: WhatsAppMessage, sender: string) {
     const data = await onboardingResponse.json();
     await sendWhatsAppTextMessage(
       sender,
-      `Your business setup for ${data.business.business_name} has been saved. Next step: use the web dashboard to sign in and finish linking your account.`
+      data.userId
+        ? `Your business setup for ${data.business.business_name} has been saved and your dashboard account is ready. You can now sign in at ${env.appBaseUrl}/login`
+        : `Your business setup for ${data.business.business_name} has been saved. Next step: use the web dashboard to sign in and finish linking your account.`
     );
     return;
   }
