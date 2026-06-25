@@ -41,14 +41,20 @@
 
 These tokens are used when a completed Flow comes back through the webhook so the app can decide what to save.
 
-## Important limitation
+## Encrypted Flow Endpoint
 
-This code handles:
+The project now includes an encrypted `With Endpoint` Flow route for Record Sale:
 
-- sending a Flow entry message
-- receiving the completed Flow response in the webhook
+- `POST /api/whatsapp/flows/record-sale/endpoint`
 
-It does not yet implement the encrypted WhatsApp Flows data endpoint for dynamic screen data and routing. That is the next layer if you want product and customer lists to be loaded live inside the Flow itself instead of being baked into static Flow JSON.
+It supports:
+
+- Meta-encrypted Flow endpoint requests
+- plain JSON fallback for local testing
+
+Setup guide:
+
+- [docs/whatsapp-flow-encryption.md](/Users/apple/Desktop/Project%20Baby/binda/docs/whatsapp-flow-encryption.md:1)
 
 ## Current reference points
 

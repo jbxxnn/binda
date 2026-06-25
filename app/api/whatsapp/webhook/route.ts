@@ -199,12 +199,23 @@ async function handleFlowCompletion(message: WhatsAppMessage, sender: string) {
 
   if (flowToken.startsWith("record_sale:")) {
     const [, businessId, recordedBy] = flowToken.split(":");
+    const productId =
+      typeof response.productId === "string" && response.productId.length > 0
+        ? response.productId
+        : undefined;
+    const customerMode =
+      typeof response.customerMode === "string" && response.customerMode.length > 0
+        ? response.customerMode
+        : undefined;
+    const customerId =
+      typeof response.customerId === "string" && response.customerId.length > 0
+        ? response.customerId
+        : customerMode && customerMode !== "NEW_CUSTOMER"
+          ? customerMode
+          : null;
     const items = [
       {
-        productId:
-          typeof response.productId === "string" && response.productId.length > 0
-            ? response.productId
-            : undefined,
+        productId,
         itemName: String(response.itemName ?? response.productName ?? "Sale item"),
         quantity: Number(response.quantity ?? 1),
         unitPrice: Number(response.unitPrice ?? response.amount ?? 0)
@@ -213,11 +224,25 @@ async function handleFlowCompletion(message: WhatsAppMessage, sender: string) {
 
     const salePayload = {
       businessId,
-      customerId:
-        typeof response.customerId === "string" && response.customerId.length > 0
-          ? response.customerId
-          : null,
+      customerId,
+      customerMode,
+      customerName:
+        typeof response.customerName === "string" && response.customerName.length > 0
+          ? response.customerName
+          : undefined,
+      customerPhone:
+        typeof response.customerPhone === "string" && response.customerPhone.length > 0
+          ? response.customerPhone
+          : undefined,
       recordedBy,
+      saleMode:
+        response.saleMode === "existing_product" || response.saleMode === "new_item"
+          ? response.saleMode
+          : undefined,
+      saveAsProduct:
+        response.saveAsProduct === "yes" || response.saveAsProduct === "no"
+          ? response.saveAsProduct
+          : undefined,
       paymentStatus: String(response.paymentStatus ?? "paid"),
       paymentMethod: String(response.paymentMethod ?? "cash"),
       amountPaid: Number(response.amountPaid ?? response.amount ?? 0),

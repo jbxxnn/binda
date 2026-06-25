@@ -39,6 +39,7 @@ declare namespace __next_route_internal_types__ {
     | `/api/jobs/summaries`
     | `/api/whatsapp/flows/onboarding`
     | `/api/whatsapp/flows/record-sale`
+    | `/api/whatsapp/flows/record-sale/endpoint`
     | `/api/whatsapp/webhook`
     | `/login`
     | `/vendor`

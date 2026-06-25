@@ -7,6 +7,7 @@
   "/api/jobs/summaries/route": "/api/jobs/summaries",
   "/api/reports/vendor/[businessId]/route": "/api/reports/vendor/[businessId]",
   "/api/whatsapp/flows/onboarding/route": "/api/whatsapp/flows/onboarding",
+  "/api/whatsapp/flows/record-sale/endpoint/route": "/api/whatsapp/flows/record-sale/endpoint",
   "/api/whatsapp/flows/record-sale/route": "/api/whatsapp/flows/record-sale",
   "/api/whatsapp/webhook/route": "/api/whatsapp/webhook",
   "/login/page": "/login",

@@ -87,6 +87,12 @@
       "namedRegex": "^/api/whatsapp/flows/record\\-sale(?:/)?$"
     },
     {
+      "page": "/api/whatsapp/flows/record-sale/endpoint",
+      "regex": "^/api/whatsapp/flows/record\\-sale/endpoint(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/whatsapp/flows/record\\-sale/endpoint(?:/)?$"
+    },
+    {
       "page": "/api/whatsapp/webhook",
       "regex": "^/api/whatsapp/webhook(?:/)?$",
       "routeKeys": {},
