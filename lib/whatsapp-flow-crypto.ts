@@ -21,11 +21,21 @@ function getFlowPrivateKey() {
     throw new Error("Missing WHATSAPP_FLOW_PRIVATE_KEY for encrypted WhatsApp Flow endpoint.");
   }
 
-  if (configuredKey.includes("BEGIN")) {
-    return configuredKey.replace(/\\n/g, "\n");
+  const normalizedInput = configuredKey.trim().replace(/^['"]|['"]$/g, "");
+
+  if (normalizedInput.includes("BEGIN")) {
+    return normalizedInput.replace(/\\n/g, "\n");
   }
 
-  return Buffer.from(configuredKey, "base64").toString("utf8");
+  const decoded = Buffer.from(normalizedInput, "base64").toString("utf8").trim();
+
+  if (decoded.includes("BEGIN")) {
+    return decoded.replace(/\\n/g, "\n");
+  }
+
+  throw new Error(
+    "WHATSAPP_FLOW_PRIVATE_KEY is not a valid PEM or base64-encoded PEM private key."
+  );
 }
 
 function getAesGcmAlgorithm(aesKey: Buffer) {

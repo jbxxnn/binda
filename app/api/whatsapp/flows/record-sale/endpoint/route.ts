@@ -9,7 +9,7 @@ import {
 } from "@/lib/whatsapp-flow-crypto";
 
 const flowEndpointSchema = z.object({
-  flow_token: z.string().min(1),
+  flow_token: z.string().min(1).optional(),
   screen: z.string().optional(),
   data: z.record(z.string(), z.unknown()).optional(),
   action: z.string().optional(),
@@ -105,6 +105,16 @@ function pickState(data: Record<string, unknown> | undefined): FlowState {
 }
 
 async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
+  if (!input.flow_token) {
+    return {
+      screen: input.screen ?? "SALE_MODE",
+      data: {
+        productOptions: [{ id: "NEW_ITEM", title: "Enter new item" }],
+        customerOptions: [{ id: "NEW_CUSTOMER", title: "New customer" }]
+      }
+    };
+  }
+
   const token = parseRecordSaleFlowToken(input.flow_token);
 
   if (!token) {
