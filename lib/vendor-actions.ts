@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { normalizePhoneNumber } from "@/lib/phone";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 type ActiveBusiness = {
@@ -80,7 +81,9 @@ export async function createCustomerAction(formData: FormData) {
   await supabase.from("customers").insert({
     business_id: business.id,
     full_name: String(formData.get("full_name") ?? ""),
-    phone_number: String(formData.get("phone_number") ?? "") || null,
+    phone_number: String(formData.get("phone_number") ?? "")
+      ? normalizePhoneNumber(String(formData.get("phone_number") ?? ""))
+      : null,
     email: String(formData.get("email") ?? "") || null,
     address_text: String(formData.get("address_text") ?? "") || null,
     notes: String(formData.get("notes") ?? "") || null
@@ -92,14 +95,16 @@ export async function createCustomerAction(formData: FormData) {
 export async function updateBusinessProfileAction(formData: FormData) {
   const supabase = await createSupabaseServerClient();
   const business = await requireActiveBusiness();
+  const phoneNumber = normalizePhoneNumber(String(formData.get("phone_number") ?? ""));
+  const whatsappPhone = normalizePhoneNumber(String(formData.get("whatsapp_phone") ?? ""));
 
   await supabase
     .from("businesses")
     .update({
       business_name: String(formData.get("business_name") ?? ""),
       owner_name: String(formData.get("owner_name") ?? ""),
-      phone_number: String(formData.get("phone_number") ?? ""),
-      whatsapp_phone: String(formData.get("whatsapp_phone") ?? ""),
+      phone_number: phoneNumber,
+      whatsapp_phone: whatsappPhone,
       location_area: String(formData.get("location_area") ?? ""),
       delivery_available: formData.get("delivery_available") === "on",
       products_services: String(formData.get("products_services") ?? "")

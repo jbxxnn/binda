@@ -386,6 +386,8 @@ After publishing the Flow:
 - Keep the payload keys exactly as written above.
 - Use `Without Endpoint` for this onboarding Flow.
 - `whatsappPhone` should be the only number field in the Flow.
+- The backend saves WhatsApp numbers in one canonical format: `2348034310997`.
+- These inputs all save to the same value: `08034310997`, `8034310997`, `2348034310997`, `+2348034310997`.
 - Add a second screen for account creation with `email` and `password`.
 - Add a 4-digit `accessPin` on the account screen. The backend stores a secure hash and uses it to verify WhatsApp actions.
 - The app launch already sends the sender's current WhatsApp number as `data.whatsappPhone`, so use that as the field's initial value if Meta accepts `init-value` in your editor.

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { env } from "@/lib/env";
+import { candidatePhoneNumbers, normalizePhoneNumber } from "@/lib/phone";
 import { getVendorReport, getVendorDashboardSummary } from "@/lib/reports";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { hashPin, isPinSessionActive, parsePinCommand, verifyPin } from "@/lib/whatsapp-identity";
@@ -27,10 +28,6 @@ type WhatsAppMessage = {
     list_reply?: { id?: string; title?: string };
   };
 };
-
-function normalizePhoneNumber(phone: string) {
-  return phone.startsWith("+") ? phone : `+${phone}`;
-}
 
 function parseBooleanLike(value: unknown) {
   if (typeof value === "boolean") {
@@ -449,6 +446,7 @@ export async function POST(request: NextRequest) {
     typeof payload.entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.id === "string"
       ? payload.entry[0].changes[0].value.messages[0].id
       : null;
+  const senderCandidates = sender ? candidatePhoneNumbers(sender) : [];
 
   if (!sender) {
     return NextResponse.json({ received: true });
@@ -464,11 +462,29 @@ export async function POST(request: NextRequest) {
   }
 
   const admin = createSupabaseAdminClient();
-  const { data: business } = await admin
+  let { data: business } = await admin
     .from("businesses")
     .select("id, owner_name, business_name, location_area")
-    .eq("whatsapp_phone", normalizePhoneNumber(sender))
-    .single();
+    .in("whatsapp_phone", senderCandidates)
+    .maybeSingle();
+
+  if (!business) {
+    const { data: identity } = await admin
+      .from("whatsapp_auth_identities")
+      .select("business_id")
+      .in("phone_number", senderCandidates)
+      .maybeSingle();
+
+    if (identity?.business_id) {
+      const fallbackBusiness = await admin
+        .from("businesses")
+        .select("id, owner_name, business_name, location_area")
+        .eq("id", identity.business_id)
+        .maybeSingle();
+
+      business = fallbackBusiness.data ?? null;
+    }
+  }
 
   if (!business) {
     await sendOnboardingFlowOrFallback(sender);

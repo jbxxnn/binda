@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
+import {
+  candidatePhoneNumbers,
+  isValidNigerianPhoneNumber,
+  normalizePhoneNumber
+} from "@/lib/phone";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { hashPin } from "@/lib/whatsapp-identity";
 
@@ -24,6 +29,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
   const input = onboardingSchema.parse(body);
   const supabase = createSupabaseAdminClient();
+  const normalizedWhatsAppPhone = normalizePhoneNumber(input.whatsappPhone);
   let resolvedUserId = input.userId ?? null;
   const resolvedLocationArea =
     input.locationArea === "Other"
@@ -40,6 +46,13 @@ export async function POST(request: NextRequest) {
   if (!resolvedLocationArea || resolvedLocationArea.length < 2) {
     return NextResponse.json(
       { error: "Please provide a valid location area." },
+      { status: 400 }
+    );
+  }
+
+  if (!isValidNigerianPhoneNumber(normalizedWhatsAppPhone)) {
+    return NextResponse.json(
+      { error: "Please provide a valid Nigerian WhatsApp number." },
       { status: 400 }
     );
   }
@@ -67,7 +80,7 @@ export async function POST(request: NextRequest) {
         email_confirm: true,
         user_metadata: {
           full_name: input.ownerName,
-          phone_number: input.whatsappPhone
+          phone_number: normalizedWhatsAppPhone
         }
       });
 
@@ -86,8 +99,8 @@ export async function POST(request: NextRequest) {
     category_id: input.categoryId,
     business_name: input.businessName,
     owner_name: input.ownerName,
-    phone_number: input.whatsappPhone,
-    whatsapp_phone: input.whatsappPhone,
+    phone_number: normalizedWhatsAppPhone,
+    whatsapp_phone: normalizedWhatsAppPhone,
     location_area: resolvedLocationArea,
     delivery_available: input.deliveryAvailable,
     products_services: input.productsServices,
@@ -98,7 +111,7 @@ export async function POST(request: NextRequest) {
   const existingBusiness = await supabase
     .from("businesses")
     .select("id, business_name")
-    .eq("whatsapp_phone", input.whatsappPhone)
+    .in("whatsapp_phone", candidatePhoneNumbers(input.whatsappPhone))
     .maybeSingle();
 
   const query = existingBusiness.data
@@ -129,7 +142,7 @@ export async function POST(request: NextRequest) {
   await supabase.from("whatsapp_auth_identities").upsert({
     business_id: business.id,
     user_id: resolvedUserId,
-    phone_number: input.whatsappPhone,
+    phone_number: normalizedWhatsAppPhone,
     pin_salt: pinValues?.salt ?? null,
     pin_hash: pinValues?.hash ?? null,
     last_verified_at: input.accessPin ? new Date().toISOString() : null,
