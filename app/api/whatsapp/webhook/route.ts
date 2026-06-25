@@ -196,6 +196,7 @@ async function handleFlowCompletion(message: WhatsAppMessage, sender: string) {
         ? `Your business setup for ${data.business.business_name} has been saved and your account is ready.${data.pinCreated ? " Your WhatsApp PIN is active." : " Reply SET PIN 1234 to protect your records."} You can also sign in at ${env.appBaseUrl}/login`
         : `Your business setup for ${data.business.business_name} has been saved.${data.pinCreated ? " Your WhatsApp PIN is active." : " Reply SET PIN 1234 to protect your records."}`
     );
+    await sendVendorMenu(sender, data.business.id, payload.ownerName);
     return;
   }
 
