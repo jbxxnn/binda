@@ -77,6 +77,17 @@ export async function sendWhatsAppTextMessage(to: string, body: string) {
   });
 }
 
+export async function sendWhatsAppTypingIndicator(messageId: string) {
+  return sendWhatsAppMessage({
+    messaging_product: "whatsapp",
+    status: "read",
+    message_id: messageId,
+    typing_indicator: {
+      type: "text"
+    }
+  });
+}
+
 export async function sendWhatsAppFlowMessage(to: string, options: FlowSendOptions) {
   return sendWhatsAppMessage({
     messaging_product: "whatsapp",

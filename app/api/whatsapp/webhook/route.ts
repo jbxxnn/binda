@@ -10,6 +10,7 @@ import {
   getConfiguredFlowId,
   normalizeIncomingWhatsAppText,
   parseFlowResponseJson,
+  sendWhatsAppTypingIndicator,
   sendWhatsAppFlowMessage,
   sendWhatsAppTextMessage,
   verifyWhatsAppSignature
@@ -443,9 +444,17 @@ export async function POST(request: NextRequest) {
   const payload = JSON.parse(rawBody);
   const message = payload.entry?.[0]?.changes?.[0]?.value?.messages?.[0] as WhatsAppMessage | undefined;
   const sender = message?.from;
+  const messageId =
+    typeof payload.entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.id === "string"
+      ? payload.entry[0].changes[0].value.messages[0].id
+      : null;
 
   if (!sender) {
     return NextResponse.json({ received: true });
+  }
+
+  if (messageId) {
+    await sendWhatsAppTypingIndicator(messageId);
   }
 
   if (message?.type === "interactive" && message.interactive?.type === "nfm_reply") {

@@ -41,8 +41,8 @@ create table public.businesses (
   status public.business_status not null default 'pending_review',
   is_verified boolean not null default false,
   is_active boolean not null default true,
-  created_by uuid references public.profiles(id),
-  approved_by uuid references public.profiles(id),
+  created_by uuid references public.profiles(id) on delete set null,
+  approved_by uuid references public.profiles(id) on delete set null,
   created_at timestamptz not null default timezone('utc', now()),
   updated_at timestamptz not null default timezone('utc', now())
 );
@@ -83,7 +83,7 @@ create table public.transactions (
   id uuid primary key default gen_random_uuid(),
   business_id uuid not null references public.businesses(id) on delete cascade,
   customer_id uuid references public.customers(id) on delete set null,
-  recorded_by uuid not null references public.profiles(id),
+  recorded_by uuid references public.profiles(id) on delete set null,
   transaction_date timestamptz not null default timezone('utc', now()),
   subtotal_amount numeric(12,2) not null default 0,
   total_amount numeric(12,2) not null default 0,
@@ -115,7 +115,7 @@ create table public.payments (
   payment_method public.payment_method not null,
   payment_date timestamptz not null default timezone('utc', now()),
   notes text,
-  recorded_by uuid references public.profiles(id),
+  recorded_by uuid references public.profiles(id) on delete set null,
   created_at timestamptz not null default timezone('utc', now())
 );
 
