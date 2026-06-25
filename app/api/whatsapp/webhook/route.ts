@@ -121,12 +121,7 @@ async function sendRecordSaleFlowOrFallback(
     body: `Record a new sale for ${business.business_name}.`,
     cta: "Record sale",
     flowId,
-    flowToken: buildFlowToken("record_sale", [business.id, recordedBy]),
-    screen: "RECORD_SALE",
-    data: {
-      businessId: business.id,
-      recordedBy
-    }
+    flowToken: buildFlowToken("record_sale", [business.id, recordedBy])
   });
 }
 

@@ -32,6 +32,10 @@
 - `WHATSAPP_RECORD_SALE_FLOW_ID`
 - `WHATSAPP_FLOW_MESSAGE_VERSION`
 
+Current published Record Sale Flow ID:
+
+- `1028448836252389`
+
 ## Flow token format
 
 - Onboarding:
