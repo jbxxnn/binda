@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { hashPin } from "@/lib/whatsapp-identity";
 
 const onboardingSchema = z.object({
   userId: z.string().uuid().optional(),
@@ -10,6 +11,7 @@ const onboardingSchema = z.object({
   whatsappPhone: z.string().min(7),
   email: z.string().email().optional(),
   password: z.string().min(8).optional(),
+  accessPin: z.string().regex(/^\d{4}$/).optional(),
   categoryId: z.string().uuid(),
   locationArea: z.string().min(2),
   otherLocationArea: z.string().optional(),
@@ -122,9 +124,23 @@ export async function POST(request: NextRequest) {
     });
   }
 
+  const pinValues = input.accessPin ? hashPin(input.accessPin) : null;
+
+  await supabase.from("whatsapp_auth_identities").upsert({
+    business_id: business.id,
+    user_id: resolvedUserId,
+    phone_number: input.whatsappPhone,
+    pin_salt: pinValues?.salt ?? null,
+    pin_hash: pinValues?.hash ?? null,
+    last_verified_at: input.accessPin ? new Date().toISOString() : null,
+    failed_attempts: 0,
+    locked_until: null
+  });
+
   return NextResponse.json({
     success: true,
     business,
-    userId: resolvedUserId
+    userId: resolvedUserId,
+    pinCreated: Boolean(input.accessPin)
   });
 }

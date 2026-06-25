@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { env } from "@/lib/env";
 import { getVendorReport, getVendorDashboardSummary } from "@/lib/reports";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { hashPin, isPinSessionActive, parsePinCommand, verifyPin } from "@/lib/whatsapp-identity";
 import {
   buildFlowToken,
   formatNaira,
@@ -70,6 +71,15 @@ async function sendVendorMenu(sender: string, businessId: string, ownerName: str
       "5 or Business Profile",
       "6 or Settings"
     ].join("\n")
+  );
+}
+
+async function sendPinPrompt(sender: string, hasPin: boolean) {
+  await sendWhatsAppTextMessage(
+    sender,
+    hasPin
+      ? "For security, enter your 4-digit PIN to continue.\nReply like: PIN 1234"
+      : "For security, set a 4-digit PIN first.\nReply like: SET PIN 1234"
   );
 }
 
@@ -145,6 +155,10 @@ async function handleFlowCompletion(message: WhatsAppMessage, sender: string) {
         typeof response.password === "string" && response.password.length > 0
           ? response.password
           : undefined,
+      accessPin:
+        typeof response.accessPin === "string" && response.accessPin.length > 0
+          ? response.accessPin
+          : undefined,
       categoryId: String(response.categoryId ?? ""),
       locationArea: String(response.locationArea ?? ""),
       otherLocationArea:
@@ -178,8 +192,8 @@ async function handleFlowCompletion(message: WhatsAppMessage, sender: string) {
     await sendWhatsAppTextMessage(
       sender,
       data.userId
-        ? `Your business setup for ${data.business.business_name} has been saved and your dashboard account is ready. You can now sign in at ${env.appBaseUrl}/login`
-        : `Your business setup for ${data.business.business_name} has been saved. Next step: use the web dashboard to sign in and finish linking your account.`
+        ? `Your business setup for ${data.business.business_name} has been saved and your account is ready.${data.pinCreated ? " Your WhatsApp PIN is active." : " Reply SET PIN 1234 to protect your records."} You can also sign in at ${env.appBaseUrl}/login`
+        : `Your business setup for ${data.business.business_name} has been saved.${data.pinCreated ? " Your WhatsApp PIN is active." : " Reply SET PIN 1234 to protect your records."}`
     );
     return;
   }
@@ -238,6 +252,99 @@ async function handleVendorCommand(
 ) {
   const admin = createSupabaseAdminClient();
   const normalized = normalizeIncomingWhatsAppText(message);
+  const pinCommand = parsePinCommand(normalized);
+  const { data: identity } = await admin
+    .from("whatsapp_auth_identities")
+    .select("id, user_id, phone_number, pin_salt, pin_hash, last_verified_at, failed_attempts, locked_until")
+    .eq("business_id", business.id)
+    .maybeSingle();
+
+  const lockedUntil = identity?.locked_until ? new Date(identity.locked_until) : null;
+  if (lockedUntil && lockedUntil.getTime() > Date.now()) {
+    await sendWhatsAppTextMessage(
+      sender,
+      `Too many wrong PIN attempts. Try again after ${lockedUntil.toLocaleTimeString()}.`
+    );
+    return;
+  }
+
+  if (pinCommand?.type === "lock") {
+    if (identity?.id) {
+      await admin.from("whatsapp_auth_identities").update({ last_verified_at: null }).eq("id", identity.id);
+    }
+
+    await sendWhatsAppTextMessage(sender, "Your WhatsApp session has been locked.");
+    return;
+  }
+
+  if (pinCommand?.type === "set") {
+    const pinValues = hashPin(pinCommand.pin);
+
+    await admin.from("whatsapp_auth_identities").upsert({
+      business_id: business.id,
+      user_id: identity?.user_id ?? null,
+      phone_number: normalizePhoneNumber(sender),
+      pin_salt: pinValues.salt,
+      pin_hash: pinValues.hash,
+      last_verified_at: new Date().toISOString(),
+      failed_attempts: 0,
+      locked_until: null
+    });
+
+    await sendWhatsAppTextMessage(
+      sender,
+      "Your 4-digit PIN has been set. You are now verified for WhatsApp business actions."
+    );
+    await sendVendorMenu(sender, business.id, business.owner_name);
+    return;
+  }
+
+  const hasPin = Boolean(identity?.pin_hash && identity?.pin_salt);
+
+  if (pinCommand?.type === "verify" && identity?.pin_hash && identity?.pin_salt) {
+    const correct = verifyPin(pinCommand.pin, identity.pin_salt, identity.pin_hash);
+
+    if (!correct) {
+      const failedAttempts = (identity.failed_attempts ?? 0) + 1;
+      const locked_until = failedAttempts >= 5 ? new Date(Date.now() + 15 * 60 * 1000).toISOString() : null;
+
+      await admin
+        .from("whatsapp_auth_identities")
+        .update({
+          failed_attempts: failedAttempts,
+          locked_until
+        })
+        .eq("id", identity.id);
+
+      await sendWhatsAppTextMessage(
+        sender,
+        locked_until
+          ? "Too many wrong PIN attempts. Your WhatsApp access is locked for 15 minutes."
+          : "Incorrect PIN. Try again with: PIN 1234"
+      );
+      return;
+    }
+
+    await admin
+      .from("whatsapp_auth_identities")
+      .update({
+        failed_attempts: 0,
+        locked_until: null,
+        last_verified_at: new Date().toISOString()
+      })
+      .eq("id", identity.id);
+
+    await sendWhatsAppTextMessage(sender, "PIN verified.");
+    await sendVendorMenu(sender, business.id, business.owner_name);
+    return;
+  }
+
+  const isVerified = isPinSessionActive(identity?.last_verified_at, env.whatsappPinSessionMinutes);
+
+  if (!hasPin || !isVerified) {
+    await sendPinPrompt(sender, hasPin);
+    return;
+  }
 
   if (!normalized || ["menu", "start", "hi", "hello", "help"].includes(normalized)) {
     await sendVendorMenu(sender, business.id, business.owner_name);

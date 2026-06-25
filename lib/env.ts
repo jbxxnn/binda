@@ -19,6 +19,7 @@ export const env = {
   whatsappOnboardingFlowId: process.env.WHATSAPP_ONBOARDING_FLOW_ID,
   whatsappRecordSaleFlowId: process.env.WHATSAPP_RECORD_SALE_FLOW_ID,
   whatsappFlowMessageVersion: process.env.WHATSAPP_FLOW_MESSAGE_VERSION ?? "3",
+  whatsappPinSessionMinutes: Number(process.env.WHATSAPP_PIN_SESSION_MINUTES ?? "30"),
   appBaseUrl: process.env.APP_BASE_URL ?? "http://localhost:3000"
 };
 

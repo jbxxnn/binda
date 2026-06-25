@@ -12,6 +12,7 @@ Current app expectation:
   - `whatsappPhone`
   - `email` optional
   - `password` optional
+  - `accessPin` optional
   - `categoryId`
   - `locationArea`
   - `otherLocationArea` optional
@@ -342,6 +343,14 @@ After publishing the Flow:
                 "helper-text": "Use at least 8 characters"
               },
               {
+                "type": "TextInput",
+                "name": "accessPin",
+                "label": "4-digit WhatsApp PIN",
+                "required": true,
+                "input-type": "number",
+                "helper-text": "Use this PIN to approve WhatsApp actions"
+              },
+              {
                 "type": "Footer",
                 "label": "Finish setup",
                 "on-click-action": {
@@ -352,6 +361,7 @@ After publishing the Flow:
                     "whatsappPhone": "${data.whatsappPhone}",
                     "email": "${form.email}",
                     "password": "${form.password}",
+                    "accessPin": "${form.accessPin}",
                     "categoryId": "${data.categoryId}",
                     "locationArea": "${data.locationArea}",
                     "otherLocationArea": "${data.otherLocationArea}",
@@ -377,10 +387,22 @@ After publishing the Flow:
 - Use `Without Endpoint` for this onboarding Flow.
 - `whatsappPhone` should be the only number field in the Flow.
 - Add a second screen for account creation with `email` and `password`.
+- Add a 4-digit `accessPin` on the account screen. The backend stores a secure hash and uses it to verify WhatsApp actions.
 - The app launch already sends the sender's current WhatsApp number as `data.whatsappPhone`, so use that as the field's initial value if Meta accepts `init-value` in your editor.
 - Keep the fields and submit footer inside a `Form` container so `${form...}` bindings resolve correctly on submit.
 - If `locationArea` is `Other`, the backend will store `otherLocationArea` instead.
 - If Meta's editor rejects a control name like `RadioButtonsGroup` or `TextArea`, rebuild that field in the visual editor but keep the same field key.
+
+## WhatsApp PIN Commands
+
+- First-time setup fallback for existing vendors:
+  - `SET PIN 1234`
+- Verify after the PIN session expires:
+  - `PIN 1234`
+- Lock the current WhatsApp session:
+  - `LOCK`
+
+The session timeout is controlled by `WHATSAPP_PIN_SESSION_MINUTES`.
 
 ## Matching App Files
 
