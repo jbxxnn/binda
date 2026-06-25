@@ -113,3 +113,11 @@ export function encryptWhatsAppFlowResponse(payload: unknown, aesKey: Buffer, in
     initial_vector: responseIv.toString("base64")
   };
 }
+
+export function encryptWhatsAppFlowResponseBody(
+  payload: unknown,
+  aesKey: Buffer,
+  initialVector: Buffer
+) {
+  return encryptWhatsAppFlowResponse(payload, aesKey, initialVector).encrypted_flow_data;
+}

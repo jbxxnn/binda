@@ -4,7 +4,7 @@ import { z } from "zod";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import {
   decryptWhatsAppFlowRequest,
-  encryptWhatsAppFlowResponse,
+  encryptWhatsAppFlowResponseBody,
   isEncryptedFlowRequest
 } from "@/lib/whatsapp-flow-crypto";
 
@@ -297,8 +297,14 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(responsePayload, { status: responsePayload.status });
       }
 
-      return NextResponse.json(
-        encryptWhatsAppFlowResponse(responsePayload, decrypted.aesKey, decrypted.initialVector)
+      return new NextResponse(
+        encryptWhatsAppFlowResponseBody(responsePayload, decrypted.aesKey, decrypted.initialVector),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "text/plain"
+          }
+        }
       );
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unable to process encrypted flow request.";
