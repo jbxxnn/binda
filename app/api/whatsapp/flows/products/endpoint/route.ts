@@ -105,6 +105,14 @@ function getLatestDate(value: string | null | undefined) {
 }
 
 async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
+  console.log("Products flow request", {
+    flowToken: input.flow_token ?? null,
+    screen: input.screen ?? null,
+    action: input.action ?? null,
+    version: input.version ?? null,
+    dataKeys: input.data ? Object.keys(input.data) : []
+  });
+
   if (!input.flow_token) {
     return {
       version: "3.0",
@@ -280,6 +288,17 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(responsePayload, { status: responsePayload.status });
       }
 
+      console.log("Products flow response", {
+        encrypted: true,
+        screen: "screen" in responsePayload ? responsePayload.screen : null,
+        dataKeys:
+          "data" in responsePayload &&
+          responsePayload.data &&
+          typeof responsePayload.data === "object"
+            ? Object.keys(responsePayload.data)
+            : []
+      });
+
       return new NextResponse(
         encryptWhatsAppFlowResponseBody(responsePayload, decrypted.aesKey, decrypted.initialVector),
         {
@@ -329,6 +348,17 @@ export async function POST(request: NextRequest) {
   if ("error" in responsePayload) {
     return NextResponse.json({ error: responsePayload.error }, { status: responsePayload.status });
   }
+
+  console.log("Products flow response", {
+    encrypted: false,
+    screen: "screen" in responsePayload ? responsePayload.screen : null,
+    dataKeys:
+      "data" in responsePayload &&
+      responsePayload.data &&
+      typeof responsePayload.data === "object"
+        ? Object.keys(responsePayload.data)
+        : []
+  });
 
   return NextResponse.json(responsePayload);
 }
