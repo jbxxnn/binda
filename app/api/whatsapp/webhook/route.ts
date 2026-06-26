@@ -462,7 +462,7 @@ async function handleFlowCompletion(message: WhatsAppMessage, sender: string) {
     const payload = {
       businessName: String(response.businessName ?? ""),
       ownerName: String(response.ownerName ?? ""),
-      whatsappPhone: String(response.whatsappPhone ?? normalizePhoneNumber(sender)),
+      whatsappPhone: normalizePhoneNumber(sender),
       email:
         typeof response.email === "string" && response.email.length > 0 ? response.email : undefined,
       password:
