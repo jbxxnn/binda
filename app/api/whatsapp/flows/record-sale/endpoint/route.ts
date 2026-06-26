@@ -63,6 +63,10 @@ type FlowState = {
   customerId?: string;
   customerName?: string;
   customerPhone?: string;
+  quantity?: string;
+  amountPaid?: string;
+  paymentStatus?: string;
+  paymentMethod?: string;
 };
 
 function parseRecordSaleFlowToken(flowToken: string) {
@@ -118,7 +122,11 @@ function pickState(data: Record<string, unknown> | undefined): FlowState {
     customerMode: typeof data?.customerMode === "string" ? data.customerMode : undefined,
     customerId: typeof data?.customerId === "string" ? data.customerId : undefined,
     customerName: typeof data?.customerName === "string" ? data.customerName : undefined,
-    customerPhone: typeof data?.customerPhone === "string" ? data.customerPhone : undefined
+    customerPhone: typeof data?.customerPhone === "string" ? data.customerPhone : undefined,
+    quantity: typeof data?.quantity === "string" ? data.quantity : undefined,
+    amountPaid: typeof data?.amountPaid === "string" ? data.amountPaid : undefined,
+    paymentStatus: typeof data?.paymentStatus === "string" ? data.paymentStatus : undefined,
+    paymentMethod: typeof data?.paymentMethod === "string" ? data.paymentMethod : undefined
   };
 }
 
@@ -359,7 +367,7 @@ async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
         customerName: "",
         customerPhone: "",
         quantity: "1",
-        amountPaid: "",
+        amountPaid: state.unitPrice ?? "",
         paymentStatus: "paid",
         paymentMethod: "cash"
       }
@@ -379,7 +387,7 @@ async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
         customerName: state.customerName,
         customerPhone: state.customerPhone ?? "",
         quantity: "1",
-        amountPaid: "",
+        amountPaid: state.unitPrice ?? "",
         paymentStatus: "paid",
         paymentMethod: "cash"
       }

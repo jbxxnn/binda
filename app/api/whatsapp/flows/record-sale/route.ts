@@ -27,44 +27,6 @@ const recordSaleSchema = z
     amountPaid: z.number().nonnegative(),
     notes: z.string().optional(),
     items: z.array(itemSchema).min(1)
-  })
-  .superRefine((input, ctx) => {
-    const total = input.items.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0);
-
-    if (input.paymentStatus === "paid" && input.amountPaid !== total) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Paid sales must have full amount collected.",
-        path: ["amountPaid"]
-      });
-    }
-
-    if (input.paymentStatus === "pending" && input.amountPaid !== 0) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Pending sales must have 0 amount paid.",
-        path: ["amountPaid"]
-      });
-    }
-
-    if (
-      input.paymentStatus === "partial" &&
-      (input.amountPaid <= 0 || input.amountPaid >= total)
-    ) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Partial sales must have amount paid greater than 0 and less than total.",
-        path: ["amountPaid"]
-      });
-    }
-
-    if (input.amountPaid > total) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Amount paid cannot be more than total sale amount.",
-        path: ["amountPaid"]
-      });
-    }
   });
 
 type ProductRow = {
@@ -209,7 +171,14 @@ export async function POST(request: NextRequest) {
 
   const subtotal = resolvedItems.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0);
   const total = subtotal;
-  const pending = Math.max(total - input.amountPaid, 0);
+  const normalizedAmountPaid = Math.min(Math.max(input.amountPaid, 0), total);
+  const normalizedPaymentStatus =
+    normalizedAmountPaid === 0
+      ? "pending"
+      : normalizedAmountPaid >= total
+        ? "paid"
+        : "partial";
+  const pending = Math.max(total - normalizedAmountPaid, 0);
 
   const { data: transaction, error: transactionError } = await supabase
     .from("transactions")
@@ -219,9 +188,9 @@ export async function POST(request: NextRequest) {
       recorded_by: input.recordedBy,
       subtotal_amount: subtotal,
       total_amount: total,
-      amount_paid: input.amountPaid,
+      amount_paid: normalizedAmountPaid,
       amount_pending: pending,
-      payment_status: input.paymentStatus,
+      payment_status: normalizedPaymentStatus,
       payment_method: input.paymentMethod,
       notes: normalizeOptionalText(input.notes) ?? null
     })
@@ -253,12 +222,12 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  if (input.amountPaid > 0) {
+  if (normalizedAmountPaid > 0) {
     const { error: paymentError } = await supabase.from("payments").insert({
       transaction_id: transaction.id,
       business_id: input.businessId,
       customer_id: resolvedCustomerId,
-      amount: input.amountPaid,
+      amount: normalizedAmountPaid,
       payment_method: input.paymentMethod,
       recorded_by: input.recordedBy
     });

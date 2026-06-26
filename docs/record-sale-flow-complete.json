@@ -284,6 +284,22 @@
         "customerPhone": {
           "type": "string",
           "__example__": "2348034310997"
+        },
+        "quantity": {
+          "type": "string",
+          "__example__": "1"
+        },
+        "amountPaid": {
+          "type": "string",
+          "__example__": "15000"
+        },
+        "paymentStatus": {
+          "type": "string",
+          "__example__": "paid"
+        },
+        "paymentMethod": {
+          "type": "string",
+          "__example__": "cash"
         }
       },
       "layout": {
@@ -330,10 +346,11 @@
                 ]
               },
               {
-                "type": "TextArea",
+                "type": "TextInput",
                 "name": "notes",
                 "label": "Note (optional)",
-                "required": false
+                "required": false,
+                "input-type": "text"
               },
               {
                 "type": "Footer",
