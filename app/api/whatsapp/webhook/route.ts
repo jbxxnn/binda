@@ -168,6 +168,30 @@ async function sendFlowLaunchOrError(
   return false;
 }
 
+async function sendProductsFlowForIntent(
+  sender: string,
+  businessId: string,
+  flowId: string,
+  recordedBy: string,
+  intent: "add" | "edit",
+  productId?: string
+) {
+  const tokenParts = ["products", businessId, recordedBy, intent];
+
+  if (intent === "edit" && productId) {
+    tokenParts.push(productId);
+  }
+
+  return sendFlowLaunchOrError(sender, () =>
+    sendWhatsAppFlowMessage(sender, {
+      body: intent === "add" ? "Add a new product." : "Update your product.",
+      cta: intent === "add" ? "Add product" : "Update product",
+      flowId,
+      flowToken: tokenParts.join(":")
+    })
+  );
+}
+
 async function sendProductsFlowOrFallback(
   sender: string,
   business: { id: string; business_name: string },
@@ -787,16 +811,7 @@ async function handleVendorCommand(
     }
 
     if (listReplyId === "products:add") {
-      await sendFlowLaunchOrError(sender, () =>
-        sendWhatsAppFlowMessage(sender, {
-          body: `Add a new product for ${business.business_name}.`,
-          cta: "Add product",
-          flowId,
-          flowToken: buildFlowToken("products", [business.id, recordedBy]),
-          screen: "NEW_PRODUCT",
-          data: {}
-        })
-      );
+      await sendProductsFlowForIntent(sender, business.id, flowId, recordedBy, "add");
       return;
     }
 
@@ -813,22 +828,7 @@ async function handleVendorCommand(
       return;
     }
 
-    await sendFlowLaunchOrError(sender, () =>
-      sendWhatsAppFlowMessage(sender, {
-        body: `Update ${product.name}.`,
-        cta: "Update product",
-        flowId,
-        flowToken: buildFlowToken("products", [business.id, recordedBy]),
-        screen: "UPDATE_PRODUCT",
-        data: {
-          productId: product.id,
-          currentName: product.name,
-          currentPrice: String(product.unit_price),
-          currentStock: product.stock_quantity == null ? "" : String(product.stock_quantity),
-          currentActive: product.is_active ? "active" : "inactive"
-        }
-      })
-    );
+    await sendProductsFlowForIntent(sender, business.id, flowId, recordedBy, "edit", product.id);
     return;
   }
 

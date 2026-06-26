@@ -46,13 +46,18 @@ type FlowState = {
 };
 
 function parseProductsFlowToken(flowToken: string) {
-  const [prefix, businessId, recordedBy] = flowToken.split(":");
+  const [prefix, businessId, recordedBy, intent, productId] = flowToken.split(":");
 
   if (prefix !== "products" || !businessId || !recordedBy) {
     return null;
   }
 
-  return { businessId, recordedBy };
+  return {
+    businessId,
+    recordedBy,
+    intent: intent === "add" || intent === "edit" ? intent : undefined,
+    productId: intent === "edit" && productId ? productId : undefined
+  };
 }
 
 function formatMoney(value: number | string | null) {
@@ -198,6 +203,32 @@ async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
   });
 
   const state = pickState(input.data);
+
+  if (!state.productId && token.intent === "add") {
+    return {
+      screen: "NEW_PRODUCT",
+      data: {}
+    };
+  }
+
+  if (!state.productId && token.intent === "edit" && token.productId) {
+    const product = rankedProducts.find((entry) => entry.id === token.productId);
+
+    if (!product) {
+      return { error: "Selected product does not belong to this business.", status: 400 as const };
+    }
+
+    return {
+      screen: "UPDATE_PRODUCT",
+      data: {
+        productId: product.id,
+        currentName: product.name,
+        currentPrice: String(product.unit_price),
+        currentStock: product.stock_quantity == null ? "" : String(product.stock_quantity),
+        currentActive: product.is_active ? "active" : "inactive"
+      }
+    };
+  }
 
   if (!state.productId) {
     return {
