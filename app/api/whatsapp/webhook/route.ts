@@ -50,6 +50,13 @@ type RecentProductUsageRow = {
     | null;
 };
 
+const ICE_BREAKERS = {
+  registerBusiness: "register my business",
+  recordSale: "record a sale",
+  viewProducts: "view products",
+  businessHelp: "business help"
+} as const;
+
 function parseBooleanLike(value: unknown) {
   if (typeof value === "boolean") {
     return value;
@@ -499,10 +506,19 @@ async function handleFlowCompletion(message: WhatsAppMessage, sender: string) {
     await sendWhatsAppTextMessage(
       sender,
       data.userId
-        ? `Your business setup for ${data.business.business_name} has been saved and your account is ready.${data.pinCreated ? " Your WhatsApp PIN is active." : " Reply SET PIN 1234 to protect your records."} You can also sign in at ${env.appBaseUrl}/login`
-        : `Your business setup for ${data.business.business_name} has been saved.${data.pinCreated ? " Your WhatsApp PIN is active." : " Reply SET PIN 1234 to protect your records."}`
+        ? `
+        🎉 Your business is ready!
+
+From today, I'll help you keep accurate records and understand how your business '${data.business.business_name}' is performing.
+
+Whenever you make a sale, just tap */Record Sale*.`
+        : `
+        🎉 Your business is ready!
+
+From today, I'll help you keep accurate records and understand how your business '${data.business.business_name}' is performing.
+
+Whenever you make a sale, just tap */Record Sale*.`
     );
-    await sendVendorMenu(sender, data.business.id, payload.ownerName);
     return;
   }
 
@@ -827,6 +843,36 @@ async function handleVendorCommand(
     }
 
     await sendProductsFlowForIntent(sender, business.id, recordedBy, "edit", product.id);
+    return;
+  }
+
+  if (normalized === ICE_BREAKERS.registerBusiness) {
+    await sendWhatsAppTextMessage(
+      sender,
+      `Your business is already linked as ${business.business_name}. Reply \`Menu\` to continue.`
+    );
+    return;
+  }
+
+  if (normalized === ICE_BREAKERS.recordSale) {
+    const { data: membership } = await admin
+      .from("business_memberships")
+      .select("user_id")
+      .eq("business_id", business.id)
+      .limit(1)
+      .maybeSingle();
+
+    await sendRecordSaleFlowOrFallback(sender, business, membership?.user_id ?? null);
+    return;
+  }
+
+  if (normalized === ICE_BREAKERS.viewProducts) {
+    await sendViewProductsPickerOrFallback(sender, business);
+    return;
+  }
+
+  if (normalized === ICE_BREAKERS.businessHelp) {
+    await sendVendorMenu(sender, business.id, business.owner_name);
     return;
   }
 

@@ -22,6 +22,27 @@
   - `5` or `profile` sends business profile details
   - `6` or `settings` sends the settings link
 
+## Recommended Ice Breakers
+
+Configure these exact phrases in WhatsApp Manager:
+
+- `Register my business`
+- `Record a sale`
+- `View products`
+- `Business help`
+
+Current routing:
+
+- `Register my business`
+  - unknown contact: opens onboarding
+  - known vendor: explains that the business is already linked
+- `Record a sale`
+  - launches the Record Sale Flow
+- `View products`
+  - opens the product view list directly
+- `Business help`
+  - shows the vendor menu
+
 ## Required environment variables
 
 - `WHATSAPP_ACCESS_TOKEN`
