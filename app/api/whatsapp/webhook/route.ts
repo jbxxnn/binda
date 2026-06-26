@@ -113,7 +113,19 @@ async function sendOnboardingFlowOrFallback(sender: string) {
   }
 
   return sendWhatsAppFlowMessage(sender, {
-    body: "Hi {{User}}! Welcome to Binda. Binda can help you record sales, manage products, and track customers. Let's set up your business account.",
+    body: `
+    👋 Welcome!
+
+    I'm your Business Assistant.
+
+    I'll help you:
+
+      • Keep your sales records
+      • Track your customers
+      • Show daily and monthly reports
+      • Help more customers discover your business
+
+    Let's get your business set up.`,
     cta: "Start setup",
     flowId,
     flowToken: buildFlowToken("onboarding", [sender]),
