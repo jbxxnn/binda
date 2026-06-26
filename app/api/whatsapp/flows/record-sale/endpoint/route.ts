@@ -59,6 +59,7 @@ type FlowState = {
   productId?: string;
   itemName?: string;
   unitPrice?: string;
+  stockQuantity?: string;
   saveAsProduct?: string;
   customerMode?: string;
   customerId?: string;
@@ -130,6 +131,7 @@ function pickState(data: Record<string, unknown> | undefined): FlowState {
     productId: typeof data?.productId === "string" ? data.productId : undefined,
     itemName: typeof data?.itemName === "string" ? data.itemName : undefined,
     unitPrice: typeof data?.unitPrice === "string" ? data.unitPrice : undefined,
+    stockQuantity: typeof data?.stockQuantity === "string" ? data.stockQuantity : undefined,
     saveAsProduct: typeof data?.saveAsProduct === "string" ? data.saveAsProduct : undefined,
     customerMode: typeof data?.customerMode === "string" ? data.customerMode : undefined,
     customerId: typeof data?.customerId === "string" ? data.customerId : undefined,
@@ -345,6 +347,7 @@ async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
         productId: "",
         itemName: state.itemName ?? "",
         unitPrice: state.unitPrice ?? "",
+        stockQuantity: state.stockQuantity ?? "",
         saveAsProduct: state.saveAsProduct ?? "no"
       }
     };
@@ -357,6 +360,7 @@ async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
         productId: state.productId ?? "",
         itemName: state.itemName ?? "",
         unitPrice: state.unitPrice ?? "",
+        stockQuantity: state.stockQuantity ?? "",
         saveAsProduct: state.saveAsProduct ?? "no"
       }
     };
@@ -373,6 +377,7 @@ async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
         productId: state.productId ?? "",
         itemName: state.itemName ?? "",
         unitPrice: state.unitPrice ?? "",
+        stockQuantity: state.stockQuantity ?? "",
         saveAsProduct: state.saveAsProduct ?? "no",
         customerMode: state.customerMode,
         customerId: state.customerMode,
@@ -393,6 +398,7 @@ async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
         productId: state.productId ?? "",
         itemName: state.itemName ?? "",
         unitPrice: state.unitPrice ?? "",
+        stockQuantity: state.stockQuantity ?? "",
         saveAsProduct: state.saveAsProduct ?? "no",
         customerMode: "NEW_CUSTOMER",
         customerId: "",

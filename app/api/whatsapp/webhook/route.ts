@@ -554,7 +554,11 @@ Whenever you make a sale, just tap */Record Sale*.`
         productId,
         itemName: String(response.itemName ?? response.productName ?? "Sale item"),
         quantity: Number(response.quantity ?? 1),
-        unitPrice: Number(response.unitPrice ?? response.amount ?? 0)
+        unitPrice: Number(response.unitPrice ?? response.amount ?? 0),
+        stockQuantity:
+          typeof response.stockQuantity === "string" && response.stockQuantity.length > 0
+            ? Number(response.stockQuantity)
+            : null
       }
     ];
 

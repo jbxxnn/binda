@@ -43,7 +43,7 @@
               {
                 "type": "Dropdown",
                 "name": "productId",
-                "label": "Choose product",
+                "label": "Product",
                 "required": true,
                 "data-source": "${data.productOptions}"
               },
@@ -65,6 +65,12 @@
     {
       "id": "NEW_PRODUCT",
       "title": "New product",
+      "data": {
+        "stockQuantity": {
+          "type": "string",
+          "__example__": "12"
+        }
+      },
       "layout": {
         "type": "SingleColumnLayout",
         "children": [
@@ -87,6 +93,14 @@
                 "input-type": "number"
               },
               {
+                "type": "TextInput",
+                "name": "stockQuantity",
+                "label": "Stock",
+                "helper-text": "Number of items available for sale. Leave blank if you don't want to track stock.",
+                "required": false,
+                "input-type": "number"
+              },
+              {
                 "type": "RadioButtonsGroup",
                 "name": "saveAsProduct",
                 "label": "Save this for future use?",
@@ -105,6 +119,7 @@
                     "productId": "NEW_PRODUCT",
                     "itemName": "${form.itemName}",
                     "unitPrice": "${form.unitPrice}",
+                    "stockQuantity": "${form.stockQuantity}",
                     "saveAsProduct": "${form.saveAsProduct}"
                   }
                 }
@@ -145,6 +160,10 @@
           "type": "string",
           "__example__": "7000"
         },
+        "stockQuantity": {
+          "type": "string",
+          "__example__": "12"
+        },
         "saveAsProduct": {
           "type": "string",
           "__example__": "yes"
@@ -160,7 +179,7 @@
               {
                 "type": "Dropdown",
                 "name": "customerMode",
-                "label": "Choose customer",
+                "label": "Customer",
                 "required": true,
                 "data-source": "${data.customerOptions}"
               },
@@ -173,6 +192,7 @@
                     "productId": "${data.productId}",
                     "itemName": "${data.itemName}",
                     "unitPrice": "${data.unitPrice}",
+                    "stockQuantity": "${data.stockQuantity}",
                     "saveAsProduct": "${data.saveAsProduct}",
                     "customerMode": "${form.customerMode}"
                   }
@@ -199,6 +219,10 @@
           "type": "string",
           "__example__": "7000"
         },
+        "stockQuantity": {
+          "type": "string",
+          "__example__": "12"
+        },
         "saveAsProduct": {
           "type": "string",
           "__example__": "yes"
@@ -221,7 +245,7 @@
               {
                 "type": "TextInput",
                 "name": "customerPhone",
-                "label": "Customer phone (optional)",
+                "label": "Customer phone",
                 "required": false,
                 "input-type": "phone"
               },
@@ -234,6 +258,7 @@
                     "productId": "${data.productId}",
                     "itemName": "${data.itemName}",
                     "unitPrice": "${data.unitPrice}",
+                    "stockQuantity": "${data.stockQuantity}",
                     "saveAsProduct": "${data.saveAsProduct}",
                     "customerMode": "NEW_CUSTOMER",
                     "customerId": "",
@@ -264,6 +289,10 @@
         "unitPrice": {
           "type": "string",
           "__example__": "15000"
+        },
+        "stockQuantity": {
+          "type": "string",
+          "__example__": "12"
         },
         "saveAsProduct": {
           "type": "string",
@@ -312,7 +341,7 @@
               {
                 "type": "TextInput",
                 "name": "quantity",
-                "label": "Quantity",
+                "label": "Quantity sold",
                 "required": true,
                 "input-type": "number"
               },
@@ -360,6 +389,7 @@
                     "productId": "${data.productId}",
                     "itemName": "${data.itemName}",
                     "unitPrice": "${data.unitPrice}",
+                    "stockQuantity": "${data.stockQuantity}",
                     "saveAsProduct": "${data.saveAsProduct}",
                     "customerMode": "${data.customerMode}",
                     "customerId": "${data.customerId}",

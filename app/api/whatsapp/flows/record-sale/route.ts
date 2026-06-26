@@ -9,7 +9,8 @@ const itemSchema = z.object({
   productId: z.string().uuid().optional(),
   itemName: z.string().min(2),
   quantity: z.number().positive(),
-  unitPrice: z.number().nonnegative()
+  unitPrice: z.number().nonnegative(),
+  stockQuantity: z.number().nonnegative().nullable().optional()
 });
 
 const recordSaleSchema = z
@@ -147,7 +148,7 @@ export async function POST(request: NextRequest) {
           business_id: input.businessId,
           name: item.itemName,
           unit_price: item.unitPrice,
-          stock_quantity: null,
+          stock_quantity: item.stockQuantity ?? null,
           is_active: true
         })
         .select("id")
