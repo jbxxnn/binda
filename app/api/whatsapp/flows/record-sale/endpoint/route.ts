@@ -34,6 +34,26 @@ type ProductRow = {
   unit_price: number | string;
 };
 
+type RecentProductUsageRow = {
+  product_id: string | null;
+  line_total: number | string | null;
+  transactions:
+    | Array<{
+        transaction_date: string;
+      }>
+    | null;
+};
+
+type RecentCustomerUsageRow = {
+  id: string;
+  full_name: string;
+  phone_number: string | null;
+  transactions: Array<{
+    transaction_date: string;
+    total_amount: number | string | null;
+  }> | null;
+};
+
 type FlowState = {
   productId?: string;
   itemName?: string;
@@ -102,6 +122,10 @@ function pickState(data: Record<string, unknown> | undefined): FlowState {
   };
 }
 
+function getLatestDate(value: string | null | undefined) {
+  return value ? new Date(value).getTime() : 0;
+}
+
 async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
   if (!input.flow_token) {
     return {
@@ -131,8 +155,12 @@ async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
     return { error: "Vendor does not have access to this business.", status: 403 as const };
   }
 
-  const [{ data: products, error: productsError }, { data: customers, error: customersError }] =
-    await Promise.all([
+  const [
+    { data: products, error: productsError },
+    { data: customers, error: customersError },
+    { data: recentProductUsage },
+    { data: recentCustomerUsage }
+  ] = await Promise.all([
       supabase
         .from("products")
         .select("id, name, unit_price")
@@ -145,6 +173,21 @@ async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
         .select("id, full_name, phone_number")
         .eq("business_id", token.businessId)
         .order("updated_at", { ascending: false })
+        .limit(20),
+      supabase
+        .from("transaction_items")
+        .select("product_id, line_total, transactions!inner(transaction_date)")
+        .not("product_id", "is", null)
+        .eq("transactions.business_id", token.businessId)
+        .order("transaction_date", {
+          foreignTable: "transactions",
+          ascending: false
+        })
+        .limit(50),
+      supabase
+        .from("customers")
+        .select("id, full_name, phone_number, transactions(transaction_date, total_amount)")
+        .eq("business_id", token.businessId)
         .limit(20)
     ]);
 
@@ -159,8 +202,84 @@ async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
   }
 
   const state = pickState(input.data);
-  const productOptions = buildProductOptions((products ?? []) as ProductRow[]);
-  const customerOptions = buildCustomerOptions(customers ?? []);
+  const productUsageMap = new Map<
+    string,
+    { lastUsedAt: number; totalValue: number }
+  >();
+
+  for (const usage of (recentProductUsage ?? []) as RecentProductUsageRow[]) {
+    if (!usage.product_id) {
+      continue;
+    }
+
+    const current = productUsageMap.get(usage.product_id) ?? {
+      lastUsedAt: 0,
+      totalValue: 0
+    };
+
+    productUsageMap.set(usage.product_id, {
+      lastUsedAt: Math.max(
+        current.lastUsedAt,
+        getLatestDate(usage.transactions?.[0]?.transaction_date)
+      ),
+      totalValue: current.totalValue + Number(usage.line_total ?? 0)
+    });
+  }
+
+  const rankedProducts = [...((products ?? []) as ProductRow[])].sort((left, right) => {
+    const leftUsage = productUsageMap.get(left.id) ?? { lastUsedAt: 0, totalValue: 0 };
+    const rightUsage = productUsageMap.get(right.id) ?? { lastUsedAt: 0, totalValue: 0 };
+
+    if (leftUsage.lastUsedAt !== rightUsage.lastUsedAt) {
+      return rightUsage.lastUsedAt - leftUsage.lastUsedAt;
+    }
+
+    if (leftUsage.totalValue !== rightUsage.totalValue) {
+      return rightUsage.totalValue - leftUsage.totalValue;
+    }
+
+    return left.name.localeCompare(right.name);
+  });
+
+  const rankedCustomers = [...((recentCustomerUsage ?? customers ?? []) as RecentCustomerUsageRow[])].sort(
+    (left, right) => {
+      const leftTransactions = left.transactions ?? [];
+      const rightTransactions = right.transactions ?? [];
+      const leftLastUsedAt = Math.max(...leftTransactions.map((item) => getLatestDate(item.transaction_date)), 0);
+      const rightLastUsedAt = Math.max(
+        ...rightTransactions.map((item) => getLatestDate(item.transaction_date)),
+        0
+      );
+
+      if (leftLastUsedAt !== rightLastUsedAt) {
+        return rightLastUsedAt - leftLastUsedAt;
+      }
+
+      const leftTotal = leftTransactions.reduce(
+        (sum, item) => sum + Number(item.total_amount ?? 0),
+        0
+      );
+      const rightTotal = rightTransactions.reduce(
+        (sum, item) => sum + Number(item.total_amount ?? 0),
+        0
+      );
+
+      if (leftTotal !== rightTotal) {
+        return rightTotal - leftTotal;
+      }
+
+      return left.full_name.localeCompare(right.full_name);
+    }
+  );
+
+  const productOptions = buildProductOptions(rankedProducts);
+  const customerOptions = buildCustomerOptions(
+    rankedCustomers.map((customer) => ({
+      id: customer.id,
+      full_name: customer.full_name,
+      phone_number: customer.phone_number
+    }))
+  );
   const hasManualProductDetails = Boolean(state.itemName && state.unitPrice);
 
   if (!state.productId && !hasManualProductDetails) {
@@ -238,7 +357,11 @@ async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
         customerMode: state.customerMode,
         customerId: state.customerMode,
         customerName: "",
-        customerPhone: ""
+        customerPhone: "",
+        quantity: "1",
+        amountPaid: "",
+        paymentStatus: "paid",
+        paymentMethod: "cash"
       }
     };
   }
@@ -254,7 +377,11 @@ async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
         customerMode: "NEW_CUSTOMER",
         customerId: "",
         customerName: state.customerName,
-        customerPhone: state.customerPhone ?? ""
+        customerPhone: state.customerPhone ?? "",
+        quantity: "1",
+        amountPaid: "",
+        paymentStatus: "paid",
+        paymentMethod: "cash"
       }
     };
   }
