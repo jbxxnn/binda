@@ -40,14 +40,6 @@
                 "helper-text": "Fill this with your name. Ex: Uncle John"
               },
               {
-                "type": "TextInput",
-                "name": "whatsappPhone",
-                "label": "Phone",
-                "required": true,
-                "input-type": "phone",
-                "helper-text": "Fill this with your WhatsApp number. Ex: +2348012345678"
-              },
-              {
                 "type": "Dropdown",
                 "name": "categoryId",
                 "label": "Category",
@@ -168,22 +160,6 @@
                 ]
               },
               {
-                "type": "RadioButtonsGroup",
-                "name": "deliveryAvailable",
-                "label": "Do you offer deliveries?",
-                "required": true,
-                "data-source": [
-                  {
-                    "id": "true",
-                    "title": "Yes"
-                  },
-                  {
-                    "id": "false",
-                    "title": "No"
-                  }
-                ]
-              },
-              {
                 "type": "TextArea",
                 "name": "productsServices",
                 "label": "What do you sell?",
@@ -202,10 +178,8 @@
                   "payload": {
                     "businessName": "${form.businessName}",
                     "ownerName": "${form.ownerName}",
-                    "whatsappPhone": "${form.whatsappPhone}",
                     "categoryId": "${form.categoryId}",
                     "locationArea": "${form.locationArea}",
-                    "deliveryAvailable": "${form.deliveryAvailable}",
                     "productsServices": "${form.productsServices}"
                   }
                 }
@@ -221,10 +195,6 @@
       "terminal": true,
       "success": true,
       "data": {
-        "whatsappPhone": {
-          "type": "string",
-          "__example__": "+2348012345678"
-        },
         "businessName": {
           "type": "string",
           "__example__": "Amina Cakes"
@@ -240,10 +210,6 @@
         "locationArea": {
           "type": "string",
           "__example__": "Tunga"
-        },
-        "deliveryAvailable": {
-          "type": "string",
-          "__example__": "true"
         },
         "productsServices": {
           "type": "string",
@@ -293,13 +259,11 @@
                   "payload": {
                     "businessName": "${data.businessName}",
                     "ownerName": "${data.ownerName}",
-                    "whatsappPhone": "${data.whatsappPhone}",
                     "email": "${form.email}",
                     "password": "${form.password}",
                     "accessPin": "${form.accessPin}",
                     "categoryId": "${data.categoryId}",
                     "locationArea": "${data.locationArea}",
-                    "deliveryAvailable": "${data.deliveryAvailable}",
                     "productsServices": "${data.productsServices}"
                   }
                 }

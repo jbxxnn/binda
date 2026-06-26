@@ -479,7 +479,6 @@ async function handleFlowCompletion(message: WhatsAppMessage, sender: string) {
         typeof response.otherLocationArea === "string" && response.otherLocationArea.length > 0
           ? response.otherLocationArea
           : undefined,
-      deliveryAvailable: parseBooleanLike(response.deliveryAvailable),
       productsServices: String(response.productsServices ?? ""),
       profileImageUrl:
         typeof response.profileImageUrl === "string" && response.profileImageUrl.length > 0

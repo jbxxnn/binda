@@ -20,7 +20,6 @@ const onboardingSchema = z.object({
   categoryId: z.string().uuid(),
   locationArea: z.string().min(2),
   otherLocationArea: z.string().optional(),
-  deliveryAvailable: z.boolean(),
   productsServices: z.string().min(2),
   profileImageUrl: z.string().url().optional()
 });
@@ -102,7 +101,6 @@ export async function POST(request: NextRequest) {
     phone_number: normalizedWhatsAppPhone,
     whatsapp_phone: normalizedWhatsAppPhone,
     location_area: resolvedLocationArea,
-    delivery_available: input.deliveryAvailable,
     products_services: input.productsServices,
     profile_image_url: input.profileImageUrl,
     created_by: resolvedUserId

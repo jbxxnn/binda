@@ -9,14 +9,12 @@ Current app expectation:
 - Returned payload keys:
   - `businessName`
   - `ownerName`
-  - `whatsappPhone`
   - `email` optional
   - `password` optional
   - `accessPin` optional
   - `categoryId`
   - `locationArea`
   - `otherLocationArea` optional
-  - `deliveryAvailable`
   - `productsServices`
   - `profileImageUrl`
 
@@ -37,12 +35,6 @@ After publishing the Flow:
       "id": "BUSINESS_SETUP",
       "title": "Set up your business",
       "terminal": false,
-      "data": {
-        "whatsappPhone": {
-          "type": "string",
-          "__example__": "+2348012345678"
-        }
-      },
       "layout": {
         "type": "SingleColumnLayout",
         "children": [
@@ -73,15 +65,6 @@ After publishing the Flow:
                 "required": true,
                 "input-type": "text",
                 "helper-text": "Example: Amina Musa"
-              },
-              {
-                "type": "TextInput",
-                "name": "whatsappPhone",
-                "label": "WhatsApp number",
-                "required": true,
-                "input-type": "phone",
-                "init-value": "${data.whatsappPhone}",
-                "helper-text": "Use full number format"
               },
               {
                 "type": "Dropdown",
@@ -212,22 +195,6 @@ After publishing the Flow:
                 "helper-text": "Example: Mandela Road"
               },
               {
-                "type": "RadioButtonsGroup",
-                "name": "deliveryAvailable",
-                "label": "Do you deliver?",
-                "required": true,
-                "data-source": [
-                  {
-                    "id": "true",
-                    "title": "Yes"
-                  },
-                  {
-                    "id": "false",
-                    "title": "No"
-                  }
-                ]
-              },
-              {
                 "type": "TextArea",
                 "name": "productsServices",
                 "label": "What do you sell?",
@@ -253,11 +220,9 @@ After publishing the Flow:
                   "payload": {
                     "businessName": "${form.businessName}",
                     "ownerName": "${form.ownerName}",
-                    "whatsappPhone": "${form.whatsappPhone}",
                     "categoryId": "${form.categoryId}",
                     "locationArea": "${form.locationArea}",
                     "otherLocationArea": "${form.otherLocationArea}",
-                    "deliveryAvailable": "${form.deliveryAvailable}",
                     "productsServices": "${form.productsServices}",
                     "profileImageUrl": "${form.profileImageUrl}"
                   }
@@ -274,10 +239,6 @@ After publishing the Flow:
       "terminal": true,
       "success": true,
       "data": {
-        "whatsappPhone": {
-          "type": "string",
-          "__example__": "+2348012345678"
-        },
         "businessName": {
           "type": "string",
           "__example__": "Amina Cakes"
@@ -297,10 +258,6 @@ After publishing the Flow:
         "otherLocationArea": {
           "type": "string",
           "__example__": "Mandela Road"
-        },
-        "deliveryAvailable": {
-          "type": "string",
-          "__example__": "true"
         },
         "productsServices": {
           "type": "string",
@@ -358,14 +315,12 @@ After publishing the Flow:
                   "payload": {
                     "businessName": "${data.businessName}",
                     "ownerName": "${data.ownerName}",
-                    "whatsappPhone": "${data.whatsappPhone}",
                     "email": "${form.email}",
                     "password": "${form.password}",
                     "accessPin": "${form.accessPin}",
                     "categoryId": "${data.categoryId}",
                     "locationArea": "${data.locationArea}",
                     "otherLocationArea": "${data.otherLocationArea}",
-                    "deliveryAvailable": "${data.deliveryAvailable}",
                     "productsServices": "${data.productsServices}",
                     "profileImageUrl": "${data.profileImageUrl}"
                   }
@@ -385,12 +340,11 @@ After publishing the Flow:
 - Keep the screen ID as `BUSINESS_SETUP`.
 - Keep the payload keys exactly as written above.
 - Use `Without Endpoint` for this onboarding Flow.
-- `whatsappPhone` should be the only number field in the Flow.
 - The backend saves WhatsApp numbers in one canonical format: `2348034310997`.
 - These inputs all save to the same value: `08034310997`, `8034310997`, `2348034310997`, `+2348034310997`.
 - Add a second screen for account creation with `email` and `password`.
 - Add a 4-digit `accessPin` on the account screen. The backend stores a secure hash and uses it to verify WhatsApp actions.
-- The app launch already sends the sender's current WhatsApp number as `data.whatsappPhone`, so use that as the field's initial value if Meta accepts `init-value` in your editor.
+- The backend now uses the real WhatsApp sender number as the authoritative `whatsapp_phone`, so the Flow does not need an editable WhatsApp number field.
 - Keep the fields and submit footer inside a `Form` container so `${form...}` bindings resolve correctly on submit.
 - If `locationArea` is `Other`, the backend will store `otherLocationArea` instead.
 - If Meta's editor rejects a control name like `RadioButtonsGroup` or `TextArea`, rebuild that field in the visual editor but keep the same field key.
