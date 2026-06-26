@@ -892,7 +892,7 @@ async function handleVendorCommand(
   }
 
   if (normalized === COMMANDS.products) {
-    await sendProductsEntryOptions(sender);
+    await sendViewProductsPickerOrFallback(sender, business);
     return;
   }
 
