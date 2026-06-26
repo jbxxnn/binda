@@ -11,6 +11,7 @@ import {
   getConfiguredFlowId,
   normalizeIncomingWhatsAppText,
   parseFlowResponseJson,
+  sendWhatsAppListMessage,
   sendWhatsAppTypingIndicator,
   sendWhatsAppFlowMessage,
   sendWhatsAppTextMessage,
@@ -25,8 +26,27 @@ type WhatsAppMessage = {
     type?: string;
     nfm_reply?: { name?: string; body?: string; response_json?: string };
     button_reply?: { id?: string; title?: string };
-    list_reply?: { id?: string; title?: string };
+    list_reply?: { id?: string; title?: string; description?: string };
   };
+};
+
+type ProductRow = {
+  id: string;
+  name: string;
+  unit_price: number | string;
+  stock_quantity: number | string | null;
+  is_active: boolean;
+};
+
+type RecentProductUsageRow = {
+  product_id: string | null;
+  line_total: number | string | null;
+  quantity: number | string | null;
+  transactions:
+    | Array<{
+        transaction_date: string;
+      }>
+    | null;
 };
 
 function parseBooleanLike(value: unknown) {
@@ -144,6 +164,140 @@ async function sendProductsFlowOrFallback(
     cta: "Products",
     flowId,
     flowToken: buildFlowToken("products", [business.id, recordedBy])
+  });
+}
+
+function formatProductListMoney(value: number | string | null) {
+  return new Intl.NumberFormat("en-NG", {
+    style: "decimal",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(Number(value ?? 0));
+}
+
+function formatProductListStock(value: number | string | null) {
+  if (value == null) {
+    return "Not tracked";
+  }
+
+  return new Intl.NumberFormat("en-NG", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2
+  }).format(Number(value));
+}
+
+function getLatestDate(value: string | null | undefined) {
+  return value ? new Date(value).getTime() : 0;
+}
+
+async function getTopProductsForList(businessId: string) {
+  const admin = createSupabaseAdminClient();
+  const [{ data: products, error: productsError }, { data: recentProductUsage }] = await Promise.all([
+    admin
+      .from("products")
+      .select("id, name, unit_price, stock_quantity, is_active")
+      .eq("business_id", businessId)
+      .eq("is_active", true)
+      .order("updated_at", { ascending: false })
+      .limit(9),
+    admin
+      .from("transaction_items")
+      .select("product_id, line_total, quantity, transactions!inner(transaction_date)")
+      .not("product_id", "is", null)
+      .eq("transactions.business_id", businessId)
+      .order("transaction_date", {
+        foreignTable: "transactions",
+        ascending: false
+      })
+      .limit(50)
+  ]);
+
+  if (productsError) {
+    throw new Error(productsError.message ?? "Unable to load products.");
+  }
+
+  const productUsageMap = new Map<string, { lastUsedAt: number; totalValue: number; totalQuantity: number }>();
+
+  for (const usage of (recentProductUsage ?? []) as RecentProductUsageRow[]) {
+    if (!usage.product_id) {
+      continue;
+    }
+
+    const current = productUsageMap.get(usage.product_id) ?? {
+      lastUsedAt: 0,
+      totalValue: 0,
+      totalQuantity: 0
+    };
+
+    productUsageMap.set(usage.product_id, {
+      lastUsedAt: Math.max(
+        current.lastUsedAt,
+        getLatestDate(usage.transactions?.[0]?.transaction_date)
+      ),
+      totalValue: current.totalValue + Number(usage.line_total ?? 0),
+      totalQuantity: current.totalQuantity + Number(usage.quantity ?? 0)
+    });
+  }
+
+  return [...((products ?? []) as ProductRow[])].sort((left, right) => {
+    const leftUsage = productUsageMap.get(left.id) ?? { lastUsedAt: 0, totalValue: 0, totalQuantity: 0 };
+    const rightUsage = productUsageMap.get(right.id) ?? { lastUsedAt: 0, totalValue: 0, totalQuantity: 0 };
+
+    if (leftUsage.lastUsedAt !== rightUsage.lastUsedAt) {
+      return rightUsage.lastUsedAt - leftUsage.lastUsedAt;
+    }
+
+    if (leftUsage.totalValue !== rightUsage.totalValue) {
+      return rightUsage.totalValue - leftUsage.totalValue;
+    }
+
+    if (leftUsage.totalQuantity !== rightUsage.totalQuantity) {
+      return rightUsage.totalQuantity - leftUsage.totalQuantity;
+    }
+
+    return left.name.localeCompare(right.name);
+  });
+}
+
+async function sendProductsPickerOrFallback(
+  sender: string,
+  business: { id: string; business_name: string },
+  recordedBy: string | null
+) {
+  const flowId = getConfiguredFlowId("products");
+
+  if (!flowId || !recordedBy) {
+    return sendWhatsAppTextMessage(
+      sender,
+      "Products Flow is not ready yet. Use the dashboard for now, or ask the admin to complete the Products Flow setup."
+    );
+  }
+
+  const products = await getTopProductsForList(business.id);
+  const rows = [
+    ...products.map((product) => ({
+      id: `products:edit:${product.id}`,
+      title: product.name.slice(0, 24),
+      description: `₦${formatProductListMoney(product.unit_price)} | Stock: ${formatProductListStock(product.stock_quantity)}`.slice(0, 72)
+    })),
+    {
+      id: "products:add",
+      title: "Add new product",
+      description: "Create a new item for future sales"
+    }
+  ];
+
+  return sendWhatsAppListMessage(sender, {
+    header: "Manage Products",
+    body: `Choose a product for ${business.business_name}.`,
+    footer: "Tap an item to select it",
+    button: "Manage Products",
+    sections: [
+      {
+        title: "Products",
+        rows
+      }
+    ]
   });
 }
 
@@ -472,6 +626,69 @@ async function handleVendorCommand(
     return;
   }
 
+  const listReplyId = message.interactive?.type === "list_reply" ? message.interactive.list_reply?.id : undefined;
+
+  if (listReplyId?.startsWith("products:")) {
+    const { data: membership } = await admin
+      .from("business_memberships")
+      .select("user_id")
+      .eq("business_id", business.id)
+      .limit(1)
+      .maybeSingle();
+
+    const recordedBy = membership?.user_id ?? null;
+    const flowId = getConfiguredFlowId("products");
+
+    if (!flowId || !recordedBy) {
+      await sendWhatsAppTextMessage(
+        sender,
+        "Products Flow is not ready yet. Use the dashboard for now, or ask the admin to complete the Products Flow setup."
+      );
+      return;
+    }
+
+    if (listReplyId === "products:add") {
+      await sendWhatsAppFlowMessage(sender, {
+        body: `Add a new product for ${business.business_name}.`,
+        cta: "Add product",
+        flowId,
+        flowToken: buildFlowToken("products", [business.id, recordedBy]),
+        screen: "NEW_PRODUCT",
+        data: {}
+      });
+      return;
+    }
+
+    const productId = listReplyId.replace("products:edit:", "");
+    const { data: product } = await admin
+      .from("products")
+      .select("id, name, unit_price, stock_quantity, is_active")
+      .eq("id", productId)
+      .eq("business_id", business.id)
+      .maybeSingle<ProductRow>();
+
+    if (!product) {
+      await sendWhatsAppTextMessage(sender, "I could not find that product. Reply 2 to reload your products.");
+      return;
+    }
+
+    await sendWhatsAppFlowMessage(sender, {
+      body: `Update ${product.name}.`,
+      cta: "Update product",
+      flowId,
+      flowToken: buildFlowToken("products", [business.id, recordedBy]),
+      screen: "UPDATE_PRODUCT",
+      data: {
+        productId: product.id,
+        currentName: product.name,
+        currentPrice: String(product.unit_price),
+        currentStock: product.stock_quantity == null ? "" : String(product.stock_quantity),
+        currentActive: product.is_active ? "active" : "inactive"
+      }
+    });
+    return;
+  }
+
   if (!normalized || ["menu", "start", "hi", "hello", "help"].includes(normalized)) {
     await sendVendorMenu(sender, business.id, business.owner_name);
     return;
@@ -497,7 +714,7 @@ async function handleVendorCommand(
       .limit(1)
       .maybeSingle();
 
-    await sendProductsFlowOrFallback(sender, business, membership?.user_id ?? null);
+    await sendProductsPickerOrFallback(sender, business, membership?.user_id ?? null);
     return;
   }
 

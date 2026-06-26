@@ -13,6 +13,17 @@ type FlowSendOptions = {
   data?: Record<string, string | number | boolean | null>;
 };
 
+type ListRow = {
+  id: string;
+  title: string;
+  description?: string;
+};
+
+type ListSection = {
+  title: string;
+  rows: ListRow[];
+};
+
 export function verifyWhatsAppSignature(payload: string, signatureHeader: string | null) {
   if (!env.whatsappAppSecret) {
     return false;
@@ -115,6 +126,46 @@ export async function sendWhatsAppFlowMessage(to: string, options: FlowSendOptio
               }
             : {})
         }
+      }
+    }
+  });
+}
+
+export async function sendWhatsAppListMessage(to: string, options: {
+  header?: string;
+  body: string;
+  footer?: string;
+  button: string;
+  sections: ListSection[];
+}) {
+  return sendWhatsAppMessage({
+    messaging_product: "whatsapp",
+    recipient_type: "individual",
+    to,
+    type: "interactive",
+    interactive: {
+      type: "list",
+      ...(options.header
+        ? {
+            header: {
+              type: "text",
+              text: options.header
+            }
+          }
+        : {}),
+      body: {
+        text: options.body
+      },
+      ...(options.footer
+        ? {
+            footer: {
+              text: options.footer
+            }
+          }
+        : {}),
+      action: {
+        button: options.button,
+        sections: options.sections
       }
     }
   });
