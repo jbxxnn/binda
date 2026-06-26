@@ -87,23 +87,23 @@ async function sendVendorMenu(sender: string, businessId: string, ownerName: str
   await sendWhatsAppTextMessage(
     sender,
     [
-      "👋 *Business Assistant Menu*",
+      "👋 *Binda Business Assistant*",
       "",
-      "Here's what I can help you with:",
+      `_Hello ${ownerName.split(" ")[0] || "there"}, here’s your menu._`,
       "",
       "📈 */sale*",
-      "Record a new sale.",
+      "Record a sale quickly.",
       "",
       "📦 */products*",
-      "View and manage your products.",
+      "View your products and sales summary.",
       "",
       "📊 */reports*",
-      "See your daily, weekly, and monthly business reports.",
+      "Check today, weekly, and monthly reports.",
       "",
       "💬 */feedback*",
-      "Share your ideas or report an issue to help us improve Binda.",
+      "Share an idea or report an issue.",
       "",
-      "Simply type any command above to get started."
+      "_Type any command to continue._"
     ].join("\n")
   );
 }
@@ -372,9 +372,9 @@ async function sendProductsPickerOrFallback(
 
   return sendWhatsAppListMessage(sender, {
     header: "Manage Products",
-    body: `Choose a product for ${business.business_name}.`,
-    footer: "Tap an item to select it",
-    button: "Manage Products",
+    body: `Choose a product from ${business.business_name} to update, or add a new one.`,
+    footer: "Tap a product to continue",
+    button: "Open Products",
     sections: [
       {
         title: "Products",
@@ -413,10 +413,10 @@ async function sendViewProductsPickerOrFallback(
   }
 
   return sendWhatsAppListMessage(sender, {
-    header: "View Products",
-    body: `Choose a product to view for ${business.business_name}.`,
-    footer: "Tap an item to view details",
-    button: "View Products",
+    header: "Products",
+    body: `Select a product from ${business.business_name} to view its price, stock, and sales summary.`,
+    footer: "Tap a product to view details",
+    button: "Open Products",
     sections: [
       {
         title: "Products",
