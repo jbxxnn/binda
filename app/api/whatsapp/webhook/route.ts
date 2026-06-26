@@ -934,14 +934,22 @@ async function handleVendorCommand(
 
   if (normalized === COMMANDS.reports) {
     const report = await getVendorReport(business.id, "today", admin);
+    const topProduct = report.topProducts[0]?.name ?? "No sales yet";
+
     await sendWhatsAppTextMessage(
       sender,
       [
-        `Today's report for ${business.business_name}`,
-        `Total Sales: ${formatNaira(report.totalSales)}`,
-        `Transactions: ${report.transactionsCount}`,
-        `Money Collected: ${formatNaira(report.paidAmount)}`,
-        `Pending Payment: ${formatNaira(report.pendingAmount)}`
+        "*Report Summary*",
+        `_${business.business_name}_`,
+        "",
+        "📊 *Today's Summary*",
+        "",
+        `\`Sales:\` ${formatNaira(report.totalSales)}`,
+        `\`Transactions:\` ${formatCompactNumber(report.transactionsCount)}`,
+        `\`Money Collected:\` ${formatNaira(report.paidAmount)}`,
+        `\`Pending Payments:\` ${formatNaira(report.pendingAmount)}`,
+        `\`Top Product:\` ${topProduct}`,
+        `\`Average Sale:\` ${formatNaira(report.averageTransactionValue)}`
       ].join("\n")
     );
     return;
