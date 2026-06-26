@@ -161,8 +161,9 @@ async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
   const state = pickState(input.data);
   const productOptions = buildProductOptions((products ?? []) as ProductRow[]);
   const customerOptions = buildCustomerOptions(customers ?? []);
+  const hasManualProductDetails = Boolean(state.itemName && state.unitPrice);
 
-  if (!state.productId) {
+  if (!state.productId && !hasManualProductDetails) {
     return {
       screen: "SELECT_PRODUCT",
       data: {
@@ -171,7 +172,7 @@ async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
     };
   }
 
-  if (state.productId === "NEW_PRODUCT" && !state.itemName) {
+  if (state.productId === "NEW_PRODUCT" && !hasManualProductDetails) {
     return {
       screen: "NEW_PRODUCT",
       data: {}
@@ -197,14 +198,14 @@ async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
     };
   }
 
-  if (state.productId === "NEW_PRODUCT" && state.itemName && state.unitPrice && !state.customerMode) {
+  if (hasManualProductDetails && !state.customerMode) {
     return {
       screen: "CUSTOMER_SELECT",
       data: {
         customerOptions,
         productId: "",
-        itemName: state.itemName,
-        unitPrice: state.unitPrice,
+        itemName: state.itemName ?? "",
+        unitPrice: state.unitPrice ?? "",
         saveAsProduct: state.saveAsProduct ?? "no"
       }
     };
