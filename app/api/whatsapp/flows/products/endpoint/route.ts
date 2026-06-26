@@ -13,7 +13,7 @@ const flowEndpointSchema = z.object({
   screen: z.string().optional(),
   data: z.record(z.string(), z.unknown()).optional(),
   action: z.string().optional(),
-  version: z.string().optional()
+  version: z.union([z.string(), z.number()]).optional()
 });
 
 type ProductOption = {
