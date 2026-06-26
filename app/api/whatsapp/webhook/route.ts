@@ -171,16 +171,24 @@ async function sendFlowLaunchOrError(
 async function sendProductsFlowForIntent(
   sender: string,
   businessId: string,
-  flowId: string,
   recordedBy: string,
   intent: "add" | "edit",
   productId?: string
 ) {
-  const tokenParts = ["products", businessId, recordedBy, intent];
+  const flowId = getConfiguredFlowId(intent === "add" ? "add_product" : "update_product");
 
-  if (intent === "edit" && productId) {
-    tokenParts.push(productId);
+  if (!flowId) {
+    await sendWhatsAppTextMessage(
+      sender,
+      "That product form is not configured yet. Ask the admin to publish the product flows."
+    );
+    return false;
   }
+
+  const tokenParts =
+    intent === "add"
+      ? ["add_product", businessId, recordedBy]
+      : ["update_product", businessId, recordedBy, productId ?? ""];
 
   return sendFlowLaunchOrError(sender, () =>
     sendWhatsAppFlowMessage(sender, {
@@ -190,28 +198,6 @@ async function sendProductsFlowForIntent(
       flowToken: tokenParts.join(":")
     })
   );
-}
-
-async function sendProductsFlowOrFallback(
-  sender: string,
-  business: { id: string; business_name: string },
-  recordedBy: string | null
-) {
-  const flowId = getConfiguredFlowId("products");
-
-  if (!flowId || !recordedBy) {
-    return sendWhatsAppTextMessage(
-      sender,
-      "Products Flow is not ready yet. Use the dashboard for now, or ask the admin to complete the Products Flow setup."
-    );
-  }
-
-  return sendWhatsAppFlowMessage(sender, {
-    body: `Manage up to 10 active products for ${business.business_name}.`,
-    cta: "Products",
-    flowId,
-    flowToken: buildFlowToken("products", [business.id, recordedBy])
-  });
 }
 
 function formatProductListMoney(value: number | string | null) {
@@ -311,12 +297,13 @@ async function sendProductsPickerOrFallback(
   business: { id: string; business_name: string },
   recordedBy: string | null
 ) {
-  const flowId = getConfiguredFlowId("products");
+  const addFlowId = getConfiguredFlowId("add_product");
+  const updateFlowId = getConfiguredFlowId("update_product");
 
-  if (!flowId || !recordedBy) {
+  if (!addFlowId || !updateFlowId || !recordedBy) {
     return sendWhatsAppTextMessage(
       sender,
-      "Products Flow is not ready yet. Use the dashboard for now, or ask the admin to complete the Products Flow setup."
+      "Product flows are not ready yet. Use the dashboard for now, or ask the admin to complete the Product Flow setup."
     );
   }
 
@@ -588,7 +575,7 @@ async function handleFlowCompletion(message: WhatsAppMessage, sender: string) {
     return;
   }
 
-  if (flowToken.startsWith("products:")) {
+  if (flowToken.startsWith("add_product:") || flowToken.startsWith("update_product:")) {
     const [, businessId, recordedBy] = flowToken.split(":");
     const productId =
       typeof response.productId === "string" && response.productId.length > 0
@@ -795,12 +782,11 @@ async function handleVendorCommand(
       .maybeSingle();
 
     const recordedBy = membership?.user_id ?? null;
-    const flowId = getConfiguredFlowId("products");
 
-    if (!flowId || !recordedBy) {
+    if (!recordedBy) {
       await sendWhatsAppTextMessage(
         sender,
-        "Products Flow is not ready yet. Use the dashboard for now, or ask the admin to complete the Products Flow setup."
+        "Product flows are not ready yet. Use the dashboard for now, or ask the admin to complete the Product Flow setup."
       );
       return;
     }
@@ -811,7 +797,7 @@ async function handleVendorCommand(
     }
 
     if (listReplyId === "products:add") {
-      await sendProductsFlowForIntent(sender, business.id, flowId, recordedBy, "add");
+      await sendProductsFlowForIntent(sender, business.id, recordedBy, "add");
       return;
     }
 
@@ -828,7 +814,7 @@ async function handleVendorCommand(
       return;
     }
 
-    await sendProductsFlowForIntent(sender, business.id, flowId, recordedBy, "edit", product.id);
+    await sendProductsFlowForIntent(sender, business.id, recordedBy, "edit", product.id);
     return;
   }
 

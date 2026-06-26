@@ -46,17 +46,21 @@ type FlowState = {
 };
 
 function parseProductsFlowToken(flowToken: string) {
-  const [prefix, businessId, recordedBy, intent, productId] = flowToken.split(":");
+  const [prefix, businessId, recordedBy, productId] = flowToken.split(":");
 
-  if (prefix !== "products" || !businessId || !recordedBy) {
+  if (
+    (prefix !== "add_product" && prefix !== "update_product") ||
+    !businessId ||
+    !recordedBy
+  ) {
     return null;
   }
 
   return {
     businessId,
     recordedBy,
-    intent: intent === "add" || intent === "edit" ? intent : undefined,
-    productId: intent === "edit" && productId ? productId : undefined
+    intent: prefix === "add_product" ? "add" : "edit",
+    productId: prefix === "update_product" && productId ? productId : undefined
   };
 }
 
@@ -247,23 +251,15 @@ async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
     };
   }
 
-  if (!state.productId) {
-    return {
-      screen: "SELECT_PRODUCT",
-      data: {
-        productOptions: buildProductOptions(rankedProducts)
-      }
-    };
-  }
-
-  if (state.productId === "NEW_PRODUCT") {
+  if (!state.productId && token.intent === "add") {
     return {
       screen: "NEW_PRODUCT",
       data: {}
     };
   }
 
-  const product = rankedProducts.find((entry) => entry.id === state.productId);
+  const requestedProductId = state.productId ?? token.productId;
+  const product = rankedProducts.find((entry) => entry.id === requestedProductId);
 
   if (!product) {
     return { error: "Selected product does not belong to this business.", status: 400 as const };

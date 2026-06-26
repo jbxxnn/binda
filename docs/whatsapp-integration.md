@@ -30,7 +30,8 @@
 - `WHATSAPP_PHONE_NUMBER_ID`
 - `WHATSAPP_ONBOARDING_FLOW_ID`
 - `WHATSAPP_RECORD_SALE_FLOW_ID`
-- `WHATSAPP_PRODUCTS_FLOW_ID`
+- `WHATSAPP_ADD_PRODUCT_FLOW_ID`
+- `WHATSAPP_UPDATE_PRODUCT_FLOW_ID`
 - `WHATSAPP_FLOW_MESSAGE_VERSION`
 
 Current published Record Sale Flow ID:
@@ -43,8 +44,10 @@ Current published Record Sale Flow ID:
   - `onboarding:<whatsapp_number>`
 - Record sale:
   - `record_sale:<business_id>:<profile_id>`
-- Products:
-  - `products:<business_id>:<profile_id>`
+- Add product:
+  - `add_product:<business_id>:<profile_id>`
+- Update product:
+  - `update_product:<business_id>:<profile_id>:<product_id>`
 
 These tokens are used when a completed Flow comes back through the webhook so the app can decide what to save.
 

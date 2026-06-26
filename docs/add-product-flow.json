@@ -1,0 +1,64 @@
+{
+  "version": "7.3",
+  "data_api_version": "3.0",
+  "routing_model": {
+    "NEW_PRODUCT": []
+  },
+  "screens": [
+    {
+      "id": "NEW_PRODUCT",
+      "title": "Add product",
+      "terminal": true,
+      "success": true,
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "newProductForm",
+            "children": [
+              {
+                "type": "TextHeading",
+                "text": "Add product"
+              },
+              {
+                "type": "TextInput",
+                "name": "productName",
+                "label": "Product name",
+                "required": true,
+                "input-type": "text"
+              },
+              {
+                "type": "TextInput",
+                "name": "unitPrice",
+                "label": "Price",
+                "required": true,
+                "input-type": "number"
+              },
+              {
+                "type": "TextInput",
+                "name": "stockQuantity",
+                "label": "Stock (optional)",
+                "required": false,
+                "input-type": "number"
+              },
+              {
+                "type": "Footer",
+                "label": "Save product",
+                "on-click-action": {
+                  "name": "complete",
+                  "payload": {
+                    "productId": "NEW_PRODUCT",
+                    "productName": "${form.productName}",
+                    "unitPrice": "${form.unitPrice}",
+                    "stockQuantity": "${form.stockQuantity}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
