@@ -22,6 +22,26 @@
   - `5` or `profile` sends business profile details
   - `6` or `settings` sends the settings link
 
+## Supported Slash Commands
+
+The bot also supports these exact text commands:
+
+- `/sale`
+- `/products`
+- `/reports`
+- `/feedback`
+
+Current routing:
+
+- `/sale`
+  - launches the Record Sale Flow
+- `/products`
+  - opens the Products entry options
+- `/reports`
+  - sends today's business report
+- `/feedback`
+  - asks the vendor to send feedback in one message
+
 ## Recommended Ice Breakers
 
 Configure these exact phrases in WhatsApp Manager:

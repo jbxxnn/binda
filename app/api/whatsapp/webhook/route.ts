@@ -57,6 +57,13 @@ const ICE_BREAKERS = {
   businessHelp: "business help"
 } as const;
 
+const COMMANDS = {
+  sale: "/sale",
+  products: "/products",
+  reports: "/reports",
+  feedback: "/feedback"
+} as const;
+
 function parseBooleanLike(value: unknown) {
   if (typeof value === "boolean") {
     return value;
@@ -872,6 +879,46 @@ async function handleVendorCommand(
 
   if (normalized === ICE_BREAKERS.businessHelp) {
     await sendVendorMenu(sender, business.id, business.owner_name);
+    return;
+  }
+
+  if (normalized === COMMANDS.sale) {
+    const { data: membership } = await admin
+      .from("business_memberships")
+      .select("user_id")
+      .eq("business_id", business.id)
+      .limit(1)
+      .maybeSingle();
+
+    await sendRecordSaleFlowOrFallback(sender, business, membership?.user_id ?? null);
+    return;
+  }
+
+  if (normalized === COMMANDS.products) {
+    await sendProductsEntryOptions(sender);
+    return;
+  }
+
+  if (normalized === COMMANDS.reports) {
+    const report = await getVendorReport(business.id, "today", admin);
+    await sendWhatsAppTextMessage(
+      sender,
+      [
+        `Today's report for ${business.business_name}`,
+        `Total Sales: ${formatNaira(report.totalSales)}`,
+        `Transactions: ${report.transactionsCount}`,
+        `Money Collected: ${formatNaira(report.paidAmount)}`,
+        `Pending Payment: ${formatNaira(report.pendingAmount)}`
+      ].join("\n")
+    );
+    return;
+  }
+
+  if (normalized === COMMANDS.feedback) {
+    await sendWhatsAppTextMessage(
+      sender,
+      "Reply with your feedback in one message. Start it with `Feedback:` so I can pick it out easily."
+    );
     return;
   }
 
