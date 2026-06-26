@@ -23,6 +23,11 @@ export function parsePinCommand(input: string): PinParseResult {
     return { type: "verify", pin: verifyMatch[1] };
   }
 
+  const plainPinMatch = normalized.match(/^(\d{4})$/);
+  if (plainPinMatch) {
+    return { type: "verify", pin: plainPinMatch[1] };
+  }
+
   return null;
 }
 

@@ -43,6 +43,18 @@ function normalizeOptionalText(value: string | undefined) {
   return trimmed.length > 0 ? trimmed : undefined;
 }
 
+function formatPaymentStatusLabel(status: "paid" | "pending" | "partial") {
+  if (status === "paid") {
+    return "Paid";
+  }
+
+  if (status === "partial") {
+    return "Partial";
+  }
+
+  return "Pending";
+}
+
 export async function POST(request: NextRequest) {
   const body = await request.json();
   const input = recordSaleSchema.parse(body);
@@ -65,13 +77,14 @@ export async function POST(request: NextRequest) {
   let resolvedCustomerId = input.customerId ?? null;
   const normalizedCustomerName = normalizeOptionalText(input.customerName);
   const normalizedCustomerPhone = normalizeOptionalText(input.customerPhone);
+  let resolvedCustomerName = normalizedCustomerName ?? "Walk-in customer";
   const isNewCustomer =
     input.customerMode === "NEW_CUSTOMER" || (!resolvedCustomerId && Boolean(normalizedCustomerName));
 
   if (resolvedCustomerId) {
     const { data: customer } = await supabase
       .from("customers")
-      .select("id")
+      .select("id, full_name")
       .eq("id", resolvedCustomerId)
       .eq("business_id", input.businessId)
       .maybeSingle();
@@ -82,6 +95,8 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    resolvedCustomerName = customer.full_name;
   } else if (isNewCustomer) {
     if (!normalizedCustomerName || normalizedCustomerName.length < 2) {
       return NextResponse.json(
@@ -277,15 +292,25 @@ export async function POST(request: NextRequest) {
     0
   );
   const paymentSummary =
-    normalizedPaymentStatus === "paid"
-      ? "Paid in full."
-      : normalizedPaymentStatus === "partial"
-        ? `Partial payment recorded. Balance: ${formatNaira(pending)}.`
-        : `Pending payment recorded. Balance: ${formatNaira(total)}.`;
+    normalizedPaymentStatus === "partial" ? `\nBalance: ${formatNaira(pending)}` : "";
 
   return NextResponse.json({
     success: true,
-    message: `Sale recorded successfully. ${paymentSummary} Today's total sales is ${formatNaira(todayTotal)}.`,
+    message: [
+      "*Sale Recorded*",
+      "",
+      "✅ Sale recorded successfully!",
+      "",
+      `Customer: ${resolvedCustomerName}`,
+      "",
+      `Amount: ${formatNaira(total)}`,
+      "",
+      `Payment: ${formatPaymentStatusLabel(normalizedPaymentStatus)}${paymentSummary}`,
+      "",
+      `Today's Sales: ${formatNaira(todayTotal)}`,
+      "",
+      "Keep it up! 🎉"
+    ].join("\n"),
     transactionId: transaction.id
   });
 }

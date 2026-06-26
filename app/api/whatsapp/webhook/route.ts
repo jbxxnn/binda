@@ -603,18 +603,6 @@ Whenever you make a sale, just tap */Record Sale*.`
         ? result?.message ?? "Sale recorded successfully."
         : `I could not record that sale yet. ${result?.error ?? "Please try again."}`
     );
-
-    if (saleResponse.ok) {
-      await sendWhatsAppTextMessage(
-        sender,
-        [
-          "What would you like to do next?",
-          "1 or Record Sale",
-          "4 or Reports",
-          "Menu"
-        ].join("\n")
-      );
-    }
     return;
   }
 
