@@ -62,6 +62,7 @@ create table public.products (
   name text not null,
   description text,
   unit_price numeric(12,2) not null default 0,
+  stock_quantity numeric(12,2),
   is_active boolean not null default true,
   created_at timestamptz not null default timezone('utc', now()),
   updated_at timestamptz not null default timezone('utc', now())

@@ -10,7 +10,7 @@ export default async function VendorProductsPage() {
   const supabase = await createSupabaseServerClient();
   const { data: products } = await supabase
     .from("products")
-    .select("id, name, description, unit_price, is_active")
+    .select("id, name, description, unit_price, stock_quantity, is_active")
     .eq("business_id", business.id)
     .order("created_at", { ascending: false });
 
@@ -37,6 +37,10 @@ export default async function VendorProductsPage() {
               <input min="0" name="unit_price" step="0.01" type="number" required />
             </label>
             <label>
+              Stock
+              <input min="0" name="stock_quantity" step="0.01" type="number" placeholder="Leave empty if not tracked" />
+            </label>
+            <label>
               <input defaultChecked name="is_active" type="checkbox" /> Active and available
             </label>
             <button type="submit">Save item</button>
@@ -51,6 +55,9 @@ export default async function VendorProductsPage() {
                 <div className="stack">
                   <strong>{product.name}</strong>
                   <span className="muted">{product.description || "No description yet"}</span>
+                  <span className="muted">
+                    Stock: {product.stock_quantity == null ? "Not tracked" : product.stock_quantity}
+                  </span>
                   <span className={product.is_active ? "status-active" : "status-inactive"}>
                     {product.is_active ? "Active" : "Inactive"}
                   </span>

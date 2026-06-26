@@ -16,7 +16,7 @@
 - Known vendor:
   - `menu`, `start`, `hi`, `hello`, `help` show the business menu
   - `1` or `record sale` launches the record sale Flow if configured
-  - `2` or `products` sends the products dashboard link
+  - `2` or `products` launches the products Flow if configured
   - `3` or `customers` sends the customers dashboard link
   - `4` or `reports` sends a quick report
   - `5` or `profile` sends business profile details
@@ -30,6 +30,7 @@
 - `WHATSAPP_PHONE_NUMBER_ID`
 - `WHATSAPP_ONBOARDING_FLOW_ID`
 - `WHATSAPP_RECORD_SALE_FLOW_ID`
+- `WHATSAPP_PRODUCTS_FLOW_ID`
 - `WHATSAPP_FLOW_MESSAGE_VERSION`
 
 Current published Record Sale Flow ID:
@@ -42,6 +43,8 @@ Current published Record Sale Flow ID:
   - `onboarding:<whatsapp_number>`
 - Record sale:
   - `record_sale:<business_id>:<profile_id>`
+- Products:
+  - `products:<business_id>:<profile_id>`
 
 These tokens are used when a completed Flow comes back through the webhook so the app can decide what to save.
 
@@ -50,6 +53,10 @@ These tokens are used when a completed Flow comes back through the webhook so th
 The project now includes an encrypted `With Endpoint` Flow route for Record Sale:
 
 - `POST /api/whatsapp/flows/record-sale/endpoint`
+
+And for Products:
+
+- `POST /api/whatsapp/flows/products/endpoint`
 
 It supports:
 

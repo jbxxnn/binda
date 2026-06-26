@@ -18,6 +18,7 @@ export const env = {
   whatsappPhoneNumberId: process.env.WHATSAPP_PHONE_NUMBER_ID,
   whatsappOnboardingFlowId: process.env.WHATSAPP_ONBOARDING_FLOW_ID,
   whatsappRecordSaleFlowId: process.env.WHATSAPP_RECORD_SALE_FLOW_ID,
+  whatsappProductsFlowId: process.env.WHATSAPP_PRODUCTS_FLOW_ID,
   whatsappFlowMessageVersion: process.env.WHATSAPP_FLOW_MESSAGE_VERSION ?? "3",
   whatsappFlowPrivateKey: process.env.WHATSAPP_FLOW_PRIVATE_KEY,
   whatsappPinSessionMinutes: Number(process.env.WHATSAPP_PIN_SESSION_MINUTES ?? "30"),

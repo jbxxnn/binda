@@ -182,6 +182,24 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
   type __Unused = __Check
 }
 
+// Validate ../../app/api/whatsapp/flows/products/endpoint/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/whatsapp/flows/products/endpoint">> = Specific
+  const handler = {} as typeof import("../../app/api/whatsapp/flows/products/endpoint/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../app/api/whatsapp/flows/products/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/whatsapp/flows/products">> = Specific
+  const handler = {} as typeof import("../../app/api/whatsapp/flows/products/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../app/api/whatsapp/flows/record-sale/endpoint/route.ts
 {
   type __IsExpected<Specific extends RouteHandlerConfig<"/api/whatsapp/flows/record-sale/endpoint">> = Specific

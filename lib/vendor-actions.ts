@@ -57,6 +57,9 @@ export async function createProductAction(formData: FormData) {
     name: String(formData.get("name") ?? ""),
     description: String(formData.get("description") ?? "") || null,
     unit_price: Number(formData.get("unit_price") ?? 0),
+    stock_quantity: String(formData.get("stock_quantity") ?? "")
+      ? Number(formData.get("stock_quantity") ?? 0)
+      : null,
     is_active: formData.get("is_active") === "on"
   });
 

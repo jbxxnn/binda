@@ -67,11 +67,11 @@ values
   ('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 'cccccccc-cccc-cccc-cccc-cccccccccccc', 'owner')
 on conflict (business_id, user_id) do nothing;
 
-insert into public.products (id, business_id, name, unit_price, is_active)
+insert into public.products (id, business_id, name, unit_price, stock_quantity, is_active)
 values
-  ('f1111111-1111-1111-1111-111111111111', 'dddddddd-dddd-dddd-dddd-dddddddddddd', 'Small Birthday Cake', 15000, true),
-  ('f2222222-2222-2222-2222-222222222222', 'dddddddd-dddd-dddd-dddd-dddddddddddd', 'Dessert Cup', 2500, true),
-  ('f3333333-3333-3333-3333-333333333333', 'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 'Generator Service', 12000, true)
+  ('f1111111-1111-1111-1111-111111111111', 'dddddddd-dddd-dddd-dddd-dddddddddddd', 'Small Birthday Cake', 15000, 5, true),
+  ('f2222222-2222-2222-2222-222222222222', 'dddddddd-dddd-dddd-dddd-dddddddddddd', 'Dessert Cup', 2500, 20, true),
+  ('f3333333-3333-3333-3333-333333333333', 'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 'Generator Service', 12000, null, true)
 on conflict (id) do nothing;
 
 insert into public.customers (id, business_id, full_name, phone_number)

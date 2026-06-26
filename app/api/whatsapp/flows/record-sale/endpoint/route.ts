@@ -32,6 +32,7 @@ type ProductRow = {
   id: string;
   name: string;
   unit_price: number | string;
+  stock_quantity: number | string | null;
 };
 
 type RecentProductUsageRow = {
@@ -89,13 +90,24 @@ function formatPriceLabel(value: number | string | null) {
   }).format(numericValue);
 }
 
+function formatStockLabel(value: number | string | null) {
+  if (value == null) {
+    return "Not tracked";
+  }
+
+  return new Intl.NumberFormat("en-NG", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2
+  }).format(Number(value));
+}
+
 function buildProductOptions(products: ProductRow[]): ProductOption[] {
   return [
     { id: "NEW_PRODUCT", title: "New product" },
     ...products.map((product) => ({
       id: product.id,
       title: `${product.name} - ${formatPriceLabel(product.unit_price)}`,
-      description: `Price: ${formatPriceLabel(product.unit_price)}`
+      description: `Price: ${formatPriceLabel(product.unit_price)} | Stock: ${formatStockLabel(product.stock_quantity)}`
     }))
   ];
 }
@@ -171,11 +183,11 @@ async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
   ] = await Promise.all([
       supabase
         .from("products")
-        .select("id, name, unit_price")
+        .select("id, name, unit_price, stock_quantity")
         .eq("business_id", token.businessId)
         .eq("is_active", true)
         .order("updated_at", { ascending: false })
-        .limit(20),
+        .limit(10),
       supabase
         .from("customers")
         .select("id, full_name, phone_number")

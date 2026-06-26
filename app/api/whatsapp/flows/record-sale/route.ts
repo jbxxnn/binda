@@ -34,6 +34,7 @@ type ProductRow = {
   business_id: string;
   name: string;
   unit_price: number | string;
+  stock_quantity?: number | string | null;
 };
 
 function normalizeOptionalText(value: string | undefined) {
@@ -125,7 +126,7 @@ export async function POST(request: NextRequest) {
     if (resolvedProductId) {
       const { data: product } = await supabase
         .from("products")
-        .select("id, business_id, name, unit_price")
+        .select("id, business_id, name, unit_price, stock_quantity")
         .eq("id", resolvedProductId)
         .eq("business_id", input.businessId)
         .maybeSingle<ProductRow>();
@@ -146,6 +147,7 @@ export async function POST(request: NextRequest) {
           business_id: input.businessId,
           name: item.itemName,
           unit_price: item.unitPrice,
+          stock_quantity: null,
           is_active: true
         })
         .select("id")
@@ -220,6 +222,29 @@ export async function POST(request: NextRequest) {
       { error: itemsError.message ?? "Unable to save transaction items." },
       { status: 400 }
     );
+  }
+
+  for (const item of resolvedItems) {
+    if (!item.productId) {
+      continue;
+    }
+
+    const matchingInput = input.items.find((entry) => entry.productId === item.productId);
+    const soldQuantity = matchingInput?.quantity ?? item.quantity;
+    const { data: product } = await supabase
+      .from("products")
+      .select("id, stock_quantity")
+      .eq("id", item.productId)
+      .eq("business_id", input.businessId)
+      .maybeSingle();
+
+    if (!product || product.stock_quantity == null) {
+      continue;
+    }
+
+    const nextStock = Math.max(Number(product.stock_quantity) - Number(soldQuantity), 0);
+
+    await supabase.from("products").update({ stock_quantity: nextStock }).eq("id", item.productId);
   }
 
   if (normalizedAmountPaid > 0) {

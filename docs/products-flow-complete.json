@@ -1,0 +1,236 @@
+{
+  "version": "7.3",
+  "data_api_version": "3.0",
+  "routing_model": {
+    "SELECT_PRODUCT": ["NEW_PRODUCT", "UPDATE_PRODUCT"],
+    "NEW_PRODUCT": [],
+    "UPDATE_PRODUCT": []
+  },
+  "screens": [
+    {
+      "id": "SELECT_PRODUCT",
+      "title": "Products",
+      "data": {
+        "productOptions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "title": { "type": "string" },
+              "description": { "type": "string" }
+            }
+          },
+          "__example__": [
+            {
+              "id": "NEW_PRODUCT",
+              "title": "Add new product",
+              "description": "Create a new item for future sales"
+            },
+            {
+              "id": "11111111-1111-1111-1111-111111111111",
+              "title": "Small Birthday Cake",
+              "description": "₦15000 | Stock: 5"
+            }
+          ]
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "selectProductForm",
+            "children": [
+              {
+                "type": "TextHeading",
+                "text": "Products"
+              },
+              {
+                "type": "TextBody",
+                "text": "Choose one of your recent active products or add a new one."
+              },
+              {
+                "type": "Dropdown",
+                "name": "productId",
+                "label": "Choose product",
+                "required": true,
+                "data-source": "${data.productOptions}"
+              },
+              {
+                "type": "Footer",
+                "label": "Continue",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "productId": "${form.productId}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "NEW_PRODUCT",
+      "title": "Add product",
+      "terminal": true,
+      "success": true,
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "newProductForm",
+            "children": [
+              {
+                "type": "TextInput",
+                "name": "productName",
+                "label": "Product name",
+                "required": true,
+                "input-type": "text"
+              },
+              {
+                "type": "TextInput",
+                "name": "unitPrice",
+                "label": "Price",
+                "required": true,
+                "input-type": "number"
+              },
+              {
+                "type": "TextInput",
+                "name": "stockQuantity",
+                "label": "Stock (optional)",
+                "required": false,
+                "input-type": "number"
+              },
+              {
+                "type": "Footer",
+                "label": "Save product",
+                "on-click-action": {
+                  "name": "complete",
+                  "payload": {
+                    "productId": "NEW_PRODUCT",
+                    "productName": "${form.productName}",
+                    "unitPrice": "${form.unitPrice}",
+                    "stockQuantity": "${form.stockQuantity}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "UPDATE_PRODUCT",
+      "title": "Update product",
+      "terminal": true,
+      "success": true,
+      "data": {
+        "productId": {
+          "type": "string",
+          "__example__": "11111111-1111-1111-1111-111111111111"
+        },
+        "currentName": {
+          "type": "string",
+          "__example__": "Small Birthday Cake"
+        },
+        "currentPrice": {
+          "type": "string",
+          "__example__": "15000"
+        },
+        "currentStock": {
+          "type": "string",
+          "__example__": "5"
+        },
+        "currentActive": {
+          "type": "string",
+          "__example__": "active"
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "updateProductForm",
+            "children": [
+              {
+                "type": "TextHeading",
+                "text": "Update product"
+              },
+              {
+                "type": "TextBody",
+                "text": "Current name: ${data.currentName}"
+              },
+              {
+                "type": "TextBody",
+                "text": "Current price: ${data.currentPrice}"
+              },
+              {
+                "type": "TextBody",
+                "text": "Current stock: ${data.currentStock}"
+              },
+              {
+                "type": "TextBody",
+                "text": "Current status: ${data.currentActive}"
+              },
+              {
+                "type": "TextBody",
+                "text": "Leave any field empty if you want to keep the current value."
+              },
+              {
+                "type": "TextInput",
+                "name": "productName",
+                "label": "New product name",
+                "required": false,
+                "input-type": "text"
+              },
+              {
+                "type": "TextInput",
+                "name": "unitPrice",
+                "label": "New price",
+                "required": false,
+                "input-type": "number"
+              },
+              {
+                "type": "TextInput",
+                "name": "stockQuantity",
+                "label": "New stock",
+                "required": false,
+                "input-type": "number"
+              },
+              {
+                "type": "Dropdown",
+                "name": "availabilityAction",
+                "label": "Availability",
+                "required": false,
+                "data-source": [
+                  { "id": "keep", "title": "Keep current status" },
+                  { "id": "active", "title": "Mark active" },
+                  { "id": "inactive", "title": "Mark inactive" }
+                ]
+              },
+              {
+                "type": "Footer",
+                "label": "Save changes",
+                "on-click-action": {
+                  "name": "complete",
+                  "payload": {
+                    "productId": "${data.productId}",
+                    "productName": "${form.productName}",
+                    "unitPrice": "${form.unitPrice}",
+                    "stockQuantity": "${form.stockQuantity}",
+                    "availabilityAction": "${form.availabilityAction}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

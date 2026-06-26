@@ -57,13 +57,13 @@ Production endpoint URL:
 
 To keep cost and latency low, the endpoint should return only:
 
-- up to `20` active products
+- up to `10` active products
 - up to `20` recent customers
 
 Recommended sort:
 
-- products: active first, then most recently updated
-- customers: most recent purchase first, then newest created
+- products: most recently used first, then highest recent value, then name
+- customers: most recent purchase first, then highest spend, then name
 
 Fallbacks must always be present:
 

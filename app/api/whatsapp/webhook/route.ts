@@ -125,6 +125,28 @@ async function sendRecordSaleFlowOrFallback(
   });
 }
 
+async function sendProductsFlowOrFallback(
+  sender: string,
+  business: { id: string; business_name: string },
+  recordedBy: string | null
+) {
+  const flowId = getConfiguredFlowId("products");
+
+  if (!flowId || !recordedBy) {
+    return sendWhatsAppTextMessage(
+      sender,
+      "Products Flow is not ready yet. Use the dashboard for now, or ask the admin to complete the Products Flow setup."
+    );
+  }
+
+  return sendWhatsAppFlowMessage(sender, {
+    body: `Manage up to 10 active products for ${business.business_name}.`,
+    cta: "Products",
+    flowId,
+    flowToken: buildFlowToken("products", [business.id, recordedBy])
+  });
+}
+
 async function handleFlowCompletion(message: WhatsAppMessage, sender: string) {
   const reply = message.interactive?.nfm_reply;
   const response = parseFlowResponseJson(reply?.response_json);
@@ -273,6 +295,79 @@ async function handleFlowCompletion(message: WhatsAppMessage, sender: string) {
     return;
   }
 
+  if (flowToken.startsWith("products:")) {
+    const [, businessId, recordedBy] = flowToken.split(":");
+    const productId =
+      typeof response.productId === "string" && response.productId.length > 0
+        ? response.productId
+        : undefined;
+    const mode = productId && productId !== "NEW_PRODUCT" ? "update" : "create";
+    const payload =
+      mode === "create"
+        ? {
+            businessId,
+            recordedBy,
+            mode,
+            productName: String(response.productName ?? ""),
+            unitPrice: Number(response.unitPrice ?? 0),
+            stockQuantity:
+              typeof response.stockQuantity === "string" && response.stockQuantity.length > 0
+                ? Number(response.stockQuantity)
+                : null
+          }
+        : {
+            businessId,
+            recordedBy,
+            mode,
+            productId,
+            productName:
+              typeof response.productName === "string" && response.productName.length > 0
+                ? response.productName
+                : undefined,
+            unitPrice:
+              typeof response.unitPrice === "string" && response.unitPrice.length > 0
+                ? Number(response.unitPrice)
+                : undefined,
+            stockQuantity:
+              typeof response.stockQuantity === "string" && response.stockQuantity.length > 0
+                ? Number(response.stockQuantity)
+                : undefined,
+            availabilityAction:
+              response.availabilityAction === "active" ||
+              response.availabilityAction === "inactive" ||
+              response.availabilityAction === "keep"
+                ? response.availabilityAction
+                : undefined
+          };
+
+    const productResponse = await fetch(`${env.appBaseUrl}/api/whatsapp/flows/products`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await productResponse.json().catch(() => null);
+    await sendWhatsAppTextMessage(
+      sender,
+      productResponse.ok
+        ? result?.message ?? "Product saved successfully."
+        : `I could not save that product yet. ${result?.error ?? "Please try again."}`
+    );
+
+    if (productResponse.ok) {
+      await sendWhatsAppTextMessage(
+        sender,
+        [
+          "What would you like to do next?",
+          "2 or Products",
+          "1 or Record Sale",
+          "Menu"
+        ].join("\n")
+      );
+    }
+    return;
+  }
+
   await sendWhatsAppTextMessage(sender, "Flow response received.");
 }
 
@@ -395,11 +490,14 @@ async function handleVendorCommand(
   }
 
   if (normalized.includes("2") || normalized.includes("product")) {
-    const dashboardUrl = `${env.appBaseUrl}/vendor/products`;
-    await sendWhatsAppTextMessage(
-      sender,
-      `Open your products page here: ${dashboardUrl}\nYou can add items, set prices, and mark them active or inactive.`
-    );
+    const { data: membership } = await admin
+      .from("business_memberships")
+      .select("user_id")
+      .eq("business_id", business.id)
+      .limit(1)
+      .maybeSingle();
+
+    await sendProductsFlowOrFallback(sender, business, membership?.user_id ?? null);
     return;
   }
 

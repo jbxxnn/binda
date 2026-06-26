@@ -81,6 +81,18 @@
       "namedRegex": "^/api/whatsapp/flows/onboarding(?:/)?$"
     },
     {
+      "page": "/api/whatsapp/flows/products",
+      "regex": "^/api/whatsapp/flows/products(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/whatsapp/flows/products(?:/)?$"
+    },
+    {
+      "page": "/api/whatsapp/flows/products/endpoint",
+      "regex": "^/api/whatsapp/flows/products/endpoint(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/whatsapp/flows/products/endpoint(?:/)?$"
+    },
+    {
       "page": "/api/whatsapp/flows/record-sale",
       "regex": "^/api/whatsapp/flows/record\\-sale(?:/)?$",
       "routeKeys": {},
