@@ -117,6 +117,9 @@ async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
   const token = parseProductsFlowToken(input.flow_token);
 
   if (!token) {
+    console.error("Invalid products flow token", {
+      flowToken: input.flow_token
+    });
     return { error: "Invalid products flow token.", status: 400 as const };
   }
 
@@ -270,7 +273,8 @@ export async function POST(request: NextRequest) {
   if (isEncryptedFlowRequest(body)) {
     try {
       const decrypted = decryptWhatsAppFlowRequest<z.infer<typeof flowEndpointSchema>>(body);
-      const responsePayload = await handleFlowRequest(flowEndpointSchema.parse(decrypted.payload));
+      const parsedPayload = flowEndpointSchema.parse(decrypted.payload);
+      const responsePayload = await handleFlowRequest(parsedPayload);
 
       if ("error" in responsePayload) {
         return NextResponse.json(responsePayload, { status: responsePayload.status });
@@ -288,11 +292,38 @@ export async function POST(request: NextRequest) {
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Unable to process encrypted flow request.";
+      console.error("Products flow encrypted request failed", {
+        error,
+        bodyKeys: typeof body === "object" && body !== null ? Object.keys(body) : [],
+        hasEncryptedFlowData:
+          typeof body === "object" &&
+          body !== null &&
+          "encrypted_flow_data" in body,
+        hasEncryptedAesKey:
+          typeof body === "object" &&
+          body !== null &&
+          "encrypted_aes_key" in body,
+        hasInitialVector:
+          typeof body === "object" &&
+          body !== null &&
+          "initial_vector" in body
+      });
       return NextResponse.json({ error: message }, { status: 400 });
     }
   }
 
-  const input = flowEndpointSchema.parse(body);
+  let input: z.infer<typeof flowEndpointSchema>;
+
+  try {
+    input = flowEndpointSchema.parse(body);
+  } catch (error) {
+    console.error("Products flow plain request parse failed", {
+      error,
+      body
+    });
+    return NextResponse.json({ error: "Invalid products flow request body." }, { status: 400 });
+  }
+
   const responsePayload = await handleFlowRequest(input);
 
   if ("error" in responsePayload) {
