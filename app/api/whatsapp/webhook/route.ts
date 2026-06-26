@@ -146,6 +146,28 @@ async function sendRecordSaleFlowOrFallback(
   });
 }
 
+async function sendFlowLaunchOrError(
+  sender: string,
+  buildMessage: () => Promise<{ ok: boolean; data?: unknown; status?: number; reason?: string }>
+) {
+  const response = await buildMessage();
+
+  if (response.ok) {
+    return true;
+  }
+
+  const errorMessage =
+    typeof response.data === "object" &&
+    response.data !== null &&
+    "error" in response.data &&
+    typeof (response.data as { error?: { message?: string } }).error?.message === "string"
+      ? (response.data as { error: { message: string } }).error.message
+      : response.reason ?? "WhatsApp rejected the Flow launch.";
+
+  await sendWhatsAppTextMessage(sender, `I could not open that form yet. ${errorMessage}`);
+  return false;
+}
+
 async function sendProductsFlowOrFallback(
   sender: string,
   business: { id: string; business_name: string },
@@ -765,14 +787,16 @@ async function handleVendorCommand(
     }
 
     if (listReplyId === "products:add") {
-      await sendWhatsAppFlowMessage(sender, {
-        body: `Add a new product for ${business.business_name}.`,
-        cta: "Add product",
-        flowId,
-        flowToken: buildFlowToken("products", [business.id, recordedBy]),
-        screen: "NEW_PRODUCT",
-        data: {}
-      });
+      await sendFlowLaunchOrError(sender, () =>
+        sendWhatsAppFlowMessage(sender, {
+          body: `Add a new product for ${business.business_name}.`,
+          cta: "Add product",
+          flowId,
+          flowToken: buildFlowToken("products", [business.id, recordedBy]),
+          screen: "NEW_PRODUCT",
+          data: {}
+        })
+      );
       return;
     }
 
@@ -789,20 +813,22 @@ async function handleVendorCommand(
       return;
     }
 
-    await sendWhatsAppFlowMessage(sender, {
-      body: `Update ${product.name}.`,
-      cta: "Update product",
-      flowId,
-      flowToken: buildFlowToken("products", [business.id, recordedBy]),
-      screen: "UPDATE_PRODUCT",
-      data: {
-        productId: product.id,
-        currentName: product.name,
-        currentPrice: String(product.unit_price),
-        currentStock: product.stock_quantity == null ? "" : String(product.stock_quantity),
-        currentActive: product.is_active ? "active" : "inactive"
-      }
-    });
+    await sendFlowLaunchOrError(sender, () =>
+      sendWhatsAppFlowMessage(sender, {
+        body: `Update ${product.name}.`,
+        cta: "Update product",
+        flowId,
+        flowToken: buildFlowToken("products", [business.id, recordedBy]),
+        screen: "UPDATE_PRODUCT",
+        data: {
+          productId: product.id,
+          currentName: product.name,
+          currentPrice: String(product.unit_price),
+          currentStock: product.stock_quantity == null ? "" : String(product.stock_quantity),
+          currentActive: product.is_active ? "active" : "inactive"
+        }
+      })
+    );
     return;
   }
 
