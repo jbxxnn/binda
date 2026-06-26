@@ -6,6 +6,7 @@
   "/admin/page": "app/admin/page.js",
   "/api/jobs/summaries/route": "app/api/jobs/summaries/route.js",
   "/api/reports/vendor/[businessId]/route": "app/api/reports/vendor/[businessId]/route.js",
+  "/api/whatsapp/flows/feedback/route": "app/api/whatsapp/flows/feedback/route.js",
   "/api/whatsapp/flows/onboarding/route": "app/api/whatsapp/flows/onboarding/route.js",
   "/api/whatsapp/flows/products/endpoint/route": "app/api/whatsapp/flows/products/endpoint/route.js",
   "/api/whatsapp/flows/products/route": "app/api/whatsapp/flows/products/route.js",

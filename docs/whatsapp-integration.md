@@ -5,7 +5,7 @@
 - Webhook verification with `hub.verify_token`
 - Webhook signature validation with `x-hub-signature-256`
 - Vendor command routing from incoming WhatsApp messages
-- Flow launch helpers for onboarding and sale recording
+- Flow launch helpers for onboarding, sale recording, and feedback
 - Flow completion handling from `interactive.nfm_reply.response_json`
 
 ## Message behavior
@@ -32,11 +32,11 @@ Current routing:
 - `/sale`
   - launches the Record Sale Flow
 - `/products`
-  - opens the Products entry options
+  - opens the product view list
 - `/reports`
   - sends today's business report
 - `/feedback`
-  - asks the vendor to send feedback in one message
+  - opens the Feedback Flow
 
 ## Recommended Ice Breakers
 
@@ -69,6 +69,7 @@ Current routing:
 - `WHATSAPP_RECORD_SALE_FLOW_ID`
 - `WHATSAPP_ADD_PRODUCT_FLOW_ID`
 - `WHATSAPP_UPDATE_PRODUCT_FLOW_ID`
+- `WHATSAPP_FEEDBACK_FLOW_ID`
 - `WHATSAPP_FLOW_MESSAGE_VERSION`
 
 Current published Record Sale Flow ID:
@@ -85,6 +86,8 @@ Current published Record Sale Flow ID:
   - `add_product:<business_id>:<profile_id>`
 - Update product:
   - `update_product:<business_id>:<profile_id>:<product_id>`
+- Feedback:
+  - `feedback:<business_id>:<profile_id>`
 
 These tokens are used when a completed Flow comes back through the webhook so the app can decide what to save.
 

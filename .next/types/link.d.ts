@@ -37,6 +37,7 @@ declare namespace __next_route_internal_types__ {
     | `/admin/businesses`
     | `/admin/enquiries`
     | `/api/jobs/summaries`
+    | `/api/whatsapp/flows/feedback`
     | `/api/whatsapp/flows/onboarding`
     | `/api/whatsapp/flows/products`
     | `/api/whatsapp/flows/products/endpoint`

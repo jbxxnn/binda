@@ -176,6 +176,28 @@ Record a new sale for ${business.business_name}.`,
   });
 }
 
+async function sendFeedbackFlowOrFallback(
+  sender: string,
+  business: { id: string; business_name: string },
+  recordedBy: string | null
+) {
+  const flowId = getConfiguredFlowId("feedback");
+
+  if (!flowId) {
+    return sendWhatsAppTextMessage(
+      sender,
+      "Feedback form is not ready yet. Ask the admin to add the feedback Flow ID."
+    );
+  }
+
+  return sendWhatsAppFlowMessage(sender, {
+    body: `Share feedback about ${business.business_name}.`,
+    cta: "Give feedback",
+    flowId,
+    flowToken: buildFlowToken("feedback", [business.id, recordedBy ?? ""])
+  });
+}
+
 async function sendFlowLaunchOrError(
   sender: string,
   buildMessage: () => Promise<{ ok: boolean; data?: unknown; status?: number; reason?: string }>
@@ -715,6 +737,29 @@ Whenever you make a sale, just tap */Record Sale*.`
     return;
   }
 
+  if (flowToken.startsWith("feedback:")) {
+    const [, businessId, recordedBy] = flowToken.split(":");
+    const feedbackResponse = await fetch(`${env.appBaseUrl}/api/whatsapp/flows/feedback`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        businessId,
+        recordedBy: recordedBy || null,
+        phoneNumber: sender,
+        message: String(response.feedbackMessage ?? "")
+      })
+    });
+
+    const result = await feedbackResponse.json().catch(() => null);
+    await sendWhatsAppTextMessage(
+      sender,
+      feedbackResponse.ok
+        ? result?.message ?? "Thank you for your feedback."
+        : `I could not save your feedback yet. ${result?.error ?? "Please try again."}`
+    );
+    return;
+  }
+
   await sendWhatsAppTextMessage(sender, "Flow response received.");
 }
 
@@ -956,10 +1001,14 @@ async function handleVendorCommand(
   }
 
   if (normalized === COMMANDS.feedback) {
-    await sendWhatsAppTextMessage(
-      sender,
-      "Reply with your feedback in one message. Start it with `Feedback:` so I can pick it out easily."
-    );
+    const { data: membership } = await admin
+      .from("business_memberships")
+      .select("user_id")
+      .eq("business_id", business.id)
+      .limit(1)
+      .maybeSingle();
+
+    await sendFeedbackFlowOrFallback(sender, business, membership?.user_id ?? null);
     return;
   }
 

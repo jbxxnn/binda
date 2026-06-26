@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 
 import { env } from "@/lib/env";
 
-type FlowType = "onboarding" | "record_sale" | "add_product" | "update_product";
+type FlowType = "onboarding" | "record_sale" | "add_product" | "update_product" | "feedback";
 
 type FlowSendOptions = {
   body: string;
@@ -211,6 +211,10 @@ export function getConfiguredFlowId(flowType: FlowType) {
 
   if (flowType === "update_product") {
     return env.whatsappUpdateProductFlowId ?? null;
+  }
+
+  if (flowType === "feedback") {
+    return env.whatsappFeedbackFlowId ?? null;
   }
 
   return env.whatsappRecordSaleFlowId ?? null;

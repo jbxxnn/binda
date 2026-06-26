@@ -75,6 +75,12 @@
       "namedRegex": "^/api/jobs/summaries(?:/)?$"
     },
     {
+      "page": "/api/whatsapp/flows/feedback",
+      "regex": "^/api/whatsapp/flows/feedback(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/whatsapp/flows/feedback(?:/)?$"
+    },
+    {
       "page": "/api/whatsapp/flows/onboarding",
       "regex": "^/api/whatsapp/flows/onboarding(?:/)?$",
       "routeKeys": {},

@@ -1,0 +1,48 @@
+{
+  "version": "7.3",
+  "screens": [
+    {
+      "id": "FEEDBACK",
+      "title": "Share feedback",
+      "terminal": true,
+      "success": true,
+      "data": {},
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "feedback_form",
+            "children": [
+              {
+                "type": "TextHeading",
+                "text": "Help us improve Binda"
+              },
+              {
+                "type": "TextBody",
+                "text": "Share an idea, report an issue, or tell us what would make your work easier."
+              },
+              {
+                "type": "TextArea",
+                "name": "feedbackMessage",
+                "label": "Your feedback",
+                "required": true,
+                "helper-text": "Please write at least a short message."
+              },
+              {
+                "type": "Footer",
+                "label": "Submit feedback",
+                "on-click-action": {
+                  "name": "complete",
+                  "payload": {
+                    "feedbackMessage": "${form.feedbackMessage}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -133,6 +133,15 @@ create table public.enquiries (
   created_at timestamptz not null default timezone('utc', now())
 );
 
+create table public.vendor_feedback (
+  id uuid primary key default gen_random_uuid(),
+  business_id uuid not null references public.businesses(id) on delete cascade,
+  created_by uuid references public.profiles(id) on delete set null,
+  phone_number text,
+  message text not null,
+  created_at timestamptz not null default timezone('utc', now())
+);
+
 create table public.business_summary_cache (
   id uuid primary key default gen_random_uuid(),
   business_id uuid not null references public.businesses(id) on delete cascade,
@@ -162,6 +171,7 @@ create index idx_transactions_date on public.transactions(transaction_date);
 create index idx_transaction_items_transaction_id on public.transaction_items(transaction_id);
 create index idx_payments_business_id on public.payments(business_id);
 create index idx_enquiries_category_id on public.enquiries(category_id);
+create index idx_vendor_feedback_business_id on public.vendor_feedback(business_id);
 create index idx_summary_cache_business_id on public.business_summary_cache(business_id);
 
 create or replace function public.set_updated_at()
@@ -246,6 +256,7 @@ alter table public.transactions enable row level security;
 alter table public.transaction_items enable row level security;
 alter table public.payments enable row level security;
 alter table public.enquiries enable row level security;
+alter table public.vendor_feedback enable row level security;
 alter table public.business_summary_cache enable row level security;
 
 create policy "profiles self or admin select"
@@ -352,6 +363,17 @@ on public.enquiries
 for all
 using (public.is_admin())
 with check (public.is_admin());
+
+create policy "admins manage vendor feedback"
+on public.vendor_feedback
+for all
+using (public.is_admin())
+with check (public.is_admin());
+
+create policy "members read vendor feedback"
+on public.vendor_feedback
+for select
+using (public.is_business_member(business_id) or public.is_admin());
 
 create policy "admins manage summaries"
 on public.business_summary_cache
