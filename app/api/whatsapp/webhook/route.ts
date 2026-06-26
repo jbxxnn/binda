@@ -253,6 +253,25 @@ function getLatestDate(value: string | null | undefined) {
   return value ? new Date(value).getTime() : 0;
 }
 
+function formatCompactNumber(value: number) {
+  return new Intl.NumberFormat("en-NG", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2
+  }).format(value);
+}
+
+function formatWhatsAppDate(value: string | null | undefined) {
+  if (!value) {
+    return "No sales yet";
+  }
+
+  return new Intl.DateTimeFormat("en-NG", {
+    day: "numeric",
+    month: "short",
+    year: "numeric"
+  }).format(new Date(value));
+}
+
 async function getTopProductsForList(businessId: string, limit = 9) {
   const admin = createSupabaseAdminClient();
   const [{ data: products, error: productsError }, { data: recentProductUsage }] = await Promise.all([
@@ -389,7 +408,7 @@ async function sendViewProductsPickerOrFallback(
   if (rows.length === 0) {
     return sendWhatsAppTextMessage(
       sender,
-      "You do not have any active products yet. Reply 2 and choose Manage Products to add one."
+      "You do not have any active products yet. Use */products* after you add one."
     );
   }
 
@@ -418,19 +437,33 @@ async function sendProductSummary(sender: string, businessId: string, productId:
       .maybeSingle<ProductRow>(),
     admin
       .from("transaction_items")
-      .select("quantity, line_total, transactions!inner(business_id, transaction_date)")
+      .select(
+        "transaction_id, quantity, line_total, transactions!inner(business_id, transaction_date)"
+      )
       .eq("product_id", productId)
       .eq("transactions.business_id", businessId)
   ]);
 
   if (!product) {
-    await sendWhatsAppTextMessage(sender, "I could not find that product. Reply 2 to reload your products.");
+    await sendWhatsAppTextMessage(
+      sender,
+      "I could not find that product. Use */products* to reload your product list."
+    );
     return;
   }
 
   const rows = itemRows ?? [];
   const totalQuantitySold = rows.reduce((sum, row) => sum + Number(row.quantity ?? 0), 0);
   const totalSales = rows.reduce((sum, row) => sum + Number(row.line_total ?? 0), 0);
+  const transactionsCount = new Set(
+    rows
+      .map((row) =>
+        typeof row.transaction_id === "string" && row.transaction_id.length > 0
+          ? row.transaction_id
+          : null
+      )
+      .filter(Boolean)
+  ).size;
   const lastSoldAt = rows
     .map((row) => {
       const transaction = Array.isArray(row.transactions) ? row.transactions[0] : row.transactions;
@@ -443,16 +476,19 @@ async function sendProductSummary(sender: string, businessId: string, productId:
   await sendWhatsAppTextMessage(
     sender,
     [
-      `Product: ${product.name}`,
-      `Price: ${formatNaira(Number(product.unit_price ?? 0))}`,
-      `Stock: ${formatProductListStock(product.stock_quantity)}`,
-      `Status: ${product.is_active ? "Active" : "Inactive"}`,
-      `Total quantity sold: ${new Intl.NumberFormat("en-NG", {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 2
-      }).format(totalQuantitySold)}`,
-      `Total sales: ${formatNaira(totalSales)}`,
-      `Last sold: ${lastSoldAt ? new Date(lastSoldAt).toLocaleDateString("en-NG") : "No sales yet"}`
+      "*Product Summary*",
+      "_Quick view for this item_",
+      "",
+      `*${product.name}*`,
+      `\`Price:\` ${formatNaira(Number(product.unit_price ?? 0))}`,
+      `\`Stock:\` ${formatProductListStock(product.stock_quantity)}`,
+      `\`Status:\` ${product.is_active ? "Active" : "Inactive"}`,
+      "",
+      "*Sales Snapshot*",
+      `\`Transactions:\` ${formatCompactNumber(transactionsCount)}`,
+      `\`Units sold:\` ${formatCompactNumber(totalQuantitySold)}`,
+      `\`Total sales:\` ${formatNaira(totalSales)}`,
+      `\`Last sold:\` ${formatWhatsAppDate(lastSoldAt)}`
     ].join("\n")
   );
 }
