@@ -110,7 +110,13 @@ async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
     screen: input.screen ?? null,
     action: input.action ?? null,
     version: input.version ?? null,
-    dataKeys: input.data ? Object.keys(input.data) : []
+    dataKeys: input.data ? Object.keys(input.data) : [],
+    flowError:
+      input.data && typeof input.data.error === "string" ? input.data.error : null,
+    flowErrorMessage:
+      input.data && typeof input.data.error_message === "string"
+        ? input.data.error_message
+        : null
   });
 
   if (!input.flow_token) {
