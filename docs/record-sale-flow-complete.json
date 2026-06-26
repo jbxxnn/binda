@@ -2,63 +2,13 @@
   "version": "7.3",
   "data_api_version": "3.0",
   "routing_model": {
-    "SALE_MODE": ["SELECT_PRODUCT", "NEW_ITEM"],
-    "SELECT_PRODUCT": ["CUSTOMER_SELECT"],
-    "NEW_ITEM": ["CUSTOMER_SELECT"],
+    "SELECT_PRODUCT": ["NEW_PRODUCT", "CUSTOMER_SELECT"],
+    "NEW_PRODUCT": ["CUSTOMER_SELECT"],
     "CUSTOMER_SELECT": ["NEW_CUSTOMER", "PAYMENT_DETAILS"],
     "NEW_CUSTOMER": ["PAYMENT_DETAILS"],
     "PAYMENT_DETAILS": []
   },
   "screens": [
-    {
-      "id": "SALE_MODE",
-      "title": "Record sale",
-      "layout": {
-        "type": "SingleColumnLayout",
-        "children": [
-          {
-            "type": "Form",
-            "name": "saleModeForm",
-            "children": [
-              {
-                "type": "TextHeading",
-                "text": "Record a sale"
-              },
-              {
-                "type": "TextBody",
-                "text": "Choose a saved product or enter a new item."
-              },
-              {
-                "type": "Dropdown",
-                "name": "saleMode",
-                "label": "How do you want to record this sale?",
-                "required": true,
-                "data-source": [
-                  {
-                    "id": "existing_product",
-                    "title": "Choose existing product"
-                  },
-                  {
-                    "id": "new_item",
-                    "title": "Enter new item"
-                  }
-                ]
-              },
-              {
-                "type": "Footer",
-                "label": "Continue",
-                "on-click-action": {
-                  "name": "data_exchange",
-                  "payload": {
-                    "saleMode": "${form.saleMode}"
-                  }
-                }
-              }
-            ]
-          }
-        ]
-      }
-    },
     {
       "id": "SELECT_PRODUCT",
       "title": "Choose product",
@@ -74,7 +24,7 @@
             }
           },
           "__example__": [
-            { "id": "NEW_ITEM", "title": "Enter new item" },
+            { "id": "NEW_PRODUCT", "title": "New product" },
             { "id": "11111111-1111-1111-1111-111111111111", "title": "Small Cake - 15000" }
           ]
         }
@@ -86,6 +36,10 @@
             "type": "Form",
             "name": "selectProductForm",
             "children": [
+              {
+                "type": "TextHeading",
+                "text": "Record a sale"
+              },
               {
                 "type": "Dropdown",
                 "name": "productId",
@@ -99,7 +53,6 @@
                 "on-click-action": {
                   "name": "data_exchange",
                   "payload": {
-                    "saleMode": "existing_product",
                     "productId": "${form.productId}"
                   }
                 }
@@ -110,19 +63,19 @@
       }
     },
     {
-      "id": "NEW_ITEM",
-      "title": "New item",
+      "id": "NEW_PRODUCT",
+      "title": "New product",
       "layout": {
         "type": "SingleColumnLayout",
         "children": [
           {
             "type": "Form",
-            "name": "newItemForm",
+            "name": "newProductForm",
             "children": [
               {
                 "type": "TextInput",
                 "name": "itemName",
-                "label": "Item name",
+                "label": "Product name",
                 "required": true,
                 "input-type": "text"
               },
@@ -149,8 +102,7 @@
                 "on-click-action": {
                   "name": "data_exchange",
                   "payload": {
-                    "saleMode": "new_item",
-                    "productId": "",
+                    "productId": "NEW_PRODUCT",
                     "itemName": "${form.itemName}",
                     "unitPrice": "${form.unitPrice}",
                     "saveAsProduct": "${form.saveAsProduct}"
@@ -180,10 +132,6 @@
             { "id": "NEW_CUSTOMER", "title": "New customer" },
             { "id": "22222222-2222-2222-2222-222222222222", "title": "Hauwa Bello" }
           ]
-        },
-        "saleMode": {
-          "type": "string",
-          "__example__": "new_item"
         },
         "productId": {
           "type": "string",
@@ -222,7 +170,6 @@
                 "on-click-action": {
                   "name": "data_exchange",
                   "payload": {
-                    "saleMode": "${data.saleMode}",
                     "productId": "${data.productId}",
                     "itemName": "${data.itemName}",
                     "unitPrice": "${data.unitPrice}",
@@ -240,10 +187,6 @@
       "id": "NEW_CUSTOMER",
       "title": "New customer",
       "data": {
-        "saleMode": {
-          "type": "string",
-          "__example__": "new_item"
-        },
         "productId": {
           "type": "string",
           "__example__": ""
@@ -288,7 +231,6 @@
                 "on-click-action": {
                   "name": "data_exchange",
                   "payload": {
-                    "saleMode": "${data.saleMode}",
                     "productId": "${data.productId}",
                     "itemName": "${data.itemName}",
                     "unitPrice": "${data.unitPrice}",
@@ -311,10 +253,6 @@
       "terminal": true,
       "success": true,
       "data": {
-        "saleMode": {
-          "type": "string",
-          "__example__": "existing_product"
-        },
         "productId": {
           "type": "string",
           "__example__": "11111111-1111-1111-1111-111111111111"
@@ -403,7 +341,6 @@
                 "on-click-action": {
                   "name": "complete",
                   "payload": {
-                    "saleMode": "${data.saleMode}",
                     "productId": "${data.productId}",
                     "itemName": "${data.itemName}",
                     "unitPrice": "${data.unitPrice}",

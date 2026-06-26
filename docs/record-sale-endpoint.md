@@ -72,52 +72,32 @@ Fallbacks must always be present:
 
 ## Screen Structure
 
-### 1. `SALE_MODE`
+### 1. `SELECT_PRODUCT`
 
 Purpose:
 
-- decide whether vendor wants an existing product or a new item
-
-Fields:
-
-- `saleMode`
-  - `existing_product`
-  - `new_item`
-
-Next:
-
-- if `existing_product` -> `SELECT_PRODUCT`
-- if `new_item` -> `NEW_ITEM`
-
-### 2. `SELECT_PRODUCT`
-
-Purpose:
-
-- let vendor choose from a small list of active products
+- let vendor choose from a small list of active products or choose `New product`
 
 Fields:
 
 - `productId`
+  - existing product ID values
+  - `NEW_PRODUCT`
 
 Data source:
 
 - product options returned by endpoint
 
-Stored data after selection:
-
-- `productId`
-- `itemName`
-- `unitPrice`
-
 Next:
 
-- `CUSTOMER_SELECT`
+- if existing product selected -> `CUSTOMER_SELECT`
+- if `NEW_PRODUCT` -> `NEW_PRODUCT`
 
-### 3. `NEW_ITEM`
+### 2. `NEW_PRODUCT`
 
 Purpose:
 
-- allow vendor to enter an item that does not exist yet
+- allow vendor to enter a product that does not exist yet
 
 Fields:
 
@@ -131,7 +111,7 @@ Next:
 
 - `CUSTOMER_SELECT`
 
-### 4. `CUSTOMER_SELECT`
+### 3. `CUSTOMER_SELECT`
 
 Purpose:
 
@@ -148,7 +128,7 @@ Next:
 - if existing customer selected -> `PAYMENT_DETAILS`
 - if `NEW_CUSTOMER` -> `NEW_CUSTOMER`
 
-### 5. `NEW_CUSTOMER`
+### 4. `NEW_CUSTOMER`
 
 Purpose:
 
@@ -163,7 +143,7 @@ Next:
 
 - `PAYMENT_DETAILS`
 
-### 6. `PAYMENT_DETAILS`
+### 5. `PAYMENT_DETAILS`
 
 Purpose:
 
@@ -198,7 +178,6 @@ The Flow should submit this payload shape back through the WhatsApp webhook:
 
 ```json
 {
-  "saleMode": "existing_product",
   "productId": "11111111-1111-1111-1111-111111111111",
   "itemName": "Small Birthday Cake",
   "unitPrice": "15000",
@@ -219,8 +198,7 @@ For a new item and new customer:
 
 ```json
 {
-  "saleMode": "new_item",
-  "productId": "",
+  "productId": "NEW_PRODUCT",
   "itemName": "Samosa tray",
   "unitPrice": "7000",
   "saveAsProduct": "yes",
@@ -244,10 +222,10 @@ Example bootstrap response:
 
 ```json
 {
-  "screen": "SALE_MODE",
+  "screen": "SELECT_PRODUCT",
   "data": {
     "productOptions": [
-      { "id": "NEW_ITEM", "title": "Enter new item" },
+      { "id": "NEW_PRODUCT", "title": "New product" },
       { "id": "11111111-1111-1111-1111-111111111111", "title": "Small Birthday Cake - 15000" },
       { "id": "22222222-2222-2222-2222-222222222222", "title": "Dessert Cup - 2500" }
     ],
@@ -775,12 +753,12 @@ Extend [app/api/whatsapp/flows/record-sale/route.ts](/Users/apple/Desktop/Projec
 - use selected product name and price as defaults
 - allow submitted `unitPrice` override
 
-### New item + save as product = `yes`
+### New product + save as product = `yes`
 
 - create new `products` row
 - use new `product_id` in `transaction_items`
 
-### New item + save as product = `no`
+### New product + save as product = `no`
 
 - create `transaction_items` row with `product_id = null`
 

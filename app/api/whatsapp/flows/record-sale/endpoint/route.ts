@@ -35,7 +35,6 @@ type ProductRow = {
 };
 
 type FlowState = {
-  saleMode?: string;
   productId?: string;
   itemName?: string;
   unitPrice?: string;
@@ -68,7 +67,7 @@ function formatPriceLabel(value: number | string | null) {
 
 function buildProductOptions(products: ProductRow[]): ProductOption[] {
   return [
-    { id: "NEW_ITEM", title: "Enter new item" },
+    { id: "NEW_PRODUCT", title: "New product" },
     ...products.map((product) => ({
       id: product.id,
       title: `${product.name} - ${formatPriceLabel(product.unit_price)}`,
@@ -92,7 +91,6 @@ function buildCustomerOptions(
 
 function pickState(data: Record<string, unknown> | undefined): FlowState {
   return {
-    saleMode: typeof data?.saleMode === "string" ? data.saleMode : undefined,
     productId: typeof data?.productId === "string" ? data.productId : undefined,
     itemName: typeof data?.itemName === "string" ? data.itemName : undefined,
     unitPrice: typeof data?.unitPrice === "string" ? data.unitPrice : undefined,
@@ -164,17 +162,7 @@ async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
   const productOptions = buildProductOptions((products ?? []) as ProductRow[]);
   const customerOptions = buildCustomerOptions(customers ?? []);
 
-  if (!state.saleMode) {
-    return {
-      screen: "SALE_MODE",
-      data: {
-        productOptions,
-        customerOptions
-      }
-    };
-  }
-
-  if (state.saleMode === "existing_product" && !state.productId) {
+  if (!state.productId) {
     return {
       screen: "SELECT_PRODUCT",
       data: {
@@ -183,14 +171,14 @@ async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
     };
   }
 
-  if (state.saleMode === "new_item" && !state.itemName) {
+  if (state.productId === "NEW_PRODUCT" && !state.itemName) {
     return {
-      screen: "NEW_ITEM",
+      screen: "NEW_PRODUCT",
       data: {}
     };
   }
 
-  if (state.saleMode === "existing_product" && state.productId && !state.customerMode) {
+  if (state.productId !== "NEW_PRODUCT" && !state.customerMode) {
     const product = (products ?? []).find((entry) => entry.id === state.productId);
 
     if (!product) {
@@ -201,7 +189,6 @@ async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
       screen: "CUSTOMER_SELECT",
       data: {
         customerOptions,
-        saleMode: "existing_product",
         productId: product.id,
         itemName: product.name,
         unitPrice: String(product.unit_price),
@@ -210,12 +197,11 @@ async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
     };
   }
 
-  if (state.saleMode === "new_item" && state.itemName && state.unitPrice && !state.customerMode) {
+  if (state.productId === "NEW_PRODUCT" && state.itemName && state.unitPrice && !state.customerMode) {
     return {
       screen: "CUSTOMER_SELECT",
       data: {
         customerOptions,
-        saleMode: "new_item",
         productId: "",
         itemName: state.itemName,
         unitPrice: state.unitPrice,
@@ -228,7 +214,6 @@ async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
     return {
       screen: "NEW_CUSTOMER",
       data: {
-        saleMode: state.saleMode ?? "",
         productId: state.productId ?? "",
         itemName: state.itemName ?? "",
         unitPrice: state.unitPrice ?? "",
@@ -245,7 +230,6 @@ async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
     return {
       screen: "PAYMENT_DETAILS",
       data: {
-        saleMode: state.saleMode ?? "",
         productId: state.productId ?? "",
         itemName: state.itemName ?? "",
         unitPrice: state.unitPrice ?? "",
@@ -262,7 +246,6 @@ async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
     return {
       screen: "PAYMENT_DETAILS",
       data: {
-        saleMode: state.saleMode ?? "",
         productId: state.productId ?? "",
         itemName: state.itemName ?? "",
         unitPrice: state.unitPrice ?? "",
@@ -276,10 +259,9 @@ async function handleFlowRequest(input: z.infer<typeof flowEndpointSchema>) {
   }
 
   return {
-    screen: "SALE_MODE",
+    screen: "SELECT_PRODUCT",
     data: {
-      productOptions,
-      customerOptions
+      productOptions
     }
   };
 }
@@ -306,7 +288,8 @@ export async function POST(request: NextRequest) {
         }
       );
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unable to process encrypted flow request.";
+      const message =
+        error instanceof Error ? error.message : "Unable to process encrypted flow request.";
       return NextResponse.json({ error: message }, { status: 400 });
     }
   }
