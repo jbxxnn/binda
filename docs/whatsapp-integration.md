@@ -15,12 +15,8 @@
   - falls back to a plain text setup message if no onboarding Flow ID is configured
 - Known vendor:
   - `menu`, `start`, `hi`, `hello`, `help` show the business menu
-  - `1` or `record sale` launches the record sale Flow if configured
-  - `2` or `products` launches the products Flow if configured
-  - `3` or `customers` sends the customers dashboard link
-  - `4` or `reports` sends a quick report
-  - `5` or `profile` sends business profile details
-  - `6` or `settings` sends the settings link
+  - slash commands, Ice Breakers, PIN actions, and interactive replies trigger their specific handlers
+  - any other free text falls back to the vendor menu
 
 ## Supported Slash Commands
 

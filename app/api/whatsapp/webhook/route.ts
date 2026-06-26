@@ -84,25 +84,26 @@ function parseBooleanLike(value: unknown) {
 }
 
 async function sendVendorMenu(sender: string, businessId: string, ownerName: string) {
-  const admin = createSupabaseAdminClient();
-  const summary = await getVendorDashboardSummary(businessId, admin);
-
   await sendWhatsAppTextMessage(
     sender,
     [
-      `Welcome back, ${ownerName}`,
+      "👋 *Business Assistant Menu*",
       "",
-      `Today's Sales: ${formatNaira(summary.todaySales)}`,
-      `Transactions Today: ${summary.transactionsToday}`,
-      `Pending Payments: ${formatNaira(summary.pendingPayments)}`,
+      "Here's what I can help you with:",
       "",
-      "Reply with any of these:",
-      "1 or Record Sale",
-      "2 or Products",
-      "3 or Customers",
-      "4 or Reports",
-      "5 or Business Profile",
-      "6 or Settings"
+      "📈 */sale*",
+      "Record a new sale.",
+      "",
+      "📦 */products*",
+      "View and manage your products.",
+      "",
+      "📊 */reports*",
+      "See your daily, weekly, and monthly business reports.",
+      "",
+      "💬 */feedback*",
+      "Share your ideas or report an issue to help us improve Binda.",
+      "",
+      "Simply type any command above to get started."
     ].join("\n")
   );
 }
@@ -525,6 +526,7 @@ From today, I'll help you keep accurate records and understand how your business
 
 Whenever you make a sale, just tap */Record Sale*.`
     );
+    await sendVendorMenu(sender, data.business.id, payload.ownerName);
     return;
   }
 
@@ -924,68 +926,6 @@ async function handleVendorCommand(
 
   if (!normalized || ["menu", "start", "hi", "hello", "help"].includes(normalized)) {
     await sendVendorMenu(sender, business.id, business.owner_name);
-    return;
-  }
-
-  if (normalized.includes("1") || normalized.includes("record sale")) {
-    const { data: membership } = await admin
-      .from("business_memberships")
-      .select("user_id")
-      .eq("business_id", business.id)
-      .limit(1)
-      .maybeSingle();
-
-    await sendRecordSaleFlowOrFallback(sender, business, membership?.user_id ?? null);
-    return;
-  }
-
-  if (normalized.includes("2") || normalized.includes("product")) {
-    await sendProductsEntryOptions(sender);
-    return;
-  }
-
-  if (normalized.includes("3") || normalized.includes("customer")) {
-    const dashboardUrl = `${env.appBaseUrl}/vendor/customers`;
-    await sendWhatsAppTextMessage(
-      sender,
-      `Open your customers page here: ${dashboardUrl}\nYou can view history, total amount spent, and pending balance.`
-    );
-    return;
-  }
-
-  if (normalized.includes("4") || normalized.includes("report")) {
-    const report = await getVendorReport(business.id, "today", admin);
-    await sendWhatsAppTextMessage(
-      sender,
-      [
-        `Today's report for ${business.business_name}`,
-        `Total Sales: ${formatNaira(report.totalSales)}`,
-        `Transactions: ${report.transactionsCount}`,
-        `Money Collected: ${formatNaira(report.paidAmount)}`,
-        `Pending Payment: ${formatNaira(report.pendingAmount)}`
-      ].join("\n")
-    );
-    return;
-  }
-
-  if (normalized.includes("5") || normalized.includes("profile")) {
-    await sendWhatsAppTextMessage(
-      sender,
-      [
-        `Business: ${business.business_name}`,
-        `Owner: ${business.owner_name}`,
-        `Location: ${business.location_area ?? "Not set"}`,
-        `Manage full profile here: ${env.appBaseUrl}/vendor/business-profile`
-      ].join("\n")
-    );
-    return;
-  }
-
-  if (normalized.includes("6") || normalized.includes("setting")) {
-    await sendWhatsAppTextMessage(
-      sender,
-      `Open settings here: ${env.appBaseUrl}/vendor/settings`
-    );
     return;
   }
 
