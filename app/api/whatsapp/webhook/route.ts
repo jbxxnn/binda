@@ -166,7 +166,10 @@ async function sendRecordSaleFlowOrFallback(
   }
 
   return sendWhatsAppFlowMessage(sender, {
-    body: `Record a new sale for ${business.business_name}.`,
+    body: `*Record Sale*
+
+    Record a new sale for ${business.business_name}.
+    `,
     cta: "Record sale",
     flowId,
     flowToken: buildFlowToken("record_sale", [business.id, recordedBy])
