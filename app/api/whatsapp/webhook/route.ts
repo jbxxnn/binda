@@ -116,7 +116,7 @@ async function sendOnboardingFlowOrFallback(sender: string) {
     body: `
     👋 Welcome!
 
-    I'm your Business Assistant.
+    I'll be your Business Assistant.
 
     I'll help you:
 
