@@ -114,18 +114,18 @@ async function sendOnboardingFlowOrFallback(sender: string) {
 
   return sendWhatsAppFlowMessage(sender, {
     body: `
-    Hi 👋 Welcome to binda!
+    Hi 👋 Welcome to *Binda*!
 
 Your Business Assistant.
 
 I'll help you:
 
-• Keep your sales records
-• Track your customers
-• Show daily and monthly reports
-• Help more customers discover your business
+\`- Keep your sales records\`
+\`- Track your customers\`
+\`- Show daily and monthly reports\`
+\`- Help more customers discover your business\`
 
-Let's get your business set up.`,
+Tap *Start setup* to continue.`,
     cta: "Start setup",
     flowId,
     flowToken: buildFlowToken("onboarding", [sender]),
