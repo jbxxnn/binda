@@ -171,6 +171,35 @@ export async function sendWhatsAppListMessage(to: string, options: {
   });
 }
 
+export async function sendWhatsAppReplyButtonsMessage(to: string, options: {
+  body: string;
+  buttons: Array<{
+    id: string;
+    title: string;
+  }>;
+}) {
+  return sendWhatsAppMessage({
+    messaging_product: "whatsapp",
+    to,
+    type: "interactive",
+    interactive: {
+      type: "button",
+      body: {
+        text: options.body
+      },
+      action: {
+        buttons: options.buttons.slice(0, 3).map((button) => ({
+          type: "reply",
+          reply: {
+            id: button.id,
+            title: button.title
+          }
+        }))
+      }
+    }
+  });
+}
+
 export function getConfiguredFlowId(flowType: FlowType) {
   if (flowType === "onboarding") {
     return env.whatsappOnboardingFlowId ?? null;

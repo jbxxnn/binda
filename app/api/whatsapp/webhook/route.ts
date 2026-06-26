@@ -12,6 +12,7 @@ import {
   normalizeIncomingWhatsAppText,
   parseFlowResponseJson,
   sendWhatsAppListMessage,
+  sendWhatsAppReplyButtonsMessage,
   sendWhatsAppTypingIndicator,
   sendWhatsAppFlowMessage,
   sendWhatsAppTextMessage,
@@ -190,7 +191,7 @@ function getLatestDate(value: string | null | undefined) {
   return value ? new Date(value).getTime() : 0;
 }
 
-async function getTopProductsForList(businessId: string) {
+async function getTopProductsForList(businessId: string, limit = 9) {
   const admin = createSupabaseAdminClient();
   const [{ data: products, error: productsError }, { data: recentProductUsage }] = await Promise.all([
     admin
@@ -199,7 +200,7 @@ async function getTopProductsForList(businessId: string) {
       .eq("business_id", businessId)
       .eq("is_active", true)
       .order("updated_at", { ascending: false })
-      .limit(9),
+      .limit(limit),
     admin
       .from("transaction_items")
       .select("product_id, line_total, quantity, transactions!inner(transaction_date)")
@@ -299,6 +300,98 @@ async function sendProductsPickerOrFallback(
       }
     ]
   });
+}
+
+async function sendProductsEntryOptions(sender: string) {
+  return sendWhatsAppReplyButtonsMessage(sender, {
+    body: "What would you like to do with your products?",
+    buttons: [
+      { id: "products:view", title: "View Products" },
+      { id: "products:manage", title: "Manage Products" }
+    ]
+  });
+}
+
+async function sendViewProductsPickerOrFallback(
+  sender: string,
+  business: { id: string; business_name: string }
+) {
+  const products = await getTopProductsForList(business.id, 10);
+  const rows = products.map((product) => ({
+    id: `products:view:${product.id}`,
+    title: product.name.slice(0, 24),
+    description: `₦${formatProductListMoney(product.unit_price)} | Stock: ${formatProductListStock(product.stock_quantity)}`.slice(0, 72)
+  }));
+
+  if (rows.length === 0) {
+    return sendWhatsAppTextMessage(
+      sender,
+      "You do not have any active products yet. Reply 2 and choose Manage Products to add one."
+    );
+  }
+
+  return sendWhatsAppListMessage(sender, {
+    header: "View Products",
+    body: `Choose a product to view for ${business.business_name}.`,
+    footer: "Tap an item to view details",
+    button: "View Products",
+    sections: [
+      {
+        title: "Products",
+        rows
+      }
+    ]
+  });
+}
+
+async function sendProductSummary(sender: string, businessId: string, productId: string) {
+  const admin = createSupabaseAdminClient();
+  const [{ data: product }, { data: itemRows }] = await Promise.all([
+    admin
+      .from("products")
+      .select("id, name, unit_price, stock_quantity, is_active")
+      .eq("id", productId)
+      .eq("business_id", businessId)
+      .maybeSingle<ProductRow>(),
+    admin
+      .from("transaction_items")
+      .select("quantity, line_total, transactions!inner(business_id, transaction_date)")
+      .eq("product_id", productId)
+      .eq("transactions.business_id", businessId)
+  ]);
+
+  if (!product) {
+    await sendWhatsAppTextMessage(sender, "I could not find that product. Reply 2 to reload your products.");
+    return;
+  }
+
+  const rows = itemRows ?? [];
+  const totalQuantitySold = rows.reduce((sum, row) => sum + Number(row.quantity ?? 0), 0);
+  const totalSales = rows.reduce((sum, row) => sum + Number(row.line_total ?? 0), 0);
+  const lastSoldAt = rows
+    .map((row) => {
+      const transaction = Array.isArray(row.transactions) ? row.transactions[0] : row.transactions;
+      return transaction?.transaction_date ?? null;
+    })
+    .filter(Boolean)
+    .sort()
+    .at(-1);
+
+  await sendWhatsAppTextMessage(
+    sender,
+    [
+      `Product: ${product.name}`,
+      `Price: ${formatNaira(Number(product.unit_price ?? 0))}`,
+      `Stock: ${formatProductListStock(product.stock_quantity)}`,
+      `Status: ${product.is_active ? "Active" : "Inactive"}`,
+      `Total quantity sold: ${new Intl.NumberFormat("en-NG", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+      }).format(totalQuantitySold)}`,
+      `Total sales: ${formatNaira(totalSales)}`,
+      `Last sold: ${lastSoldAt ? new Date(lastSoldAt).toLocaleDateString("en-NG") : "No sales yet"}`
+    ].join("\n")
+  );
 }
 
 async function handleFlowCompletion(message: WhatsAppMessage, sender: string) {
@@ -626,7 +719,26 @@ async function handleVendorCommand(
     return;
   }
 
+  const buttonReplyId =
+    message.interactive?.type === "button_reply" ? message.interactive.button_reply?.id : undefined;
   const listReplyId = message.interactive?.type === "list_reply" ? message.interactive.list_reply?.id : undefined;
+
+  if (buttonReplyId === "products:view") {
+    await sendViewProductsPickerOrFallback(sender, business);
+    return;
+  }
+
+  if (buttonReplyId === "products:manage") {
+    const { data: membership } = await admin
+      .from("business_memberships")
+      .select("user_id")
+      .eq("business_id", business.id)
+      .limit(1)
+      .maybeSingle();
+
+    await sendProductsPickerOrFallback(sender, business, membership?.user_id ?? null);
+    return;
+  }
 
   if (listReplyId?.startsWith("products:")) {
     const { data: membership } = await admin
@@ -644,6 +756,11 @@ async function handleVendorCommand(
         sender,
         "Products Flow is not ready yet. Use the dashboard for now, or ask the admin to complete the Products Flow setup."
       );
+      return;
+    }
+
+    if (listReplyId.startsWith("products:view:")) {
+      await sendProductSummary(sender, business.id, listReplyId.replace("products:view:", ""));
       return;
     }
 
@@ -707,14 +824,7 @@ async function handleVendorCommand(
   }
 
   if (normalized.includes("2") || normalized.includes("product")) {
-    const { data: membership } = await admin
-      .from("business_memberships")
-      .select("user_id")
-      .eq("business_id", business.id)
-      .limit(1)
-      .maybeSingle();
-
-    await sendProductsPickerOrFallback(sender, business, membership?.user_id ?? null);
+    await sendProductsEntryOptions(sender);
     return;
   }
 
