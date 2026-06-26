@@ -250,10 +250,16 @@ export async function POST(request: NextRequest) {
     (sum, row) => sum + Number(row.total_amount ?? 0),
     0
   );
+  const paymentSummary =
+    normalizedPaymentStatus === "paid"
+      ? "Paid in full."
+      : normalizedPaymentStatus === "partial"
+        ? `Partial payment recorded. Balance: ${formatNaira(pending)}.`
+        : `Pending payment recorded. Balance: ${formatNaira(total)}.`;
 
   return NextResponse.json({
     success: true,
-    message: `Sale recorded successfully. Today's total sales is ${formatNaira(todayTotal)}.`,
+    message: `Sale recorded successfully. ${paymentSummary} Today's total sales is ${formatNaira(todayTotal)}.`,
     transactionId: transaction.id
   });
 }
