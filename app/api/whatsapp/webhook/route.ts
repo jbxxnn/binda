@@ -112,8 +112,8 @@ async function sendPinPrompt(sender: string, hasPin: boolean) {
   await sendWhatsAppTextMessage(
     sender,
     hasPin
-      ? "For security, enter your 4-digit PIN to continue.\nReply like: PIN 1234"
-      : "For security, set a 4-digit PIN first.\nReply like: SET PIN 1234"
+      ? "For security, enter your 4-digit PIN to continue.\nReply like: 1234"
+      : "For security, set a 4-digit PIN first.\nReply like: SET 1234"
   );
 }
 
@@ -842,7 +842,7 @@ async function handleVendorCommand(
         sender,
         locked_until
           ? "Too many wrong PIN attempts. Your WhatsApp access is locked for 15 minutes."
-          : "Incorrect PIN. Try again with: PIN 1234"
+          : "Incorrect PIN. Try again with: 1234"
       );
       return;
     }
