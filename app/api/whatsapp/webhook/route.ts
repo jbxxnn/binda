@@ -195,7 +195,9 @@ async function sendFeedbackFlowOrFallback(
       body: `Share feedback about ${business.business_name}.`,
       cta: "Give feedback",
       flowId,
-      flowToken: buildFlowToken("feedback", [business.id, recordedBy ?? ""])
+      flowToken: buildFlowToken("feedback", [business.id, recordedBy ?? ""]),
+      screen: "FEEDBACK",
+      data: {}
     })
   );
 }
