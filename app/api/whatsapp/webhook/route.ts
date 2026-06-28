@@ -190,12 +190,14 @@ async function sendFeedbackFlowOrFallback(
     );
   }
 
-  return sendWhatsAppFlowMessage(sender, {
-    body: `Share feedback about ${business.business_name}.`,
-    cta: "Give feedback",
-    flowId,
-    flowToken: buildFlowToken("feedback", [business.id, recordedBy ?? ""])
-  });
+  return sendFlowLaunchOrError(sender, () =>
+    sendWhatsAppFlowMessage(sender, {
+      body: `Share feedback about ${business.business_name}.`,
+      cta: "Give feedback",
+      flowId,
+      flowToken: buildFlowToken("feedback", [business.id, recordedBy ?? ""])
+    })
+  );
 }
 
 async function sendFlowLaunchOrError(
