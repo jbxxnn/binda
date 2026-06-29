@@ -100,6 +100,13 @@ export async function sendWhatsAppTypingIndicator(messageId: string) {
 }
 
 export async function sendWhatsAppFlowMessage(to: string, options: FlowSendOptions) {
+  const flowActionPayload = options.screen
+    ? {
+        screen: options.screen,
+        ...(options.data !== undefined ? { data: options.data } : {})
+      }
+    : undefined;
+
   return sendWhatsAppMessage({
     messaging_product: "whatsapp",
     to,
@@ -117,14 +124,7 @@ export async function sendWhatsAppFlowMessage(to: string, options: FlowSendOptio
           flow_token: options.flowToken,
           flow_cta: options.cta,
           flow_action: options.screen ? "navigate" : "data_exchange",
-          ...(options.screen
-            ? {
-                flow_action_payload: {
-                  screen: options.screen,
-                  data: options.data ?? {}
-                }
-              }
-            : {})
+          ...(flowActionPayload ? { flow_action_payload: flowActionPayload } : {})
         }
       }
     }
